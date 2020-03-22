@@ -1,0 +1,34 @@
+{
+  "id": "b18c8cac-c30b-4c6e-b2ac-da07ca6cc4ae",
+  "name": "Testing Blocking Deletion of Warehouse Shipment Lines (app)",
+  "publisher": "fluxxus.nl",
+  "version": "1.0.0.0",
+  "brief": "Example test app for test automation classes",
+  "description": "This example app contains tests for locking Deletion of Warehouse Shipment Lines (app)",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "https://github.com/fluxxus-nl/Test-Automation-Examples",
+  "url": "http://www.fluxxus.nl",
+  "logo": "images/logo.png",
+  "dependencies": [
+    {
+      "appId": "eaed498c-bb05-4fda-8310-41b22a23434e",
+      "name": "Blocking Deletion of Warehouse Shipment Lines (app)",
+      "publisher": "fluxxus.nl",
+      "version": "1.0.0.0"
+    }
+  ],
+  "screenshots": [],
+  "platform": "14.0.0.0",
+  "application": "14.0.0.0",
+  "test": "14.0.0.0",
+  "idRanges": [
+    {
+      "from": 75650,
+      "to": 75659
+    }
+  ],
+  "contextSensitiveHelpUrl": "https://Test.com/help/",
+  "showMyCode": true,
+  "runtime": "3.0"
+}
