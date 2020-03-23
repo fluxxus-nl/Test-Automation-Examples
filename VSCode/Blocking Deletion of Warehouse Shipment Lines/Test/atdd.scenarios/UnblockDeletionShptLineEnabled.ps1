@@ -1,5 +1,5 @@
 Feature 'Unblock Deletion of Whse. Shpt. Line enabled'{
-    Scenario 1 'Delete by user with no allowance manually created whse shpt. line'{
+    Scenario 1 'Delete by user with no allowance manually created whse. shpt. line'{
         Given	'Enable "Unblock Deletion of Shpt. Line" on warehouse setup'
         Given	'Location with require shipment'
         Given	'Warehouse employee for current user with no allowance'
