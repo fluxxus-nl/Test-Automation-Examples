@@ -20,7 +20,6 @@ OBJECT Modification "Warehouse Setup"(Table 5769)
                          ChangedElements=FieldCollection
                          {
                            { 75640;  ;Unblock Deletion of Shpt. Line;Boolean;
-                                                                          DataClassification=ToBeClassified;
                                                                           CaptionML=ENU=Unblock Deletion of Shpt. Line;
                                                                           Description=FLX1.0.0 }
                          }

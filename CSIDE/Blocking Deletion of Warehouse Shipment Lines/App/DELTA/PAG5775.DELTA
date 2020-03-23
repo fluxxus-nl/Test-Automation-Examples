@@ -18,7 +18,6 @@ OBJECT Modification "Warehouse Setup"(Page 5775)
                          {
                            { 1000000000;2;Field  ;
                                        ToolTipML=ENU=Specifies whether you allow users to delete system-created warehouse shipment lines.;
-                                       ApplicationArea=#All;
                                        Description=FLX1.0.0;
                                        SourceExpr="Unblock Deletion of Shpt. Line" }
 
