@@ -1,0 +1,66 @@
+OBJECT Modification "Warehouse Employee"(Table 7301)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.01,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    Target="Warehouse Employee"(Table 7301);
+  }
+  CHANGES
+  {
+    { Insertion         ;Documentation=BEGIN
+                                         FLX1.0.0 20200323 lvanvugt - Added (1) field "Allowed to Delete Shpt. Line" (2) function CheckAllowedToDeleteWhsShipmentLine
+                                       END;
+                                        }
+    { Insertion         ;InsertAfter="ADCS User"(Field 7710);
+                         ChangedElements=FieldCollection
+                         {
+                           { 75640;  ;Allowed to Delete Shpt. Line;Boolean;
+                                                                          DataClassification=ToBeClassified;
+                                                                          CaptionML=ENU=Allowed to Delete Shpt. Line;
+                                                                          Description=FLX1.0.0 }
+                         }
+                          }
+    { Insertion         ;InsertAfter=OnBeforeCheckDefault(PROCEDURE 2);
+                         ChangedElements=PROCEDURECollection
+                         {
+                           PROCEDURE CheckAllowedToDeleteWhsShipmentLine@1000000000();
+                           VAR
+                             WarehouseSetup@1000000000 : Record 5769;
+                             NotAlllowedToDeleteSystemCreatedLinesErr@1000000001 : TextConst 'ENU=You are not allowed to delete system-created warehouse shipment lines on current location.';
+                             DeleteThisSystemCreatedLineMsg@1000000002 : TextConst 'ENU=Are you sure you want to delete this system-created line?';
+                           BEGIN
+                             //FLX1.0.0-BEGIN
+                             WarehouseSetup.GET();
+
+                             IF NOT WarehouseSetup."Unblock Deletion of Shpt. Line" THEN
+                                 ERROR(NotAlllowedToDeleteSystemCreatedLinesErr)
+                             ELSE BEGIN
+                                 IF NOT "Allowed to Delete Shpt. Line" THEN
+                                     ERROR(NotAlllowedToDeleteSystemCreatedLinesErr);
+
+                                 IF CONFIRM(DeleteThisSystemCreatedLineMsg, FALSE) = FALSE THEN
+                                     ERROR('');
+                             END;
+                             //FLX1.0.0-END
+                           END;
+
+                         }
+                          }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW114.01;
+                         ModifiedValue=NAVW114.01,FLX1.0.0 }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

@@ -1,0 +1,190 @@
+OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    Subtype=Test;
+    OnRun=BEGIN
+            // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      Assert@1000000000 : Codeunit 130000;
+      LibrarySales@1000000001 : Codeunit 130509;
+      LibraryWarehouse@1000000002 : Codeunit 132204;
+      IsInitialized@1000000003 : Boolean;
+
+    [Test]
+    PROCEDURE DeleteByUserWithNoAllowanceManuallyCreatedWhseShptLine@1000000001();
+    VAR
+      LocationCode@1000000000 : Code[10];
+      WarehouseShipmentNo@1000000001 : Code[20];
+    BEGIN
+      // [SCENARIO #0001] Delete by user with no allowance manually created whse. shpt. line
+      Initialize;
+
+      // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
+      EnableUnblockDeletionOfShptLineOnWarehouseSetup;
+      // [GIVEN] Location with require shipment
+      LocationCode := CreateLocationWithRequireShipment;
+      // [GIVEN] Warehouse employee for current user with no allowance
+      CreateWarehouseEmployeeForCurrentUserWithNoAllowance(LocationCode);
+      // [GIVEN] Manualy created warehouse shipment from released sales order with one line with require shipment location
+      WarehouseShipmentNo := CreateManualyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+
+      // [WHEN] Delete warehouse shipment line
+      DeleteWarehouseShipmentLine(WarehouseShipmentNo);
+
+      // [THEN] Warehouse shipment line is deleted
+      VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
+    END;
+
+    [Test]
+    PROCEDURE DeleteByUserWithNoAllowanceAutomaticallyCreatedWhseShptLine@1000000002();
+    VAR
+      LocationCode@1000000001 : Code[10];
+      WarehouseShipmentNo@1000000000 : Code[20];
+    BEGIN
+      // [SCENARIO #0002] Delete by user with no allowance automatically created whse. shpt. line
+      Initialize;
+
+      // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
+      EnableUnblockDeletionOfShptLineOnWarehouseSetup;
+      // [GIVEN] Location with require shipment
+      LocationCode := CreateLocationWithRequireShipment;
+      // [GIVEN] Warehouse employee for current user with no allowance
+      CreateWarehouseEmployeeForCurrentUserWithNoAllowance(LocationCode);
+      // [GIVEN] Automatically created warehouse shipment from released sales order with one line with require shipment location
+      WarehouseShipmentNo := CreateAutomaticallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+
+      // [WHEN] Delete warehouse shipment line
+      DeleteWarehouseShipmentLine(WarehouseShipmentNo);
+
+      // [THEN] Warehouse shipment line is deleted
+      VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
+    END;
+
+    LOCAL PROCEDURE Initialize@1000000000();
+    VAR
+      LibraryTestInitialize@1000000000 : Codeunit 132250;
+    BEGIN
+      LibraryTestInitialize.OnTestInitialize(CODEUNIT::"Unblock Deletion Enabled FLX");
+
+      IF IsInitialized THEN
+        EXIT;
+
+      LibraryTestInitialize.OnBeforeTestSuiteInitialize(CODEUNIT::"Unblock Deletion Enabled FLX");
+
+      IsInitialized := TRUE;
+      COMMIT;
+
+      LibraryTestInitialize.OnAfterTestSuiteInitialize(CODEUNIT::"Unblock Deletion Enabled FLX");
+    END;
+
+    LOCAL PROCEDURE EnableUnblockDeletionOfShptLineOnWarehouseSetup@1000000003();
+    VAR
+      WarehouseSetup@1000000000 : Record 5769;
+    BEGIN
+      WITH WarehouseSetup DO BEGIN
+        IF NOT GET THEN
+          INSERT;
+        "Unblock Deletion of Shpt. Line" := TRUE;
+        MODIFY;
+      END;
+    END;
+
+    LOCAL PROCEDURE CreateLocationWithRequireShipment@1000000004() : Code[10];
+    VAR
+      Location@1000000000 : Record 14;
+    BEGIN
+      LibraryWarehouse.CreateLocationWMS(Location, FALSE, FALSE, FALSE, FALSE, TRUE);
+      EXIT(Location.Code);
+    END;
+
+    LOCAL PROCEDURE CreateWarehouseEmployeeForCurrentUserWithNoAllowance@1000000005(LocationCode@1000000000 : Code[10]);
+    VAR
+      WarehouseEmployee@1000000001 : Record 7301;
+    BEGIN
+      LibraryWarehouse.CreateWarehouseEmployee(WarehouseEmployee, LocationCode, FALSE);
+    END;
+
+    LOCAL PROCEDURE CreateManualyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation@1000000006(LocationCode@1000000000 : Code[10]) : Code[20];
+    VAR
+      SalesHeader@1000000001 : Record 36;
+      SalesLine@1000000002 : Record 37;
+    BEGIN
+      LibrarySales.CreateSalesDocumentWithItem(SalesHeader, SalesLine, SalesHeader."Document Type"::Order, '', '', 1, LocationCode, 0D);
+      LibrarySales.ReleaseSalesDocument(SalesHeader);
+
+      LibraryWarehouse.CreateWhseShipmentFromSO(SalesHeader);
+      EXIT(GetWarehouseShipmentHeaderNo(SalesHeader."No.", DATABASE::"Sales Line", SalesHeader."Document Type"));
+    END;
+
+    LOCAL PROCEDURE CreateAutomaticallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation@1000000009(LocationCode@1000000000 : Code[10]) : Code[20];
+    VAR
+      WarehouseShipmentLine@1000000002 : Record 7321;
+      WarehouseShipmentNo@1000000001 : Code[20];
+    BEGIN
+      WarehouseShipmentNo := CreateManualyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+
+      WITH WarehouseShipmentLine DO BEGIN
+        SETRANGE("No.", WarehouseShipmentNo);
+        MODIFYALL("System-Created", TRUE);
+      END;
+
+      EXIT(WarehouseShipmentNo);
+    END;
+
+    LOCAL PROCEDURE DeleteWarehouseShipmentLine@1000000007(WarehouseShipmentNo@1000000001 : Code[20]);
+    VAR
+      WarehouseShipmentLine@1000000000 : Record 7321;
+    BEGIN
+      WITH WarehouseShipmentLine DO BEGIN
+        SETRANGE("No.", WarehouseShipmentNo);
+        FINDFIRST;
+        DELETE;
+      END;
+    END;
+
+    LOCAL PROCEDURE VerifyWarehouseShipmentLineIsDeleted@1000000008(WarehouseShipmentNo@1000000000 : Code[20]);
+    VAR
+      WarehouseShipmentLine@1000000001 : Record 7321;
+    BEGIN
+      WITH WarehouseShipmentLine DO BEGIN
+        SETRANGE("No.", WarehouseShipmentNo);
+        Assert.RecordIsEmpty(WarehouseShipmentLine);
+      END;
+    END;
+
+    LOCAL PROCEDURE GetWarehouseShipmentHeaderNo@1000000010(SourceNo@1000000002 : Code[20];SourceType@1000000001 : Integer;SourceSubtype@1000000000 : Integer) : Code[20];
+    VAR
+      WarehouseShipmentLine@1000000003 : Record 7321;
+    BEGIN
+      FindWarehouseShipmentLine(WarehouseShipmentLine, SourceNo, SourceType, SourceSubtype);
+      EXIT(WarehouseShipmentLine."No.");
+    END;
+
+    LOCAL PROCEDURE FindWarehouseShipmentLine@1000000011(VAR WarehouseShipmentLine@1000000000 : Record 7321;SourceNo@1000000001 : Code[20];SourceType@1000000002 : Integer;SourceSubtype@1000000003 : Integer);
+    BEGIN
+      WITH WarehouseShipmentLine DO BEGIN
+        SETRANGE("Source Type", SourceType);
+        IF SourceSubtype >= 0 THEN
+          SETRANGE("Source Subtype", SourceSubtype);
+        SETRANGE("Source No.", SourceNo);
+        FINDFIRST;
+      END;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

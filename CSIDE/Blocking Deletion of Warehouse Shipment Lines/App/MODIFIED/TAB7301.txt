@@ -1,0 +1,134 @@
+OBJECT Table 7301 Warehouse Employee
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.01,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    OnInsert=BEGIN
+               IF Default THEN
+                 CheckDefault;
+             END;
+
+    OnModify=BEGIN
+               IF Default THEN
+                 CheckDefault;
+             END;
+
+    CaptionML=[ENU=Warehouse Employee;
+               NLD=Magazijnwerknemer];
+    LookupPageID=Page7348;
+  }
+  FIELDS
+  {
+    { 1   ;   ;User ID             ;Code50        ;TableRelation=User."User Name";
+                                                   OnValidate=VAR
+                                                                UserMgt@1000 : Codeunit 418;
+                                                              BEGIN
+                                                                UserMgt.ValidateUserID("User ID");
+                                                              END;
+
+                                                   OnLookup=VAR
+                                                              UserMgt@1000 : Codeunit 418;
+                                                            BEGIN
+                                                              UserMgt.LookupUserID("User ID");
+                                                            END;
+
+                                                   ValidateTableRelation=No;
+                                                   TestTableRelation=No;
+                                                   DataClassification=EndUserIdentifiableInformation;
+                                                   CaptionML=[ENU=User ID;
+                                                              NLD=Gebruikers-id] }
+    { 2   ;   ;Location Code       ;Code10        ;TableRelation=Location;
+                                                   CaptionML=[ENU=Location Code;
+                                                              NLD=Vestiging] }
+    { 4   ;   ;Default             ;Boolean       ;CaptionML=[ENU=Default;
+                                                              NLD=Standaard] }
+    { 7710;   ;ADCS User           ;Code50        ;TableRelation="ADCS User".Name;
+                                                   OnValidate=VAR
+                                                                WarehouseEmployee@1000 : Record 7301;
+                                                              BEGIN
+                                                                IF ("ADCS User" <> xRec."ADCS User") AND ("ADCS User" <> '') THEN BEGIN
+                                                                  WarehouseEmployee.SETRANGE("ADCS User","ADCS User");
+                                                                  IF NOT WarehouseEmployee.ISEMPTY THEN
+                                                                    ERROR(Text001);
+                                                                END;
+                                                              END;
+
+                                                   DataClassification=EndUserIdentifiableInformation;
+                                                   CaptionML=[ENU=ADCS User;
+                                                              NLD=ADCS-gebruiker] }
+    { 75640;  ;Allowed to Delete Shpt. Line;Boolean;
+                                                   DataClassification=ToBeClassified;
+                                                   CaptionML=ENU=Allowed to Delete Shpt. Line;
+                                                   Description=FLX1.0.0 }
+  }
+  KEYS
+  {
+    {    ;User ID,Location Code                   ;Clustered=Yes }
+    {    ;Default                                  }
+    {    ;Location Code                            }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+    VAR
+      Text000@1000 : TextConst 'ENU=You can only have one default location per user ID.;NLD=U kunt slechts ‚‚n standaardvestiging per gebruikers-id hebben.';
+      Text001@1001 : TextConst 'ENU=You can only assign an ADCS user name once.;NLD=U kunt een ADCS-gebruikersnaam slechts eenmaal toewijzen.';
+
+    LOCAL PROCEDURE CheckDefault@1();
+    VAR
+      WhseEmployee@1000 : Record 7301;
+      IsHandled@1001 : Boolean;
+    BEGIN
+      IsHandled := FALSE;
+      OnBeforeCheckDefault(Rec,IsHandled);
+      IF IsHandled THEN
+        EXIT;
+
+      WhseEmployee.SETRANGE(Default,TRUE);
+      WhseEmployee.SETRANGE("User ID","User ID");
+      WhseEmployee.SETFILTER("Location Code",'<>%1',"Location Code");
+      IF NOT WhseEmployee.ISEMPTY THEN
+        ERROR(Text000);
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCheckDefault@2(VAR WarehouseEmployee@1000 : Record 7301;VAR IsHandled@1001 : Boolean);
+    BEGIN
+    END;
+
+    PROCEDURE CheckAllowedToDeleteWhsShipmentLine@1000000000();
+    VAR
+      WarehouseSetup@1000000000 : Record 5769;
+      NotAlllowedToDeleteSystemCreatedLinesErr@1000000001 : TextConst 'ENU=You are not allowed to delete system-created warehouse shipment lines on current location.';
+      DeleteThisSystemCreatedLineMsg@1000000002 : TextConst 'ENU=Are you sure you want to delete this system-created line?';
+    BEGIN
+      //FLX1.0.0-BEGIN
+      WarehouseSetup.GET();
+
+      IF NOT WarehouseSetup."Unblock Deletion of Shpt. Line" THEN
+          ERROR(NotAlllowedToDeleteSystemCreatedLinesErr)
+      ELSE BEGIN
+          IF NOT "Allowed to Delete Shpt. Line" THEN
+              ERROR(NotAlllowedToDeleteSystemCreatedLinesErr);
+
+          IF CONFIRM(DeleteThisSystemCreatedLineMsg, FALSE) = FALSE THEN
+              ERROR('');
+      END;
+      //FLX1.0.0-END
+    END;
+
+    BEGIN
+    {
+      FLX1.0.0 20200323 lvanvugt - Added (1) field "Allowed to Delete Shpt. Line" (2) function CheckAllowedToDeleteWhsShipmentLine
+    }
+    END.
+  }
+}
+

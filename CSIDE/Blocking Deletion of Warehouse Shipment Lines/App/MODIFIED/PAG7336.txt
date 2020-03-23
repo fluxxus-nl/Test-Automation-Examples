@@ -1,0 +1,450 @@
+OBJECT Page 7336 Whse. Shipment Subform
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.04,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Lines;
+               NLD=Regels];
+    MultipleNewLines=Yes;
+    InsertAllowed=No;
+    LinksAllowed=No;
+    SourceTable=Table7321;
+    DelayedInsert=Yes;
+    PageType=ListPart;
+    AutoSplitKey=Yes;
+    OnAfterGetRecord=BEGIN
+                       CrossDockMgt.CalcCrossDockedItems("Item No.","Variant Code","Unit of Measure Code","Location Code",
+                         QtyCrossDockedUOMBase,
+                         QtyCrossDockedAllUOMBase);
+                       QtyCrossDockedUOM := 0;
+                       IF  "Qty. per Unit of Measure" <> 0 THEN
+                         QtyCrossDockedUOM := ROUND(QtyCrossDockedUOMBase / "Qty. per Unit of Measure",UOMMgt.QtyRndPrecision);
+                     END;
+
+    ActionList=ACTIONS
+    {
+      { 1900000004;0 ;ActionContainer;
+                      ActionContainerType=ActionItems }
+      { 1907935204;1 ;ActionGroup;
+                      CaptionML=[ENU=&Line;
+                                 NLD=&Regel];
+                      Image=Line }
+      { 1900724404;2 ;Action    ;
+                      CaptionML=[ENU=Source &Document Line;
+                                 NLD=Bron&documentregel];
+                      ToolTipML=[ENU="View the line on a released source document that the warehouse activity is for. ";
+                                 NLD="De regel in een vrijgegeven brondocument weergeven waarvoor de magazijnactiviteit bestemd is. "];
+                      ApplicationArea=#Warehouse;
+                      Image=SourceDocLine;
+                      OnAction=BEGIN
+                                 ShowSourceLine;
+                               END;
+                                }
+      { 1903866704;2 ;Action    ;
+                      AccessByPermission=TableData 7302=R;
+                      CaptionML=[ENU=&Bin Contents List;
+                                 NLD=&Opslaglocatie-inhoudsoverzicht];
+                      ToolTipML=[ENU=View the contents of each bin and the parameters that define how items are routed through the bin.;
+                                 NLD=Weergave van de inhoud van elke opslaglocatie en de parameters die bepalen hoe artikelen door de opslaglocatie worden geleid.];
+                      ApplicationArea=#Warehouse;
+                      Image=BinContent;
+                      OnAction=BEGIN
+                                 ShowBinContents;
+                               END;
+                                }
+      { 1900295504;2 ;Action    ;
+                      Name=ItemTrackingLines;
+                      ShortCutKey=Shift+Ctrl+I;
+                      CaptionML=[ENU=Item &Tracking Lines;
+                                 NLD=Artikel&traceringsregels];
+                      ToolTipML=[ENU=View or edit serial numbers and lot numbers that are assigned to the item on the document or journal line.;
+                                 NLD=Serienummers en lotnummers weergeven of bewerken die zijn toegewezen aan het artikel op de document- of dagboekregel.];
+                      ApplicationArea=#ItemTracking;
+                      Image=ItemTrackingLines;
+                      OnAction=BEGIN
+                                 OpenItemTrackingLines;
+                               END;
+                                }
+      { 5       ;2   ;Action    ;
+                      AccessByPermission=TableData 90=R;
+                      CaptionML=[ENU=Assemble to Order;
+                                 NLD=Op order assembleren];
+                      ToolTipML=[ENU=View the linked assembly order if the shipment was for an assemble-to-order sale.;
+                                 NLD=De gekoppelde assemblageorder weergeven als de verzending betrekking heeft op een verkoop voor assembleren op order.];
+                      ApplicationArea=#Assembly;
+                      Image=AssemblyBOM;
+                      OnAction=VAR
+                                 ATOLink@1001 : Record 904;
+                                 ATOSalesLine@1000 : Record 37;
+                               BEGIN
+                                 TESTFIELD("Assemble to Order",TRUE);
+                                 TESTFIELD("Source Type",DATABASE::"Sales Line");
+                                 ATOSalesLine.GET("Source Subtype","Source No.","Source Line No.");
+                                 ATOLink.ShowAsm(ATOSalesLine);
+                               END;
+                                }
+    }
+  }
+  CONTROLS
+  {
+    { 1900000001;0;Container;
+                ContainerType=ContentArea }
+
+    { 1   ;1   ;Group     ;
+                GroupType=Repeater }
+
+    { 52  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the type of document that the line relates to.;
+                           NLD=Hiermee wordt het soort document opgegeven waaraan de regel gerelateerd is.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Source Document" }
+
+    { 6   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of the source document that the entry originates from.;
+                           NLD=Hiermee wordt het nummer van het brondocument opgegeven waaruit de post afkomstig is.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Source No." }
+
+    { 20  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the line number of the source document that the entry originates from.;
+                           NLD=Hiermee wordt het regelnummer opgegeven van het brondocument waaruit de post afkomstig is.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Source Line No.";
+                Visible=FALSE }
+
+    { 58  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the type of destination associated with the warehouse shipment line.;
+                           NLD=Hiermee wordt het soort opgegeven van de bestemming die is gekoppeld aan de magazijnverzendingsregel.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Destination Type";
+                Visible=FALSE }
+
+    { 60  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of the customer, vendor, or location to which the items should be shipped.;
+                           NLD=Hiermee wordt het nummer opgegeven van de klant, leverancier of vestiging waarnaar de artikelen moeten worden verzonden.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Destination No.";
+                Visible=FALSE }
+
+    { 22  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of the item that should be shipped.;
+                           NLD=Hiermee wordt het nummer opgegeven van het artikel dat moet worden verzonden.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Item No." }
+
+    { 14  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the variant of the item on the line.;
+                           NLD=Hiermee wordt de variant opgegeven van het artikel op de regel.];
+                ApplicationArea=#Planning;
+                SourceExpr="Variant Code";
+                Visible=FALSE }
+
+    { 30  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the description of the item in the line.;
+                           NLD=Hiermee wordt de beschrijving opgegeven van het artikel op de regel.];
+                ApplicationArea=#Warehouse;
+                SourceExpr=Description }
+
+    { 16  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the code of the location from which the items on the line are being shipped.;
+                           NLD=Hiermee wordt de code opgegeven van de vestiging van waaruit de artikelen op de regel worden verzonden.];
+                ApplicationArea=#Location;
+                SourceExpr="Location Code";
+                Visible=FALSE;
+                Editable=FALSE }
+
+    { 42  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the code of the zone where the bin on this shipment line is located.;
+                           NLD=Hiermee wordt de code opgegeven van de zone waar de opslaglocatie op deze verzendregel zich bevindt.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Zone Code";
+                Visible=FALSE }
+
+    { 40  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the bin where the items are picked or put away.;
+                           NLD=Hiermee wordt de opslaglocatie opgegeven waaruit de artikelen worden gepickt of opgeslagen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Bin Code";
+                Visible=FALSE;
+                OnValidate=BEGIN
+                             BinCodeOnAfterValidate;
+                           END;
+                            }
+
+    { 18  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the shelf number of the item for informational use.;
+                           NLD=Hiermee wordt het schapnummer van het artikel aangegeven voor informatie.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Shelf No.";
+                Visible=FALSE }
+
+    { 34  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity that should be shipped.;
+                           NLD=Hiermee wordt het te verzenden aantal opgegeven.];
+                ApplicationArea=#Warehouse;
+                SourceExpr=Quantity;
+                OnValidate=BEGIN
+                             QuantityOnAfterValidate;
+                           END;
+                            }
+
+    { 4   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity that should be shipped, in the base unit of measure.;
+                           NLD=Hiermee wordt het aantal opgegeven dat u wilt verzenden, uitgedrukt in de basiseenheid.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. (Base)";
+                Visible=FALSE }
+
+    { 46  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity of items that remain to be shipped.;
+                           NLD=Hiermee wordt het aantal artikelen opgegeven dat nog moet worden verzonden.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. to Ship" }
+
+    { 38  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity of the item on the line that is posted as shipped.;
+                           NLD=Hiermee wordt het artikelaantal opgegeven op de regel die als verzonden is geboekt.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. Shipped" }
+
+    { 28  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity, in base units of measure, that will be shipped when the warehouse shipment is posted.;
+                           NLD=Hiermee wordt in de basismaateenheid het aantal opgegeven dat wordt verzonden wanneer de magazijnverzending wordt geboekt.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. to Ship (Base)";
+                Visible=FALSE }
+
+    { 44  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity that is posted as shipped expressed in the base unit of measure.;
+                           NLD=Hiermee wordt het aantal opgegeven dat als verzonden is geboekt, uitgedrukt in de basiseenheid.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. Shipped (Base)";
+                Visible=FALSE }
+
+    { 8   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity that still needs to be handled.;
+                           NLD=Hiermee wordt het aantal opgegeven dat nog moet worden verwerkt.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. Outstanding";
+                Visible=TRUE }
+
+    { 10  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity that still needs to be handled, expressed in the base unit of measure.;
+                           NLD=Hiermee wordt het aantal aangegeven dat nog moet worden verwerkt, uitgedrukt in de basiseenheid.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. Outstanding (Base)";
+                Visible=FALSE }
+
+    { 48  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity in pick instructions assigned to be picked for the warehouse shipment line.;
+                           NLD=Hiermee wordt het aantal in de pickinstructies opgegeven dat voor de magazijnverzendregel moet worden gepickt.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Pick Qty.";
+                Visible=FALSE }
+
+    { 50  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the quantity, in the base unit of measure, in pick instructions, that is assigned to be picked for the warehouse shipment line.;
+                           NLD=Hiermee wordt het aantal in de pickinstructies opgegeven dat voor de magazijnverzendregel moet worden gepickt, uitgedrukt in de basiseenheid.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Pick Qty. (Base)";
+                Visible=FALSE }
+
+    { 32  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies how many of the total shipment quantity have been registered as picked.;
+                           NLD=Hiermee wordt opgegeven hoeveel van het totale aantal van de verzending als gepickt is geregistreerd.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. Picked";
+                Visible=FALSE }
+
+    { 36  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies how many of the total shipment quantity in the base unit of measure have been registered as picked.;
+                           NLD=Hiermee wordt opgegeven hoeveel van het totale aantal van de verzending als gepickt is geregistreerd, uitgedrukt in de basiseenheid.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. Picked (Base)";
+                Visible=FALSE }
+
+    { 2   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the date when the related warehouse activity, such as a pick, must be completed to ensure items can be shipped by the shipment date.;
+                           NLD=Hiermee wordt de datum opgegeven waarop de gerelateerde magazijnactiviteit, zoals een pick, moet worden voltooid om te zorgen dat artikelen op de verzenddatum kunnen worden verzonden.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Due Date" }
+
+    { 26  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies how each unit of the item or resource is measured, such as in pieces or hours. By default, the value in the Base Unit of Measure field on the item or resource card is inserted.;
+                           NLD=Hiermee wordt opgegeven hoe elke eenheid van het artikel of de resource wordt gemeten, bijvoorbeeld in stuks of uur. Standaard wordt de waarde in het veld Basiseenheid op de artikel- of resourcekaart ingevoegd.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Unit of Measure Code" }
+
+    { 24  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number of base units of measure that are in the unit of measure specified for the item on the line.;
+                           NLD=Hiermee wordt opgegeven hoeveel basiseenheden in de opgegeven eenheid voor het artikel de regel bevat.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Qty. per Unit of Measure" }
+
+    { 54  ;2   ;Field     ;
+                CaptionML=[ENU=Qty. on Cross-Dock Bin;
+                           NLD=Aantal in cross-dockopslagloc.];
+                ToolTipML=[ENU=Specifies the sum of all the outbound lines requesting the item within the look-ahead period, minus the quantity of the items that have already been placed in the cross-dock area.;
+                           NLD=Hiermee wordt het totaal van alle uitgaande regels opgegeven waarop het artikel binnen de voorziene periode voorkomt, minus het aantal artikelen dat al in de cross-dockruimte is geplaatst.];
+                ApplicationArea=#Warehouse;
+                DecimalPlaces=0:5;
+                SourceExpr=QtyCrossDockedUOM;
+                Visible=FALSE;
+                Editable=FALSE;
+                OnDrillDown=BEGIN
+                              CrossDockMgt.ShowBinContentsCrossDocked("Item No.","Variant Code","Unit of Measure Code","Location Code",TRUE);
+                            END;
+                             }
+
+    { 56  ;2   ;Field     ;
+                CaptionML=[ENU=Qty. on Cross-Dock Bin (Base);
+                           NLD=Aantal in cross-dockopslagloc. (Basis)];
+                ToolTipML=[ENU=Specifies the sum of all the outbound lines requesting the item within the look-ahead period, minus the quantity of the items that have already been placed in the cross-dock area.;
+                           NLD=Hiermee wordt het totaal van alle uitgaande regels opgegeven waarop het artikel binnen de voorziene periode voorkomt, minus het aantal artikelen dat al in de cross-dockruimte is geplaatst.];
+                ApplicationArea=#Warehouse;
+                DecimalPlaces=0:5;
+                SourceExpr=QtyCrossDockedUOMBase;
+                Visible=FALSE;
+                Editable=FALSE;
+                OnDrillDown=BEGIN
+                              CrossDockMgt.ShowBinContentsCrossDocked("Item No.","Variant Code","Unit of Measure Code","Location Code",TRUE);
+                            END;
+                             }
+
+    { 12  ;2   ;Field     ;
+                CaptionML=[ENU=Qty. on Cross-Dock Bin (Base all UOM);
+                           NLD=Aantal in cross-dockopslagloc. (Basis alle eenh.)];
+                ToolTipML=[ENU=Specifies the sum of all the outbound lines requesting the item within the look-ahead period, minus the quantity of the items that have already been placed in the cross-dock area.;
+                           NLD=Hiermee wordt het totaal van alle uitgaande regels opgegeven waarop het artikel binnen de voorziene periode voorkomt, minus het aantal artikelen dat al in de cross-dockruimte is geplaatst.];
+                ApplicationArea=#Warehouse;
+                DecimalPlaces=0:5;
+                SourceExpr=QtyCrossDockedAllUOMBase;
+                Visible=FALSE;
+                Editable=FALSE;
+                OnDrillDown=BEGIN
+                              CrossDockMgt.ShowBinContentsCrossDocked("Item No.","Variant Code","Unit of Measure Code","Location Code",FALSE);
+                            END;
+                             }
+
+    { 3   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies if the warehouse shipment line is for items that are assembled to a sales order before it is shipped.;
+                           NLD=Hiermee wordt opgegeven of de magazijnverzendingsregel bedoeld is voor artikelen die op een verkooporder worden geassembleerd voordat deze wordt verzonden.];
+                ApplicationArea=#Assembly;
+                SourceExpr="Assemble to Order";
+                Visible=FALSE }
+
+    { 1000000000;2;Field  ;
+                ToolTipML=ENU=Specifies that the entry was created by the system.;
+                ApplicationArea=#All;
+                Description=FLX1.0.0;
+                SourceExpr="System-Created" }
+
+  }
+  CODE
+  {
+    VAR
+      WMSMgt@1000 : Codeunit 7302;
+      CrossDockMgt@1004 : Codeunit 5780;
+      UOMMgt@1005 : Codeunit 5402;
+      QtyCrossDockedUOM@1003 : Decimal;
+      QtyCrossDockedAllUOMBase@1002 : Decimal;
+      QtyCrossDockedUOMBase@1001 : Decimal;
+
+    LOCAL PROCEDURE ShowSourceLine@1();
+    BEGIN
+      WMSMgt.ShowSourceDocLine("Source Type","Source Subtype","Source No.","Source Line No.",0);
+    END;
+
+    [External]
+    PROCEDURE PostShipmentYesNo@3();
+    VAR
+      WhseShptLine@1001 : Record 7321;
+    BEGIN
+      WhseShptLine.COPY(Rec);
+      CODEUNIT.RUN(CODEUNIT::"Whse.-Post Shipment (Yes/No)",WhseShptLine);
+      RESET;
+      SETCURRENTKEY("No.","Sorting Sequence No.");
+      CurrPage.UPDATE(FALSE);
+    END;
+
+    [External]
+    PROCEDURE PostShipmentPrintYesNo@2();
+    VAR
+      WhseShptLine@1001 : Record 7321;
+    BEGIN
+      WhseShptLine.COPY(Rec);
+      CODEUNIT.RUN(CODEUNIT::"Whse.-Post Shipment + Print",WhseShptLine);
+      RESET;
+      SETCURRENTKEY("No.","Sorting Sequence No.");
+      CurrPage.UPDATE(FALSE);
+    END;
+
+    [External]
+    PROCEDURE AutofillQtyToHandle@10();
+    VAR
+      WhseShptLine@1000 : Record 7321;
+    BEGIN
+      WhseShptLine.COPY(Rec);
+      WhseShptLine.SETRANGE("No.","No.");
+      AutofillQtyToHandle(WhseShptLine);
+    END;
+
+    [External]
+    PROCEDURE DeleteQtyToHandle@8();
+    VAR
+      WhseShptLine@1000 : Record 7321;
+    BEGIN
+      WhseShptLine.COPY(Rec);
+      WhseShptLine.SETRANGE("No.","No.");
+      DeleteQtyToHandle(WhseShptLine);
+    END;
+
+    LOCAL PROCEDURE ShowBinContents@6();
+    VAR
+      BinContent@1000 : Record 7302;
+    BEGIN
+      BinContent.ShowBinContents("Location Code","Item No.","Variant Code","Bin Code");
+    END;
+
+    [External]
+    PROCEDURE PickCreate@4();
+    VAR
+      WhseShptHeader@1001 : Record 7320;
+      WhseShptLine@1000 : Record 7321;
+      ReleaseWhseShipment@1002 : Codeunit 7310;
+    BEGIN
+      WhseShptLine.COPY(Rec);
+      WhseShptHeader.GET(WhseShptLine."No.");
+      IF WhseShptHeader.Status = WhseShptHeader.Status::Open THEN
+        ReleaseWhseShipment.Release(WhseShptHeader);
+      CreatePickDoc(WhseShptLine,WhseShptHeader);
+    END;
+
+    LOCAL PROCEDURE OpenItemTrackingLines@6500();
+    BEGIN
+      OpenItemTrackingLines;
+    END;
+
+    LOCAL PROCEDURE BinCodeOnAfterValidate@19073508();
+    BEGIN
+      CurrPage.UPDATE;
+    END;
+
+    LOCAL PROCEDURE QuantityOnAfterValidate@19032465();
+    BEGIN
+      CurrPage.UPDATE;
+    END;
+
+    BEGIN
+    {
+      FLX1.0.0 20200323 lvanvugt - Added field "System-Created"
+    }
+    END.
+  }
+}
+

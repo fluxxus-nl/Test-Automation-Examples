@@ -1,0 +1,925 @@
+OBJECT Table 7321 Warehouse Shipment Line
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.03,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    OnDelete=VAR
+               ItemTrackingMgt@1001 : Codeunit 6500;
+               OrderStatus@1000 : Option;
+             BEGIN
+               TestReleased;
+
+               //FLX1.0.0-BEGIN
+               CheckDeletionAllowed;
+               //FLX1.0.0-END
+
+               IF "Assemble to Order" THEN
+                 VALIDATE("Qty. to Ship",0);
+
+               IF "Qty. Shipped" < "Qty. Picked" THEN
+                 IF NOT CONFIRM(
+                      STRSUBSTNO(
+                        Text007,
+                        FIELDCAPTION("Qty. Picked"),"Qty. Picked",FIELDCAPTION("Qty. Shipped"),
+                        "Qty. Shipped",TABLECAPTION),FALSE)
+                 THEN
+                   ERROR('');
+
+               ItemTrackingMgt.SetDeleteReservationEntries(TRUE);
+               ItemTrackingMgt.DeleteWhseItemTrkgLines(
+                 DATABASE::"Warehouse Shipment Line",0,"No.",'',0,"Line No.","Location Code",TRUE);
+
+               OrderStatus :=
+                 WhseShptHeader.GetDocumentStatus("Line No.");
+               IF OrderStatus <> WhseShptHeader."Document Status" THEN BEGIN
+                 WhseShptHeader.VALIDATE("Document Status",OrderStatus);
+                 WhseShptHeader.MODIFY;
+               END;
+             END;
+
+    OnRename=BEGIN
+               ERROR(Text008,TABLECAPTION);
+             END;
+
+    CaptionML=[ENU=Warehouse Shipment Line;
+               NLD=Magazijnverzendregel];
+    LookupPageID=Whse. Shipment Lines;
+    DrillDownPageID=Whse. Shipment Lines;
+  }
+  FIELDS
+  {
+    { 1   ;   ;No.                 ;Code20        ;CaptionML=[ENU=No.;
+                                                              NLD=Nr.];
+                                                   Editable=No }
+    { 2   ;   ;Line No.            ;Integer       ;CaptionML=[ENU=Line No.;
+                                                              NLD=Regelnr.];
+                                                   Editable=No }
+    { 3   ;   ;Source Type         ;Integer       ;CaptionML=[ENU=Source Type;
+                                                              NLD=Bronsoort];
+                                                   Editable=No }
+    { 4   ;   ;Source Subtype      ;Option        ;CaptionML=[ENU=Source Subtype;
+                                                              NLD=Bronsubsoort];
+                                                   OptionCaptionML=[ENU=0,1,2,3,4,5,6,7,8,9,10;
+                                                                    NLD=0,1,2,3,4,5,6,7,8,9,10];
+                                                   OptionString=0,1,2,3,4,5,6,7,8,9,10;
+                                                   Editable=No }
+    { 6   ;   ;Source No.          ;Code20        ;CaptionML=[ENU=Source No.;
+                                                              NLD=Bronnr.];
+                                                   Editable=No }
+    { 7   ;   ;Source Line No.     ;Integer       ;CaptionML=[ENU=Source Line No.;
+                                                              NLD=Bronregelnr.];
+                                                   Editable=No }
+    { 9   ;   ;Source Document     ;Option        ;CaptionML=[ENU=Source Document;
+                                                              NLD=Brondocument];
+                                                   OptionCaptionML=[ENU=,Sales Order,,,Sales Return Order,Purchase Order,,,Purchase Return Order,,Outbound Transfer,,,,,,,,Service Order;
+                                                                    NLD=,Verkooporder,,,Verkoopretourorder,Inkooporder,,,Inkoopretourorder,,Uitgaande transfer,,,,,,,,Service-order];
+                                                   OptionString=,Sales Order,,,Sales Return Order,Purchase Order,,,Purchase Return Order,,Outbound Transfer,,,,,,,,Service Order;
+                                                   Editable=No }
+    { 10  ;   ;Location Code       ;Code10        ;TableRelation=Location;
+                                                   CaptionML=[ENU=Location Code;
+                                                              NLD=Vestiging];
+                                                   Editable=No }
+    { 11  ;   ;Shelf No.           ;Code10        ;CaptionML=[ENU=Shelf No.;
+                                                              NLD=Schapnr.] }
+    { 12  ;   ;Bin Code            ;Code20        ;TableRelation=IF (Zone Code=FILTER('')) Bin.Code WHERE (Location Code=FIELD(Location Code)) ELSE IF (Zone Code=FILTER(<>'')) Bin.Code WHERE (Location Code=FIELD(Location Code),Zone Code=FIELD(Zone Code));
+                                                   OnValidate=VAR
+                                                                Bin@1000 : Record 7354;
+                                                                WhseIntegrationMgt@1001 : Codeunit 7317;
+                                                              BEGIN
+                                                                TestReleased;
+                                                                IF xRec."Bin Code" <> "Bin Code" THEN
+                                                                  IF "Bin Code" <> '' THEN BEGIN
+                                                                    GetLocation("Location Code");
+                                                                    WhseIntegrationMgt.CheckBinTypeCode(DATABASE::"Warehouse Shipment Line",
+                                                                      FIELDCAPTION("Bin Code"),
+                                                                      "Location Code",
+                                                                      "Bin Code",0);
+                                                                    IF Location."Directed Put-away and Pick" THEN BEGIN
+                                                                      Bin.GET("Location Code","Bin Code");
+                                                                      "Zone Code" := Bin."Zone Code";
+                                                                      CheckBin(0,0);
+                                                                    END;
+                                                                  END;
+                                                              END;
+
+                                                   CaptionML=[ENU=Bin Code;
+                                                              NLD=Opslaglocatie] }
+    { 13  ;   ;Zone Code           ;Code10        ;TableRelation=Zone.Code WHERE (Location Code=FIELD(Location Code));
+                                                   OnValidate=BEGIN
+                                                                TestReleased;
+                                                                IF xRec."Zone Code" <> "Zone Code" THEN BEGIN
+                                                                  IF "Zone Code" <> '' THEN BEGIN
+                                                                    GetLocation("Location Code");
+                                                                    Location.TESTFIELD("Directed Put-away and Pick");
+                                                                  END;
+                                                                  "Bin Code" := '';
+                                                                END;
+                                                              END;
+
+                                                   CaptionML=[ENU=Zone Code;
+                                                              NLD=Zone] }
+    { 14  ;   ;Item No.            ;Code20        ;TableRelation=Item;
+                                                   CaptionML=[ENU=Item No.;
+                                                              NLD=Artikelnr.];
+                                                   Editable=No }
+    { 15  ;   ;Quantity            ;Decimal       ;OnValidate=VAR
+                                                                OrderStatus@1000 : Integer;
+                                                                IsHandled@1001 : Boolean;
+                                                              BEGIN
+                                                                IF Quantity <= 0 THEN
+                                                                  FIELDERROR(Quantity,Text003);
+                                                                TestReleased;
+                                                                CheckSourceDocLineQty;
+
+                                                                IF Quantity < "Qty. Picked" THEN
+                                                                  FIELDERROR(Quantity,STRSUBSTNO(Text001,"Qty. Picked"));
+                                                                IF Quantity < "Qty. Shipped" THEN
+                                                                  FIELDERROR(Quantity,STRSUBSTNO(Text001,"Qty. Shipped"));
+
+                                                                "Qty. (Base)" := CalcBaseQty(Quantity);
+                                                                InitOutstandingQtys;
+                                                                "Completely Picked" := (Quantity = "Qty. Picked") OR ("Qty. (Base)" = "Qty. Picked (Base)");
+
+                                                                GetLocation("Location Code");
+                                                                IF Location."Directed Put-away and Pick" THEN
+                                                                  CheckBin(xRec.Cubage,xRec.Weight);
+
+                                                                IsHandled := FALSE;
+                                                                OnValidateQuantityStatusUpdate(Rec,xRec,IsHandled);
+                                                                IF NOT IsHandled THEN BEGIN
+                                                                  Status := CalcStatusShptLine;
+                                                                  IF (Status <> xRec.Status) AND (NOT ISTEMPORARY) THEN BEGIN
+                                                                    GetWhseShptHeader("No.");
+                                                                    OrderStatus := WhseShptHeader.GetDocumentStatus(0);
+                                                                    IF OrderStatus <> WhseShptHeader."Document Status" THEN BEGIN
+                                                                      WhseShptHeader.VALIDATE("Document Status",OrderStatus);
+                                                                      WhseShptHeader.MODIFY;
+                                                                    END;
+                                                                  END;
+                                                                END;
+                                                              END;
+
+                                                   CaptionML=[ENU=Quantity;
+                                                              NLD=Aantal];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No;
+                                                   MinValue=0 }
+    { 16  ;   ;Qty. (Base)         ;Decimal       ;CaptionML=[ENU=Qty. (Base);
+                                                              NLD=Aantal (Basis)];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 19  ;   ;Qty. Outstanding    ;Decimal       ;OnValidate=VAR
+                                                                WMSMgt@1000 : Codeunit 7302;
+                                                              BEGIN
+                                                                GetLocation("Location Code");
+                                                                "Qty. Outstanding (Base)" := CalcBaseQty("Qty. Outstanding");
+                                                                IF Location."Require Pick" THEN BEGIN
+                                                                  IF "Assemble to Order" THEN
+                                                                    VALIDATE("Qty. to Ship",0)
+                                                                  ELSE
+                                                                    VALIDATE("Qty. to Ship","Qty. Picked" - (Quantity - "Qty. Outstanding"));
+                                                                END ELSE
+                                                                  VALIDATE("Qty. to Ship","Qty. Outstanding");
+
+                                                                IF Location."Directed Put-away and Pick" THEN
+                                                                  WMSMgt.CalcCubageAndWeight(
+                                                                    "Item No.","Unit of Measure Code","Qty. Outstanding",Cubage,Weight);
+                                                              END;
+
+                                                   CaptionML=[ENU=Qty. Outstanding;
+                                                              NLD=Openstaand aantal];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 20  ;   ;Qty. Outstanding (Base);Decimal    ;CaptionML=[ENU=Qty. Outstanding (Base);
+                                                              NLD=Openstaand aantal (Basis)];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 21  ;   ;Qty. to Ship        ;Decimal       ;OnValidate=VAR
+                                                                ATOLink@1001 : Record 904;
+                                                                Confirmed@1000 : Boolean;
+                                                                IsHandled@1002 : Boolean;
+                                                              BEGIN
+                                                                GetLocation("Location Code");
+
+                                                                IsHandled := FALSE;
+                                                                OnBeforeCompareShipAndPickQty(Rec,IsHandled);
+                                                                IF NOT IsHandled THEN
+                                                                  IF ("Qty. to Ship" > "Qty. Picked" - "Qty. Shipped") AND Location."Require Pick" AND NOT "Assemble to Order" THEN
+                                                                    FIELDERROR("Qty. to Ship",STRSUBSTNO(Text002,"Qty. Picked" - "Qty. Shipped"));
+
+                                                                IsHandled := FALSE;
+                                                                OnBeforeCompareQtyToShipAndOutstandingQty(Rec,IsHandled);
+                                                                IF NOT IsHandled THEN
+                                                                  IF "Qty. to Ship" > "Qty. Outstanding" THEN
+                                                                    ERROR(Text000,"Qty. Outstanding");
+
+                                                                Confirmed := TRUE;
+                                                                IF (CurrFieldNo = FIELDNO("Qty. to Ship")) AND
+                                                                   ("Shipping Advice" = "Shipping Advice"::Complete) AND
+                                                                   ("Qty. to Ship" <> "Qty. Outstanding") AND
+                                                                   ("Qty. to Ship" > 0)
+                                                                THEN
+                                                                  Confirmed :=
+                                                                    CONFIRM(
+                                                                      Text009 +
+                                                                      Text010,
+                                                                      FALSE,
+                                                                      FIELDCAPTION("Shipping Advice"),
+                                                                      "Shipping Advice",
+                                                                      FIELDCAPTION("Qty. to Ship"),
+                                                                      "Qty. Outstanding");
+
+                                                                IF NOT Confirmed THEN
+                                                                  ERROR('');
+
+                                                                IF CurrFieldNo <> FIELDNO("Qty. to Ship (Base)") THEN
+                                                                  "Qty. to Ship (Base)" := CalcBaseQty("Qty. to Ship");
+
+                                                                IF "Assemble to Order" THEN
+                                                                  ATOLink.UpdateQtyToAsmFromWhseShptLine(Rec);
+                                                              END;
+
+                                                   CaptionML=[ENU=Qty. to Ship;
+                                                              NLD=Te verzenden aantal];
+                                                   DecimalPlaces=0:5;
+                                                   MinValue=0 }
+    { 22  ;   ;Qty. to Ship (Base) ;Decimal       ;OnValidate=BEGIN
+                                                                VALIDATE("Qty. to Ship",CalcQty("Qty. to Ship (Base)"));
+                                                              END;
+
+                                                   CaptionML=[ENU=Qty. to Ship (Base);
+                                                              NLD=Te verzenden aantal (Basis)];
+                                                   DecimalPlaces=0:5 }
+    { 23  ;   ;Qty. Picked         ;Decimal       ;FieldClass=Normal;
+                                                   OnValidate=BEGIN
+                                                                "Qty. Picked (Base)" := CalcBaseQty("Qty. Picked");
+                                                              END;
+
+                                                   CaptionML=[ENU=Qty. Picked;
+                                                              NLD=Gepickt aantal];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 24  ;   ;Qty. Picked (Base)  ;Decimal       ;CaptionML=[ENU=Qty. Picked (Base);
+                                                              NLD=Gepickt aantal (Basis)];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 25  ;   ;Qty. Shipped        ;Decimal       ;OnValidate=BEGIN
+                                                                "Qty. Shipped (Base)" := CalcBaseQty("Qty. Shipped");
+                                                              END;
+
+                                                   CaptionML=[ENU=Qty. Shipped;
+                                                              NLD=Verzonden aantal];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 26  ;   ;Qty. Shipped (Base) ;Decimal       ;CaptionML=[ENU=Qty. Shipped (Base);
+                                                              NLD=Verzonden (Basis)];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 27  ;   ;Pick Qty.           ;Decimal       ;FieldClass=FlowField;
+                                                   CalcFormula=Sum("Warehouse Activity Line"."Qty. Outstanding" WHERE (Activity Type=CONST(Pick),Whse. Document Type=CONST(Shipment),Whse. Document No.=FIELD(No.),Whse. Document Line No.=FIELD(Line No.),Unit of Measure Code=FIELD(Unit of Measure Code),Action Type=FILTER(' '|Place),Original Breakbulk=CONST(No),Breakbulk No.=CONST(0),Assemble to Order=CONST(No)));
+                                                   CaptionML=[ENU=Pick Qty.;
+                                                              NLD=Pickaantal];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 28  ;   ;Pick Qty. (Base)    ;Decimal       ;FieldClass=FlowField;
+                                                   CalcFormula=Sum("Warehouse Activity Line"."Qty. Outstanding (Base)" WHERE (Activity Type=CONST(Pick),Whse. Document Type=CONST(Shipment),Whse. Document No.=FIELD(No.),Whse. Document Line No.=FIELD(Line No.),Action Type=FILTER(' '|Place),Original Breakbulk=CONST(No),Breakbulk No.=CONST(0),Assemble to Order=CONST(No)));
+                                                   CaptionML=[ENU=Pick Qty. (Base);
+                                                              NLD=Pickaantal (Basis)];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 29  ;   ;Unit of Measure Code;Code10        ;TableRelation="Item Unit of Measure".Code WHERE (Item No.=FIELD(Item No.));
+                                                   CaptionML=[ENU=Unit of Measure Code;
+                                                              NLD=Eenheidscode];
+                                                   Editable=No }
+    { 30  ;   ;Qty. per Unit of Measure;Decimal   ;InitValue=1;
+                                                   CaptionML=[ENU=Qty. per Unit of Measure;
+                                                              NLD=Aantal per eenheid];
+                                                   DecimalPlaces=0:5;
+                                                   Editable=No }
+    { 31  ;   ;Variant Code        ;Code10        ;TableRelation="Item Variant".Code WHERE (Item No.=FIELD(Item No.));
+                                                   CaptionML=[ENU=Variant Code;
+                                                              NLD=Variant];
+                                                   Editable=No }
+    { 32  ;   ;Description         ;Text100       ;CaptionML=[ENU=Description;
+                                                              NLD=Omschrijving];
+                                                   Editable=No }
+    { 33  ;   ;Description 2       ;Text50        ;CaptionML=[ENU=Description 2;
+                                                              NLD=Omschrijving 2];
+                                                   Editable=No }
+    { 34  ;   ;Status              ;Option        ;CaptionML=[ENU=Status;
+                                                              NLD=Status];
+                                                   OptionCaptionML=[ENU=" ,Partially Picked,Partially Shipped,Completely Picked,Completely Shipped";
+                                                                    NLD=" ,Gedeeltelijk gepickt,Gedeeltelijk verzonden,Volledig gepickt,Volledig verzonden"];
+                                                   OptionString=[ ,Partially Picked,Partially Shipped,Completely Picked,Completely Shipped];
+                                                   Editable=No }
+    { 35  ;   ;Sorting Sequence No.;Integer       ;CaptionML=[ENU=Sorting Sequence No.;
+                                                              NLD=Sorteringsvolgordenr.];
+                                                   Editable=No }
+    { 36  ;   ;Due Date            ;Date          ;CaptionML=[ENU=Due Date;
+                                                              NLD=Vervaldatum] }
+    { 39  ;   ;Destination Type    ;Option        ;CaptionML=[ENU=Destination Type;
+                                                              NLD=Bestemmingssoort];
+                                                   OptionCaptionML=[ENU=" ,Customer,Vendor,Location";
+                                                                    NLD=" ,Klant,Leverancier,Vestiging"];
+                                                   OptionString=[ ,Customer,Vendor,Location];
+                                                   Editable=No }
+    { 40  ;   ;Destination No.     ;Code20        ;TableRelation=IF (Destination Type=CONST(Customer)) Customer.No. ELSE IF (Destination Type=CONST(Vendor)) Vendor.No. ELSE IF (Destination Type=CONST(Location)) Location.Code;
+                                                   CaptionML=[ENU=Destination No.;
+                                                              NLD=Bestemmingsnr.];
+                                                   Editable=No }
+    { 41  ;   ;Cubage              ;Decimal       ;CaptionML=[ENU=Cubage;
+                                                              NLD=Kubieke inhoud];
+                                                   DecimalPlaces=0:5 }
+    { 42  ;   ;Weight              ;Decimal       ;CaptionML=[ENU=Weight;
+                                                              NLD=Gewicht];
+                                                   DecimalPlaces=0:5 }
+    { 44  ;   ;Shipping Advice     ;Option        ;CaptionML=[ENU=Shipping Advice;
+                                                              NLD=Verzendadvies];
+                                                   OptionCaptionML=[ENU=Partial,Complete;
+                                                                    NLD=Gedeeltelijk,Volledig];
+                                                   OptionString=Partial,Complete;
+                                                   Editable=No }
+    { 45  ;   ;Shipment Date       ;Date          ;CaptionML=[ENU=Shipment Date;
+                                                              NLD=Verzenddatum] }
+    { 46  ;   ;Completely Picked   ;Boolean       ;CaptionML=[ENU=Completely Picked;
+                                                              NLD=Volledig gepickt];
+                                                   Editable=No }
+    { 48  ;   ;Not upd. by Src. Doc. Post.;Boolean;CaptionML=[ENU=Not upd. by Src. Doc. Post.;
+                                                              NLD=Niet bijgewerkt door brondoc.];
+                                                   Editable=No }
+    { 49  ;   ;Posting from Whse. Ref.;Integer    ;CaptionML=[ENU=Posting from Whse. Ref.;
+                                                              NLD=Boeking van mag.-referentie];
+                                                   Editable=No }
+    { 900 ;   ;Assemble to Order   ;Boolean       ;AccessByPermission=TableData 90=R;
+                                                   CaptionML=[ENU=Assemble to Order;
+                                                              NLD=Op order assembleren];
+                                                   Editable=No }
+    { 75460;  ;System-Created      ;Boolean       ;DataClassification=ToBeClassified;
+                                                   CaptionML=ENU=System-Created;
+                                                   Description=FLX1.0.0 }
+  }
+  KEYS
+  {
+    {    ;No.,Line No.                            ;Clustered=Yes }
+    {    ;No.,Sorting Sequence No.                ;MaintainSQLIndex=No }
+    {    ;No.,Item No.                            ;MaintainSQLIndex=No }
+    {    ;No.,Source Document,Source No.          ;MaintainSQLIndex=No }
+    {    ;No.,Shelf No.                           ;MaintainSQLIndex=No }
+    {    ;No.,Bin Code                            ;MaintainSQLIndex=No }
+    {    ;No.,Due Date                            ;MaintainSQLIndex=No }
+    {    ;No.,Destination Type,Destination No.    ;MaintainSQLIndex=No }
+    {    ;Source Type,Source Subtype,Source No.,Source Line No.,Assemble to Order;
+                                                   SumIndexFields=Qty. Outstanding,Qty. Outstanding (Base);
+                                                   MaintainSIFTIndex=No }
+    {    ;No.,Source Type,Source Subtype,Source No.,Source Line No.;
+                                                   MaintainSQLIndex=No }
+    {    ;Item No.,Location Code,Variant Code,Due Date;
+                                                   SumIndexFields=Qty. Outstanding (Base),Qty. Picked (Base),Qty. Shipped (Base);
+                                                   MaintainSIFTIndex=No }
+    {    ;Bin Code,Location Code                  ;SumIndexFields=Cubage,Weight;
+                                                   MaintainSIFTIndex=No }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+    VAR
+      Text000@1000 : TextConst 'ENU=You cannot handle more than the outstanding %1 units.;NLD=U kunt niet meer verwerken dan de openstaande %1 eenheden.';
+      Location@1001 : Record 14;
+      Item@1016 : Record 27;
+      WhseShptHeader@1002 : Record 7320;
+      Text001@1003 : TextConst 'ENU=must not be less than %1 units;NLD=mag niet minder dan %1 eenheden zijn.';
+      Text002@1004 : TextConst 'ENU=must not be greater than %1 units;NLD=mag niet meer dan %1 eenheden zijn.';
+      Text003@1005 : TextConst 'ENU=must be greater than zero;NLD=moet groter dan nul zijn';
+      Text005@1007 : TextConst 'ENU=The picked quantity is not enough to ship all lines.;NLD=Het gepickte aantal is niet voldoende om alle regels te verzenden.';
+      UOMMgt@1015 : Codeunit 5402;
+      HideValidationDialog@1008 : Boolean;
+      Text007@1010 : TextConst '@@@="Qty. Picked = 2 is greater than Qty. Shipped = 0. If you delete the Warehouse Shipment Line, the items will remain in the shipping area until you put them away.\Related Item Tracking information defined during pick will be deleted.\Do you still want to delete the Warehouse Shipment Line?";ENU="%1 = %2 is greater than %3 = %4. If you delete the %5, the items will remain in the shipping area until you put them away.\Related Item Tracking information defined during pick will be deleted.\Do you still want to delete the %5?";NLD="%1 = %2 is groter dan %3 = %4. Als u %5 verwijdert, blijven de artikelen in de verzendzone staan totdat u ze opslaat.\Gerelateerde artikeltraceringsgegevens die tijdens het picken zijn gedefinieerd, worden verwijderd.\Wilt u %5 toch verwijderen?"';
+      Text008@1011 : TextConst 'ENU=You cannot rename a %1.;NLD=U kunt een %1 niet hernoemen.';
+      Text009@1013 : TextConst 'ENU=%1 is set to %2. %3 should be %4.\\;NLD=%1 is ingesteld op %2. %3 moet %4 zijn.\\';
+      Text010@1012 : TextConst 'ENU=Accept the entered value?;NLD=Wilt u de ingevoerde waarde accepteren?';
+      Text011@1014 : TextConst 'ENU=Nothing to handle.;NLD=Niets te verwerken.';
+      IgnoreErrors@1006 : Boolean;
+      ErrorOccured@1017 : Boolean;
+      StatusCheckSuspended@1009 : Boolean;
+
+    [External]
+    PROCEDURE InitNewLine@19(DocNo@1000 : Code[20]);
+    BEGIN
+      RESET;
+      "No." := DocNo;
+      SETRANGE("No.","No.");
+      LOCKTABLE;
+      IF FINDLAST THEN;
+
+      INIT;
+      SetIgnoreErrors;
+      "Line No." := "Line No." + 10000;
+    END;
+
+    LOCAL PROCEDURE CalcBaseQty@14(Qty@1000 : Decimal) : Decimal;
+    BEGIN
+      TESTFIELD("Qty. per Unit of Measure");
+      EXIT(ROUND(Qty * "Qty. per Unit of Measure",UOMMgt.QtyRndPrecision));
+    END;
+
+    [External]
+    PROCEDURE CalcQty@5(QtyBase@1000 : Decimal) : Decimal;
+    BEGIN
+      TESTFIELD("Qty. per Unit of Measure");
+      EXIT(ROUND(QtyBase / "Qty. per Unit of Measure",UOMMgt.QtyRndPrecision));
+    END;
+
+    LOCAL PROCEDURE GetLocation@1(LocationCode@1000 : Code[10]);
+    BEGIN
+      IF LocationCode = '' THEN
+        Location.GetLocationSetup(LocationCode,Location)
+      ELSE
+        IF Location.Code <> LocationCode THEN
+          Location.GET(LocationCode);
+    END;
+
+    LOCAL PROCEDURE TestReleased@37();
+    BEGIN
+      TESTFIELD("No.");
+      GetWhseShptHeader("No.");
+      OnBeforeTestReleased(WhseShptHeader);
+      IF NOT StatusCheckSuspended THEN
+        WhseShptHeader.TESTFIELD(Status,WhseShptHeader.Status::Open);
+    END;
+
+    [External]
+    PROCEDURE CheckBin@9(DeductCubage@1000 : Decimal;DeductWeight@1001 : Decimal);
+    VAR
+      Bin@1005 : Record 7354;
+      BinContent@1004 : Record 7302;
+    BEGIN
+      IF "Bin Code" <> '' THEN BEGIN
+        GetLocation("Location Code");
+        IF NOT Location."Directed Put-away and Pick" THEN
+          EXIT;
+
+        IF BinContent.GET(
+             "Location Code","Bin Code",
+             "Item No.","Variant Code","Unit of Measure Code")
+        THEN BEGIN
+          IF NOT BinContent.CheckIncreaseBinContent(
+               "Qty. Outstanding","Qty. Outstanding",
+               DeductCubage,DeductWeight,Cubage,Weight,FALSE,IgnoreErrors)
+          THEN
+            ErrorOccured := TRUE;
+        END ELSE BEGIN
+          Bin.GET("Location Code","Bin Code");
+          IF NOT Bin.CheckIncreaseBin(
+               "Bin Code","Item No.","Qty. Outstanding",
+               DeductCubage,DeductWeight,Cubage,Weight,FALSE,IgnoreErrors)
+          THEN
+            ErrorOccured := TRUE;
+        END;
+      END;
+      IF ErrorOccured THEN
+        "Bin Code" := '';
+    END;
+
+    [External]
+    PROCEDURE CheckSourceDocLineQty@3();
+    VAR
+      WhseShptLine@1005 : Record 7321;
+      SalesLine@1002 : Record 37;
+      PurchaseLine@1003 : Record 39;
+      TransferLine@1004 : Record 5741;
+      ServiceLine@1007 : Record 5902;
+      WhseQtyOutstandingBase@1006 : Decimal;
+      QtyOutstandingBase@1000 : Decimal;
+      QuantityBase@1001 : Decimal;
+    BEGIN
+      IF "Qty. (Base)" = 0 THEN
+        QuantityBase := CalcBaseQty(Quantity)
+      ELSE
+        QuantityBase := "Qty. (Base)";
+
+      WhseShptLine.SetSourceFilter("Source Type","Source Subtype","Source No.","Source Line No.",TRUE);
+      WhseShptLine.CALCSUMS("Qty. Outstanding (Base)");
+      IF WhseShptLine.FIND('-') THEN
+        REPEAT
+          IF (WhseShptLine."No." <> "No.") OR
+             (WhseShptLine."Line No." <> "Line No.")
+          THEN
+            WhseQtyOutstandingBase := WhseQtyOutstandingBase + WhseShptLine."Qty. Outstanding (Base)";
+        UNTIL WhseShptLine.NEXT = 0;
+
+      CASE "Source Type" OF
+        DATABASE::"Sales Line":
+          BEGIN
+            SalesLine.GET("Source Subtype","Source No.","Source Line No.");
+            IF ABS(SalesLine."Outstanding Qty. (Base)") < WhseQtyOutstandingBase + QuantityBase THEN
+              FIELDERROR(Quantity,STRSUBSTNO(Text002,CalcQty(SalesLine."Outstanding Qty. (Base)" - WhseQtyOutstandingBase)));
+            QtyOutstandingBase := ABS(SalesLine."Outstanding Qty. (Base)");
+          END;
+        DATABASE::"Purchase Line":
+          BEGIN
+            PurchaseLine.GET("Source Subtype","Source No.","Source Line No.");
+            IF ABS(PurchaseLine."Outstanding Qty. (Base)") < WhseQtyOutstandingBase + QuantityBase THEN
+              FIELDERROR(Quantity,STRSUBSTNO(Text002,CalcQty(ABS(PurchaseLine."Outstanding Qty. (Base)") - WhseQtyOutstandingBase)));
+            QtyOutstandingBase := ABS(PurchaseLine."Outstanding Qty. (Base)");
+          END;
+        DATABASE::"Transfer Line":
+          BEGIN
+            TransferLine.GET("Source No.","Source Line No.");
+            IF TransferLine."Outstanding Qty. (Base)" < WhseQtyOutstandingBase + QuantityBase THEN
+              FIELDERROR(Quantity,STRSUBSTNO(Text002,CalcQty(TransferLine."Outstanding Qty. (Base)" - WhseQtyOutstandingBase)));
+            QtyOutstandingBase := TransferLine."Outstanding Qty. (Base)";
+          END;
+        DATABASE::"Service Line":
+          BEGIN
+            ServiceLine.GET("Source Subtype","Source No.","Source Line No.");
+            IF ABS(ServiceLine."Outstanding Qty. (Base)") < WhseQtyOutstandingBase + QuantityBase THEN
+              FIELDERROR(Quantity,STRSUBSTNO(Text002,CalcQty(ServiceLine."Outstanding Qty. (Base)" - WhseQtyOutstandingBase)));
+            QtyOutstandingBase := ABS(ServiceLine."Outstanding Qty. (Base)");
+          END;
+      END;
+      IF QuantityBase > QtyOutstandingBase THEN
+        FIELDERROR(Quantity,STRSUBSTNO(Text002,FIELDCAPTION("Qty. Outstanding")));
+    END;
+
+    [External]
+    PROCEDURE CalcStatusShptLine@4() : Integer;
+    BEGIN
+      IF (Quantity = "Qty. Shipped") OR ("Qty. (Base)" = "Qty. Shipped (Base)") THEN
+        EXIT(Status::"Completely Shipped");
+      IF "Qty. Shipped" > 0 THEN
+        EXIT(Status::"Partially Shipped");
+      IF (Quantity = "Qty. Picked") OR ("Qty. (Base)" = "Qty. Picked (Base)") THEN
+        EXIT(Status::"Completely Picked");
+      IF "Qty. Picked" > 0 THEN
+        EXIT(Status::"Partially Picked");
+      EXIT(Status::" ");
+    END;
+
+    [External]
+    PROCEDURE AutofillQtyToHandle@10(VAR WhseShptLine@1000 : Record 7321);
+    VAR
+      NotEnough@1001 : Boolean;
+    BEGIN
+      WITH WhseShptLine DO BEGIN
+        NotEnough := FALSE;
+        SetHideValidationDialog(TRUE);
+        IF FIND('-') THEN
+          REPEAT
+            GetLocation("Location Code");
+            IF Location."Require Pick" THEN
+              VALIDATE("Qty. to Ship (Base)","Qty. Picked (Base)" - "Qty. Shipped (Base)")
+            ELSE
+              VALIDATE("Qty. to Ship (Base)","Qty. Outstanding (Base)");
+            MODIFY;
+            IF NOT NotEnough THEN
+              IF ("Qty. to Ship (Base)" < "Qty. Outstanding (Base)") AND
+                 ("Shipping Advice" = "Shipping Advice"::Complete)
+              THEN
+                NotEnough := TRUE;
+          UNTIL NEXT = 0;
+        SetHideValidationDialog(FALSE);
+        IF NotEnough THEN
+          MESSAGE(Text005);
+      END;
+    END;
+
+    [External]
+    PROCEDURE DeleteQtyToHandle@11(VAR WhseShptLine@1000 : Record 7321);
+    BEGIN
+      WITH WhseShptLine DO BEGIN
+        IF FIND('-') THEN
+          REPEAT
+            VALIDATE("Qty. to Ship",0);
+            MODIFY;
+          UNTIL NEXT = 0;
+      END;
+    END;
+
+    [External]
+    PROCEDURE SetHideValidationDialog@8(NewHideValidationDialog@1000 : Boolean);
+    BEGIN
+      HideValidationDialog := NewHideValidationDialog;
+    END;
+
+    LOCAL PROCEDURE GetWhseShptHeader@6(WhseShptNo@1000 : Code[20]);
+    BEGIN
+      IF WhseShptHeader."No." <> WhseShptNo THEN
+        WhseShptHeader.GET(WhseShptNo);
+
+      OnAfterGetWhseShptHeader(Rec,WhseShptHeader,WhseShptNo);
+    END;
+
+    [External]
+    PROCEDURE CreatePickDoc@7(VAR WhseShptLine@1000 : Record 7321;WhseShptHeader2@1001 : Record 7320);
+    BEGIN
+      WhseShptHeader2.TESTFIELD(Status,WhseShptHeader.Status::Released);
+      WhseShptLine.SETFILTER(Quantity,'>0');
+      WhseShptLine.SETRANGE("Completely Picked",FALSE);
+      IF WhseShptLine.FIND('-') THEN
+        CreatePickDocFromWhseShpt(WhseShptLine,WhseShptHeader2,HideValidationDialog)
+      ELSE
+        IF NOT HideValidationDialog THEN
+          MESSAGE(Text011);
+    END;
+
+    LOCAL PROCEDURE CreatePickDocFromWhseShpt@31(VAR WhseShptLine@1001 : Record 7321;WhseShptHeader@1002 : Record 7320;HideValidationDialog@1003 : Boolean);
+    VAR
+      WhseShipmentCreatePick@1004 : Report 7318;
+      IsHandled@1000 : Boolean;
+    BEGIN
+      IsHandled := FALSE;
+      OnBeforeCreatePickDoc(WhseShptLine,WhseShptHeader,HideValidationDialog,IsHandled);
+      IF NOT IsHandled THEN BEGIN
+        WhseShipmentCreatePick.SetWhseShipmentLine(WhseShptLine,WhseShptHeader);
+        WhseShipmentCreatePick.SetHideValidationDialog(HideValidationDialog);
+        WhseShipmentCreatePick.USEREQUESTPAGE(NOT HideValidationDialog);
+        WhseShipmentCreatePick.RUNMODAL;
+        WhseShipmentCreatePick.GetResultMessage;
+        CLEAR(WhseShipmentCreatePick);
+      END;
+      OnAfterCreatePickDoc(WhseShptHeader);
+    END;
+
+    LOCAL PROCEDURE GetItem@15();
+    BEGIN
+      IF Item."No." <> "Item No." THEN
+        Item.GET("Item No.");
+    END;
+
+    [External]
+    PROCEDURE OpenItemTrackingLines@6500();
+    VAR
+      PurchaseLine@1000 : Record 39;
+      SalesLine@1001 : Record 37;
+      ServiceLine@1009 : Record 5902;
+      TransferLine@1002 : Record 5741;
+      ReservePurchLine@1003 : Codeunit 99000834;
+      ReserveSalesLine@1004 : Codeunit 99000832;
+      ReserveTransferLine@1005 : Codeunit 99000836;
+      ServiceLineReserve@1008 : Codeunit 99000842;
+      SecondSourceQtyArray@1007 : ARRAY [3] OF Decimal;
+      Direction@1006 : 'Outbound,Inbound';
+      IsHandled@1010 : Boolean;
+    BEGIN
+      IsHandled := FALSE;
+      OnBeforeOpenItemTrackingLines(Rec,IsHandled);
+      IF IsHandled THEN
+        EXIT;
+
+      TESTFIELD("No.");
+      TESTFIELD("Qty. (Base)");
+
+      GetItem;
+      Item.TESTFIELD("Item Tracking Code");
+
+      SecondSourceQtyArray[1] := DATABASE::"Warehouse Shipment Line";
+      SecondSourceQtyArray[2] := "Qty. to Ship (Base)";
+      SecondSourceQtyArray[3] := 0;
+
+      CASE "Source Type" OF
+        DATABASE::"Sales Line":
+          BEGIN
+            IF SalesLine.GET("Source Subtype","Source No.","Source Line No.") THEN
+              ReserveSalesLine.CallItemTrackingSecondSource(SalesLine,SecondSourceQtyArray,"Assemble to Order");
+          END;
+        DATABASE::"Service Line":
+          BEGIN
+            IF ServiceLine.GET("Source Subtype","Source No.","Source Line No.") THEN
+              ServiceLineReserve.CallItemTracking(ServiceLine);
+          END;
+        DATABASE::"Purchase Line":
+          BEGIN
+            IF PurchaseLine.GET("Source Subtype","Source No.","Source Line No.") THEN
+              ReservePurchLine.CallItemTracking2(PurchaseLine,SecondSourceQtyArray);
+          END;
+        DATABASE::"Transfer Line":
+          BEGIN
+            Direction := Direction::Outbound;
+            IF TransferLine.GET("Source No.","Source Line No.") THEN
+              ReserveTransferLine.CallItemTracking2(TransferLine,Direction,SecondSourceQtyArray);
+          END
+      END;
+    END;
+
+    [External]
+    PROCEDURE SetIgnoreErrors@12();
+    BEGIN
+      IgnoreErrors := TRUE;
+    END;
+
+    [External]
+    PROCEDURE HasErrorOccured@13() : Boolean;
+    BEGIN
+      EXIT(ErrorOccured);
+    END;
+
+    [External]
+    PROCEDURE GetATOAndNonATOLines@16(VAR ATOWhseShptLine@1001 : Record 7321;VAR NonATOWhseShptLine@1002 : Record 7321;VAR ATOLineFound@1004 : Boolean;VAR NonATOLineFound@1003 : Boolean);
+    VAR
+      WhseShptLine@1000 : Record 7321;
+    BEGIN
+      WhseShptLine.COPY(Rec);
+      WhseShptLine.SetSourceFilter("Source Type","Source Subtype","Source No.","Source Line No.",FALSE);
+
+      NonATOWhseShptLine.COPY(WhseShptLine);
+      NonATOWhseShptLine.SETRANGE("Assemble to Order",FALSE);
+      NonATOLineFound := NonATOWhseShptLine.FINDFIRST;
+
+      ATOWhseShptLine.COPY(WhseShptLine);
+      ATOWhseShptLine.SETRANGE("Assemble to Order",TRUE);
+      ATOLineFound := ATOWhseShptLine.FINDFIRST;
+    END;
+
+    [External]
+    PROCEDURE FullATOPosted@21() : Boolean;
+    VAR
+      SalesLine@1001 : Record 37;
+      ATOWhseShptLine@1002 : Record 7321;
+    BEGIN
+      IF "Source Document" <> "Source Document"::"Sales Order" THEN
+        EXIT(TRUE);
+      SalesLine.SETRANGE("Document Type","Source Subtype");
+      SalesLine.SETRANGE("Document No.","Source No.");
+      SalesLine.SETRANGE("Line No.","Source Line No.");
+      IF NOT SalesLine.FINDFIRST THEN
+        EXIT(TRUE);
+      IF SalesLine."Qty. Shipped (Base)" >= SalesLine."Qty. to Asm. to Order (Base)" THEN
+        EXIT(TRUE);
+      ATOWhseShptLine.SETRANGE("No.","No.");
+      ATOWhseShptLine.SetSourceFilter("Source Type","Source Subtype","Source No.","Source Line No.",FALSE);
+      ATOWhseShptLine.SETRANGE("Assemble to Order",TRUE);
+      ATOWhseShptLine.CALCSUMS("Qty. to Ship (Base)");
+      EXIT((SalesLine."Qty. Shipped (Base)" + ATOWhseShptLine."Qty. to Ship (Base)") >= SalesLine."Qty. to Asm. to Order (Base)");
+    END;
+
+    [External]
+    PROCEDURE InitOutstandingQtys@2();
+    BEGIN
+      VALIDATE("Qty. Outstanding",Quantity - "Qty. Shipped");
+      "Qty. Outstanding (Base)" := "Qty. (Base)" - "Qty. Shipped (Base)";
+    END;
+
+    [External]
+    PROCEDURE GetWhseShptLine@17(ShipmentNo@1004 : Code[20];SourceType@1001 : Integer;SourceSubtype@1002 : Option;SourceNo@1003 : Code[20];SourceLineNo@1005 : Integer) : Boolean;
+    BEGIN
+      SETRANGE("No.",ShipmentNo);
+      SetSourceFilter(SourceType,SourceSubtype,SourceNo,SourceLineNo,FALSE);
+      IF FINDFIRST THEN
+        EXIT(TRUE);
+    END;
+
+    [External]
+    PROCEDURE CreateWhseItemTrackingLines@22();
+    VAR
+      WhseWkshLine@1007 : Record 7326;
+      ATOSalesLine@1006 : Record 37;
+      AsmHeader@1005 : Record 900;
+      AsmLineMgt@1004 : Codeunit 905;
+      ItemTrackingMgt@1003 : Codeunit 6500;
+      WhseSNRequired@1002 : Boolean;
+      WhseLNRequired@1001 : Boolean;
+    BEGIN
+      IF "Assemble to Order" THEN BEGIN
+        TESTFIELD("Source Type",DATABASE::"Sales Line");
+        ATOSalesLine.GET("Source Subtype","Source No.","Source Line No.");
+        ATOSalesLine.AsmToOrderExists(AsmHeader);
+        AsmLineMgt.CreateWhseItemTrkgForAsmLines(AsmHeader);
+      END ELSE BEGIN
+        ItemTrackingMgt.CheckWhseItemTrkgSetup("Item No.",WhseSNRequired,WhseLNRequired,FALSE);
+        IF WhseSNRequired OR WhseLNRequired THEN
+          ItemTrackingMgt.InitItemTrkgForTempWkshLine(
+            WhseWkshLine."Whse. Document Type"::Shipment,"No.",
+            "Line No.","Source Type",
+            "Source Subtype","Source No.",
+            "Source Line No.",0);
+      END;
+    END;
+
+    [External]
+    PROCEDURE DeleteWhseItemTrackingLines@33();
+    VAR
+      ItemTrackingMgt@1000 : Codeunit 6500;
+    BEGIN
+      ItemTrackingMgt.DeleteWhseItemTrkgLinesWithRunDeleteTrigger(
+        DATABASE::"Warehouse Shipment Line",0,"No.",'',0,"Line No.","Location Code",TRUE,TRUE);
+    END;
+
+    [External]
+    PROCEDURE SetItemData@29(ItemNo@1000 : Code[20];ItemDescription@1001 : Text[100];ItemDescription2@1006 : Text[50];LocationCode@1002 : Code[10];VariantCode@1003 : Code[10];UoMCode@1005 : Code[10];QtyPerUoM@1004 : Decimal);
+    BEGIN
+      "Item No." := ItemNo;
+      Description := ItemDescription;
+      "Description 2" := ItemDescription2;
+      "Location Code" := LocationCode;
+      "Variant Code" := VariantCode;
+      "Unit of Measure Code" := UoMCode;
+      "Qty. per Unit of Measure" := QtyPerUoM;
+    END;
+
+    [External]
+    PROCEDURE SetSource@18(SourceType@1003 : Integer;SourceSubType@1002 : Option;SourceNo@1001 : Code[20];SourceLineNo@1000 : Integer);
+    VAR
+      WhseMgt@1004 : Codeunit 5775;
+    BEGIN
+      "Source Type" := SourceType;
+      "Source Subtype" := SourceSubType;
+      "Source No." := SourceNo;
+      "Source Line No." := SourceLineNo;
+      "Source Document" := WhseMgt.GetSourceDocument("Source Type","Source Subtype");
+    END;
+
+    [External]
+    PROCEDURE SetSourceFilter@42(SourceType@1004 : Integer;SourceSubType@1003 : Option;SourceNo@1002 : Code[20];SourceLineNo@1001 : Integer;SetKey@1005 : Boolean);
+    BEGIN
+      IF SetKey THEN
+        SETCURRENTKEY("Source Type","Source Subtype","Source No.","Source Line No.");
+      SETRANGE("Source Type",SourceType);
+      IF SourceSubType >= 0 THEN
+        SETRANGE("Source Subtype",SourceSubType);
+      SETRANGE("Source No.",SourceNo);
+      IF SourceLineNo >= 0 THEN
+        SETRANGE("Source Line No.",SourceLineNo);
+    END;
+
+    [External]
+    PROCEDURE ClearSourceFilter@46();
+    BEGIN
+      SETRANGE("Source Type");
+      SETRANGE("Source Subtype");
+      SETRANGE("Source No.");
+      SETRANGE("Source Line No.");
+    END;
+
+    [External]
+    PROCEDURE SuspendStatusCheck@23(Suspend@1000 : Boolean);
+    BEGIN
+      StatusCheckSuspended := Suspend;
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterCreatePickDoc@26(VAR WarehouseShipmentHeader@1000 : Record 7320);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterGetWhseShptHeader@28(VAR WarehouseShipmentLine@1000 : Record 7321;VAR WarehouseShipmentHeader@1001 : Record 7320;WhseShptNo@1002 : Code[20]);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCreatePickDoc@32(VAR WarehouseShipmentLine@1000 : Record 7321;WarehouseShipmentHeader@1001 : Record 7320;HideValidationDialog@1002 : Boolean;VAR IsHandled@1003 : Boolean);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCompareQtyToShipAndOutstandingQty@30(VAR WarehouseShipmentLine@1000 : Record 7321;VAR IsHandled@1001 : Boolean);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCompareShipAndPickQty@27(WarehouseShipmentLine@1000 : Record 7321;VAR IsHandled@1003 : Boolean);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeOpenItemTrackingLines@25(VAR WarehouseShipmentLine@1000 : Record 7321;VAR IsHandled@1001 : Boolean);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeTestReleased@20(VAR WhseShptHeader@1000 : Record 7320);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnValidateQuantityStatusUpdate@24(VAR WarehouseShipmentLine@1000 : Record 7321;xWarehouseShipmentLine@1001 : Record 7321;VAR IsHandled@1002 : Boolean);
+    BEGIN
+    END;
+
+    PROCEDURE CheckDeletionAllowed@1000000000();
+    VAR
+      WarehouseEmployee@1000000000 : Record 7301;
+    BEGIN
+      //FLX1.0.0-BEGIN
+      IF "System-Created" THEN BEGIN
+          WarehouseEmployee.GET(USERID, "Location Code");
+          WarehouseEmployee.CheckAllowedToDeleteWhsShipmentLine();
+      END;
+      //FLX1.0.0-END
+    END;
+
+    BEGIN
+    {
+      FLX1.0.0 20200323 lvanvugt - Added (1) field "System-Created" (2) function CheckDeletionAllowed
+    }
+    END.
+  }
+}
+

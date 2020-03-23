@@ -1,0 +1,106 @@
+OBJECT Table 7301 Warehouse Employee
+{
+  OBJECT-PROPERTIES
+  {
+    Date=22-05-19;
+    Time=12:00:00;
+    Version List=NAVW114.01;
+  }
+  PROPERTIES
+  {
+    OnInsert=BEGIN
+               IF Default THEN
+                 CheckDefault;
+             END;
+
+    OnModify=BEGIN
+               IF Default THEN
+                 CheckDefault;
+             END;
+
+    CaptionML=[ENU=Warehouse Employee;
+               NLD=Magazijnwerknemer];
+    LookupPageID=Page7348;
+  }
+  FIELDS
+  {
+    { 1   ;   ;User ID             ;Code50        ;TableRelation=User."User Name";
+                                                   OnValidate=VAR
+                                                                UserMgt@1000 : Codeunit 418;
+                                                              BEGIN
+                                                                UserMgt.ValidateUserID("User ID");
+                                                              END;
+
+                                                   OnLookup=VAR
+                                                              UserMgt@1000 : Codeunit 418;
+                                                            BEGIN
+                                                              UserMgt.LookupUserID("User ID");
+                                                            END;
+
+                                                   ValidateTableRelation=No;
+                                                   TestTableRelation=No;
+                                                   DataClassification=EndUserIdentifiableInformation;
+                                                   CaptionML=[ENU=User ID;
+                                                              NLD=Gebruikers-id] }
+    { 2   ;   ;Location Code       ;Code10        ;TableRelation=Location;
+                                                   CaptionML=[ENU=Location Code;
+                                                              NLD=Vestiging] }
+    { 4   ;   ;Default             ;Boolean       ;CaptionML=[ENU=Default;
+                                                              NLD=Standaard] }
+    { 7710;   ;ADCS User           ;Code50        ;TableRelation="ADCS User".Name;
+                                                   OnValidate=VAR
+                                                                WarehouseEmployee@1000 : Record 7301;
+                                                              BEGIN
+                                                                IF ("ADCS User" <> xRec."ADCS User") AND ("ADCS User" <> '') THEN BEGIN
+                                                                  WarehouseEmployee.SETRANGE("ADCS User","ADCS User");
+                                                                  IF NOT WarehouseEmployee.ISEMPTY THEN
+                                                                    ERROR(Text001);
+                                                                END;
+                                                              END;
+
+                                                   DataClassification=EndUserIdentifiableInformation;
+                                                   CaptionML=[ENU=ADCS User;
+                                                              NLD=ADCS-gebruiker] }
+  }
+  KEYS
+  {
+    {    ;User ID,Location Code                   ;Clustered=Yes }
+    {    ;Default                                  }
+    {    ;Location Code                            }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+    VAR
+      Text000@1000 : TextConst 'ENU=You can only have one default location per user ID.;NLD=U kunt slechts ‚‚n standaardvestiging per gebruikers-id hebben.';
+      Text001@1001 : TextConst 'ENU=You can only assign an ADCS user name once.;NLD=U kunt een ADCS-gebruikersnaam slechts eenmaal toewijzen.';
+
+    LOCAL PROCEDURE CheckDefault@1();
+    VAR
+      WhseEmployee@1000 : Record 7301;
+      IsHandled@1001 : Boolean;
+    BEGIN
+      IsHandled := FALSE;
+      OnBeforeCheckDefault(Rec,IsHandled);
+      IF IsHandled THEN
+        EXIT;
+
+      WhseEmployee.SETRANGE(Default,TRUE);
+      WhseEmployee.SETRANGE("User ID","User ID");
+      WhseEmployee.SETFILTER("Location Code",'<>%1',"Location Code");
+      IF NOT WhseEmployee.ISEMPTY THEN
+        ERROR(Text000);
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeCheckDefault@2(VAR WarehouseEmployee@1000 : Record 7301;VAR IsHandled@1001 : Boolean);
+    BEGIN
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

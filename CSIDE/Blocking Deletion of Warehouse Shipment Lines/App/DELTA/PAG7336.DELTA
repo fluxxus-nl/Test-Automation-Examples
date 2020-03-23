@@ -1,0 +1,43 @@
+OBJECT Modification "Whse. Shipment Subform"(Page 7336)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.04,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    Target="Whse. Shipment Subform"(Page 7336);
+    TargetPageType=ListPart;
+  }
+  CHANGES
+  {
+    { Insertion         ;InsertAfter=Control 3;
+                         ChangedElements=ControlCollection
+                         {
+                           { 1000000000;2;Field  ;
+                                       ToolTipML=ENU=Specifies that the entry was created by the system.;
+                                       ApplicationArea=#All;
+                                       Description=FLX1.0.0;
+                                       SourceExpr="System-Created" }
+
+                         }
+                          }
+    { Insertion         ;Documentation=BEGIN
+                                         FLX1.0.0 20200323 lvanvugt - Added field "System-Created"
+                                       END;
+                                        }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW114.04;
+                         ModifiedValue=NAVW114.04,FLX1.0.0 }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

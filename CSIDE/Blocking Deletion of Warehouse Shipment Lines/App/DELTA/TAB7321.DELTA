@@ -1,0 +1,77 @@
+OBJECT Modification "Warehouse Shipment Line"(Table 7321)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.03,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    Target="Warehouse Shipment Line"(Table 7321);
+  }
+  CHANGES
+  {
+    { Insertion         ;Documentation=BEGIN
+                                         FLX1.0.0 20200323 lvanvugt - Added (1) field "System-Created" (2) function CheckDeletionAllowed
+                                       END;
+                                        }
+    { Insertion         ;InsertAfter="Assemble to Order"(Field 900);
+                         ChangedElements=FieldCollection
+                         {
+                           { 75460;  ;System-Created      ;Boolean       ;DataClassification=ToBeClassified;
+                                                                          CaptionML=ENU=System-Created;
+                                                                          Description=FLX1.0.0 }
+                         }
+                          }
+    { CodeModification  ;OriginalCode=BEGIN
+                                        TestReleased;
+
+                                        IF "Assemble to Order" THEN
+                                          VALIDATE("Qty. to Ship",0);
+                                        #5..21
+                                          WhseShptHeader.VALIDATE("Document Status",OrderStatus);
+                                          WhseShptHeader.MODIFY;
+                                        END;
+                                      END;
+
+                         ModifiedCode=BEGIN
+                                        TestReleased;
+
+                                        //FLX1.0.0-BEGIN
+                                        CheckDeletionAllowed;
+                                        //FLX1.0.0-END
+                                        #2..24
+                                      END;
+
+                         Target=OnDelete }
+    { Insertion         ;InsertAfter=OnValidateQuantityStatusUpdate(PROCEDURE 24);
+                         ChangedElements=PROCEDURECollection
+                         {
+                           PROCEDURE CheckDeletionAllowed@1000000000();
+                           VAR
+                             WarehouseEmployee@1000000000 : Record 7301;
+                           BEGIN
+                             //FLX1.0.0-BEGIN
+                             IF "System-Created" THEN BEGIN
+                                 WarehouseEmployee.GET(USERID, "Location Code");
+                                 WarehouseEmployee.CheckAllowedToDeleteWhsShipmentLine();
+                             END;
+                             //FLX1.0.0-END
+                           END;
+
+                         }
+                          }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW114.03;
+                         ModifiedValue=NAVW114.03,FLX1.0.0 }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

@@ -1,0 +1,40 @@
+OBJECT Modification "Warehouse Setup"(Table 5769)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW111.00,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    Target="Warehouse Setup"(Table 5769);
+  }
+  CHANGES
+  {
+    { Insertion         ;Documentation=BEGIN
+                                         FLX1.0.0 20200323 lvanvugt - Added field "Unblock Deletion of Shpt. Line"
+                                       END;
+                                        }
+    { Insertion         ;InsertAfter="Registered Whse. Movement Nos."(Field 7309);
+                         ChangedElements=FieldCollection
+                         {
+                           { 75640;  ;Unblock Deletion of Shpt. Line;Boolean;
+                                                                          DataClassification=ToBeClassified;
+                                                                          CaptionML=ENU=Unblock Deletion of Shpt. Line;
+                                                                          Description=FLX1.0.0 }
+                         }
+                          }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW111.00;
+                         ModifiedValue=NAVW111.00,FLX1.0.0 }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

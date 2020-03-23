@@ -1,0 +1,138 @@
+OBJECT Table 5769 Warehouse Setup
+{
+  OBJECT-PROPERTIES
+  {
+    Date=22-11-17;
+    Time=12:00:00;
+    Version List=NAVW111.00;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Warehouse Setup;
+               NLD=Magazijninstellingen];
+  }
+  FIELDS
+  {
+    { 1   ;   ;Primary Key         ;Code10        ;CaptionML=[ENU=Primary Key;
+                                                              NLD=Primaire sleutel] }
+    { 2   ;   ;Whse. Receipt Nos.  ;Code20        ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7316=R;
+                                                   CaptionML=[ENU=Whse. Receipt Nos.;
+                                                              NLD=Magazijnontvangstnrs.] }
+    { 3   ;   ;Whse. Put-away Nos. ;Code20        ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7340=R;
+                                                   CaptionML=[ENU=Whse. Put-away Nos.;
+                                                              NLD=Magazijnopslagnrs.] }
+    { 5   ;   ;Whse. Pick Nos.     ;Code20        ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7342=R;
+                                                   CaptionML=[ENU=Whse. Pick Nos.;
+                                                              NLD=Magazijnpicknrs.] }
+    { 6   ;   ;Whse. Ship Nos.     ;Code20        ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7320=R;
+                                                   CaptionML=[ENU=Whse. Ship Nos.;
+                                                              NLD=Magazijnverzendnrs.] }
+    { 7   ;   ;Registered Whse. Pick Nos.;Code20  ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7342=R;
+                                                   CaptionML=[ENU=Registered Whse. Pick Nos.;
+                                                              NLD=Gereg. magazijnpicknrs.] }
+    { 10  ;   ;Registered Whse. Put-away Nos.;Code20;
+                                                   TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7340=R;
+                                                   CaptionML=[ENU=Registered Whse. Put-away Nos.;
+                                                              NLD=Gereg. magazijnopslagnrs.] }
+    { 13  ;   ;Require Receive     ;Boolean       ;OnValidate=BEGIN
+                                                                IF NOT "Require Receive" THEN
+                                                                  "Require Put-away" := FALSE;
+                                                              END;
+
+                                                   AccessByPermission=TableData 7316=R;
+                                                   CaptionML=[ENU=Require Receive;
+                                                              NLD=Ontvangst vereist] }
+    { 14  ;   ;Require Put-away    ;Boolean       ;OnValidate=BEGIN
+                                                                IF "Require Put-away" THEN
+                                                                  "Require Receive" := TRUE;
+                                                              END;
+
+                                                   AccessByPermission=TableData 7340=R;
+                                                   CaptionML=[ENU=Require Put-away;
+                                                              NLD=Opslag vereist] }
+    { 15  ;   ;Require Pick        ;Boolean       ;OnValidate=BEGIN
+                                                                IF "Require Pick" THEN
+                                                                  "Require Shipment" := TRUE;
+                                                              END;
+
+                                                   AccessByPermission=TableData 7342=R;
+                                                   CaptionML=[ENU=Require Pick;
+                                                              NLD=Pick vereist] }
+    { 16  ;   ;Require Shipment    ;Boolean       ;OnValidate=BEGIN
+                                                                IF NOT "Require Shipment" THEN
+                                                                  "Require Pick" := FALSE;
+                                                              END;
+
+                                                   AccessByPermission=TableData 7320=R;
+                                                   CaptionML=[ENU=Require Shipment;
+                                                              NLD=Verzending vereist] }
+    { 17  ;   ;Last Whse. Posting Ref. No.;Integer;CaptionML=[ENU=Last Whse. Posting Ref. No.;
+                                                              NLD=Laatste mag.-boekingsreferentienr.];
+                                                   Editable=No }
+    { 18  ;   ;Receipt Posting Policy;Option      ;CaptionML=[ENU=Receipt Posting Policy;
+                                                              NLD=Ontvangstboekingsbeleid];
+                                                   OptionCaptionML=[ENU=Posting errors are not processed,Stop and show the first posting error;
+                                                                    NLD=Boekingsfouten niet verwerken,Stoppen en eerste fout weergeven];
+                                                   OptionString=Posting errors are not processed,Stop and show the first posting error }
+    { 19  ;   ;Shipment Posting Policy;Option     ;CaptionML=[ENU=Shipment Posting Policy;
+                                                              NLD=Verzendboekingsbeleid];
+                                                   OptionCaptionML=[ENU=Posting errors are not processed,Stop and show the first posting error;
+                                                                    NLD=Boekingsfouten niet verwerken,Stoppen en eerste fout weergeven];
+                                                   OptionString=Posting errors are not processed,Stop and show the first posting error }
+    { 7301;   ;Posted Whse. Receipt Nos.;Code20   ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7316=R;
+                                                   CaptionML=[ENU=Posted Whse. Receipt Nos.;
+                                                              NLD=Geb. magazijnontvangstnrs.] }
+    { 7303;   ;Posted Whse. Shipment Nos.;Code20  ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 7320=R;
+                                                   CaptionML=[ENU=Posted Whse. Shipment Nos.;
+                                                              NLD=Geb. magazijnverzendnrs.] }
+    { 7304;   ;Whse. Internal Put-away Nos.;Code20;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 5771=R;
+                                                   CaptionML=[ENU=Whse. Internal Put-away Nos.;
+                                                              NLD=Interne magazijnopslagnrs.] }
+    { 7306;   ;Whse. Internal Pick Nos.;Code20    ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 5771=R;
+                                                   CaptionML=[ENU=Whse. Internal Pick Nos.;
+                                                              NLD=Interne magazijnpicknrs.] }
+    { 7308;   ;Whse. Movement Nos. ;Code20        ;TableRelation="No. Series";
+                                                   AccessByPermission=TableData 5771=R;
+                                                   CaptionML=[ENU=Whse. Movement Nos.;
+                                                              NLD=Magazijnverplaatsingsnrs.] }
+    { 7309;   ;Registered Whse. Movement Nos.;Code20;
+                                                   TableRelation="No. Series";
+                                                   AccessByPermission=TableData 5771=R;
+                                                   CaptionML=[ENU=Registered Whse. Movement Nos.;
+                                                              NLD=Gereg. magazijnverplaatsingsnrs.] }
+  }
+  KEYS
+  {
+    {    ;Primary Key                             ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    [External]
+    PROCEDURE GetNextReference@1() : Integer;
+    BEGIN
+      LOCKTABLE;
+      GET;
+      "Last Whse. Posting Ref. No." := "Last Whse. Posting Ref. No." + 1;
+      MODIFY;
+      EXIT("Last Whse. Posting Ref. No.");
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

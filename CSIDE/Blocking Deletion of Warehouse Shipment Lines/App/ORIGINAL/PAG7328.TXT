@@ -1,0 +1,79 @@
+OBJECT Page 7328 Warehouse Employees
+{
+  OBJECT-PROPERTIES
+  {
+    Date=24-03-19;
+    Time=12:00:00;
+    Version List=NAVW114.00;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Warehouse Employees;
+               NLD=Magazijnwerknemers];
+    ApplicationArea=#Warehouse;
+    SourceTable=Table7301;
+    DelayedInsert=Yes;
+    PageType=List;
+    UsageCategory=Administration;
+    AdditionalSearchTermsML=[ENU=warehouse worker;
+                             NLD=magazijnmedewerker];
+  }
+  CONTROLS
+  {
+    { 1900000001;0;Container;
+                ContainerType=ContentArea }
+
+    { 1   ;1   ;Group     ;
+                GroupType=Repeater }
+
+    { 2   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the ID of the user who posted the entry, to be used, for example, in the change log.;
+                           NLD=Hiermee wordt de id opgegeven van de gebruiker die de post heeft geboekt, bijvoorbeeld voor gebruik in het wijzigingslogbestand.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="User ID" }
+
+    { 4   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the code of the location in which the employee works.;
+                           NLD=Hiermee wordt de code opgegeven van de vestiging waar de werknemer werkt.];
+                ApplicationArea=#Location;
+                SourceExpr="Location Code" }
+
+    { 8   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies that the location code that is defined as the default location for this employee's activities.;
+                           NLD=Hiermee wordt de vestigingscode opgegeven die is gedefinieerd als de standaardlocatie voor de activiteiten van deze medewerker.];
+                ApplicationArea=#Warehouse;
+                SourceExpr=Default }
+
+    { 3   ;2   ;Field     ;
+                Name=ADCS User;
+                CaptionML=[ENU=ADCS User;
+                           NLD=ADCS-gebruiker];
+                ToolTipML=[ENU=Specifies the ADCS user name of a warehouse employee.;
+                           NLD=Hiermee wordt de ACDS-gebruikersnaam opgegeven van een magazijnmedewerker.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="ADCS User" }
+
+    { 1900000007;0;Container;
+                ContainerType=FactBoxArea }
+
+    { 1900383207;1;Part   ;
+                ApplicationArea=#RecordLinks;
+                Visible=FALSE;
+                PartType=System;
+                SystemPartID=RecordLinks }
+
+    { 1905767507;1;Part   ;
+                ApplicationArea=#Notes;
+                Visible=FALSE;
+                PartType=System;
+                SystemPartID=Notes }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

@@ -1,0 +1,43 @@
+OBJECT Modification "Warehouse Setup"(Page 5775)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.00,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    Target="Warehouse Setup"(Page 5775);
+    TargetPageType=Card;
+  }
+  CHANGES
+  {
+    { Insertion         ;InsertAfter=Control 34;
+                         ChangedElements=ControlCollection
+                         {
+                           { 1000000000;2;Field  ;
+                                       ToolTipML=ENU=Specifies whether you allow users to delete system-created warehouse shipment lines.;
+                                       ApplicationArea=#All;
+                                       Description=FLX1.0.0;
+                                       SourceExpr="Unblock Deletion of Shpt. Line" }
+
+                         }
+                          }
+    { Insertion         ;Documentation=BEGIN
+                                         FLX1.0.0 20200323 lvanvugt - Added field "Unblock Deletion of Shpt. Line"
+                                       END;
+                                        }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW114.00;
+                         ModifiedValue=NAVW114.00,FLX1.0.0 }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

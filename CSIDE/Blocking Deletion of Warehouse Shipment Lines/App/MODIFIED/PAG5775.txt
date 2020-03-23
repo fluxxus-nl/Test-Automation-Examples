@@ -1,0 +1,187 @@
+OBJECT Page 5775 Warehouse Setup
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23-03-20;
+    Time=01:00:00;
+    Version List=NAVW114.00,FLX1.0.0;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Warehouse Setup;
+               NLD=Magazijninstellingen];
+    ApplicationArea=#Warehouse;
+    InsertAllowed=No;
+    DeleteAllowed=No;
+    SourceTable=Table5769;
+    PageType=Card;
+    UsageCategory=Administration;
+    OnOpenPage=BEGIN
+                 RESET;
+                 IF NOT GET THEN BEGIN
+                   INIT;
+                   INSERT;
+                 END;
+               END;
+
+  }
+  CONTROLS
+  {
+    { 1900000001;0;Container;
+                ContainerType=ContentArea }
+
+    { 1   ;1   ;Group     ;
+                CaptionML=[ENU=General;
+                           NLD=Algemeen] }
+
+    { 22  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies whether you require users to use the receive activity.;
+                           NLD=Hiermee wordt opgegeven of u wilt dat gebruikers de ontvangstactiviteit gebruiken.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Require Receive" }
+
+    { 30  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies whether you require users to use the put-away activity.;
+                           NLD=Hiermee wordt opgegeven of u wilt dat gebruikers de voorraadopslagactiviteit gebruiken.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Require Put-away" }
+
+    { 10  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies if warehouse shipments are required in warehouse work flows.;
+                           NLD=Hiermee wordt opgegeven dat magazijnverzendingen vereist zijn in werkstromen voor magazijnen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Require Shipment" }
+
+    { 32  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies whether you require users to use the pick activity.;
+                           NLD=Hiermee wordt opgegeven of u wilt dat gebruikers de pickactiviteit gebruiken.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Require Pick" }
+
+    { 26  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies that the document reference of the last warehouse posting will be shown.;
+                           NLD=Hiermee wordt opgegeven dat de documentreferentie van de laatste magazijnboeking wordt weergegeven.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Last Whse. Posting Ref. No." }
+
+    { 28  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies what should happen if errors occur when warehouse receipts are posted.;
+                           NLD=Hiermee wordt opgegeven wat er moet gebeuren als er fouten optreden bij het boeken van magazijnontvangsten.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Receipt Posting Policy" }
+
+    { 34  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies what should happen if errors occur when warehouse shipments are posted.;
+                           NLD=Hiermee wordt opgegeven wat er moet gebeuren als er fouten optreden bij het boeken van magazijnverzendingen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Shipment Posting Policy" }
+
+    { 1000000000;2;Field  ;
+                ToolTipML=ENU=Specifies whether you allow users to delete system-created warehouse shipment lines.;
+                ApplicationArea=#All;
+                Description=FLX1.0.0;
+                SourceExpr="Unblock Deletion of Shpt. Line" }
+
+    { 1904569201;1;Group  ;
+                CaptionML=[ENU=Numbering;
+                           NLD=Nummering] }
+
+    { 2   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code to use when you assign numbers to warehouse receipt journals.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die moet worden gebruikt om nummers aan magazijnontvangstdagboeken toe te wijzen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Whse. Receipt Nos." }
+
+    { 24  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code you want used when you assign numbers to warehouse shipment journals.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die u wilt gebruiken om nummers aan magazijnverzendingen toe te wijzen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Whse. Ship Nos." }
+
+    { 44  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code used to assign numbers to internal put-always.;
+                           NLD=Hiermee wordt de code opgegeven voor de nummerreeks die wordt gebruikt om nummers aan interne opslagactiviteiten toe te wijzen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Whse. Internal Put-away Nos." }
+
+    { 48  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code used to assign numbers to internal picks.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die wordt gebruikt om nummers toe te wijzen aan interne magazijnpicks.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Whse. Internal Pick Nos." }
+
+    { 4   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code you want used when you assign numbers to warehouse put-away documents.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die u wilt gebruiken om nummers aan magazijnopslagdocumenten toe te wijzen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Whse. Put-away Nos." }
+
+    { 8   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code you want used when you assign numbers to warehouse pick documents.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die u wilt gebruiken om nummers aan magazijnpickdocumenten toe te wijzen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Whse. Pick Nos." }
+
+    { 38  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code used to assign numbers to posted warehouse receipts.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die wordt gebruikt om nummers toe te wijzen aan geboekte magazijnontvangsten.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Posted Whse. Receipt Nos." }
+
+    { 42  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code used to assign numbers to posted warehouse shipments.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die wordt gebruikt om nummers toe te wijzen aan geboekte magazijnverzendingen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Posted Whse. Shipment Nos." }
+
+    { 18  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code used when numbers are assigned to registered put-away documents.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die wordt gebruikt wanneer nummers worden toegewezen aan geregistreerde opslagdocumenten.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Registered Whse. Put-away Nos." }
+
+    { 12  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code you want to be used to assign numbers to registered pick documents.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die u wilt gebruiken om nummers toe te wijzen aan geregistreerde pickdocumenten.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Registered Whse. Pick Nos." }
+
+    { 52  ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code used to assign numbers to warehouse movements.;
+                           NLD=Hiermee wordt de code opgegeven voor de nummerreeks die wordt gebruikt om nummers aan magazijnverplaatsingen toe te wijzen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Whse. Movement Nos." }
+
+    { 6   ;2   ;Field     ;
+                ToolTipML=[ENU=Specifies the number series code used to assign numbers to registered warehouse movements.;
+                           NLD=Hiermee wordt de nummerreekscode opgegeven die wordt gebruikt om nummers toe te wijzen aan geregistreerde magazijnverplaatsingen.];
+                ApplicationArea=#Warehouse;
+                SourceExpr="Registered Whse. Movement Nos." }
+
+    { 1900000007;0;Container;
+                ContainerType=FactBoxArea }
+
+    { 1900383207;1;Part   ;
+                ApplicationArea=#RecordLinks;
+                Visible=FALSE;
+                PartType=System;
+                SystemPartID=RecordLinks }
+
+    { 1905767507;1;Part   ;
+                ApplicationArea=#Notes;
+                Visible=FALSE;
+                PartType=System;
+                SystemPartID=Notes }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    {
+      FLX1.0.0 20200323 lvanvugt - Added field "Unblock Deletion of Shpt. Line"
+    }
+    END.
+  }
+}
+
