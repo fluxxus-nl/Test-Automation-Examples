@@ -14,6 +14,6 @@ Feature 'Unblock Deletion of Whse. Shpt. Line enabled'{
         Given	'Warehouse employee for current user with no allowance'
         Given	'Automatically created warehouse shipment from released sales order with one line with require shipment location'
         When	'Delete warehouse shipment line'
-        Then	'Warehouse shipment line is deleted'
-    }		
+        Then	'Error disallowing deletion'
+    }
 }
