@@ -13,7 +13,7 @@ tableextension 75641 "WarehouseEmployeeExtFLX" extends "Warehouse Employee" //73
     var
         WarehouseSetup: Record "Warehouse Setup";
         NotAlllowedToDeleteSystemCreatedLinesErr: Label 'You are not allowed to delete system-created warehouse shipment lines on current location.';
-        DeleteThisSystemCreatedLineMsg: Label 'Are you sure you want to delete this system-created line?';
+        DeleteThisSystemCreatedLineQst: Label 'Are you sure you want to delete this system-created line?';
     begin
         WarehouseSetup.Get();
 
@@ -23,7 +23,7 @@ tableextension 75641 "WarehouseEmployeeExtFLX" extends "Warehouse Employee" //73
             if not "Allowed to Delete Shpt. Line" then
                 Error(NotAlllowedToDeleteSystemCreatedLinesErr);
 
-            if Confirm(DeleteThisSystemCreatedLineMsg, false) = false then
+            if Confirm(DeleteThisSystemCreatedLineQst, false) = false then
                 Error('');
         end;
     end;
