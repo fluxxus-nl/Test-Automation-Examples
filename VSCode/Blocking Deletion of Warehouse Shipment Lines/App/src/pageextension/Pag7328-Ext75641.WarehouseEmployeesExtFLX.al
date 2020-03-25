@@ -23,7 +23,7 @@ pageextension 75641 "WarehouseEmployeesExtFLX" extends "Warehouse Employees" //7
         WarehouseSetup: Record "Warehouse Setup";
     begin
         WarehouseSetup.Get();
-        exit(WarehouseSetup."Unblock Deletion of Shpt. Line");
+        exit(not WarehouseSetup."Unblock Deletion of Shpt. Line");
     end;
 
     var
