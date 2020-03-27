@@ -18,6 +18,7 @@ OBJECT Modification "Warehouse Employees"(Page 7328)
                          {
                            { 1000000000;2;Field  ;
                                        ToolTipML=ENU=Specifies whether you allow this user to delete system-created warehouse shipment lines on the location selected when Unblock Deletion of Whse. Shpt. Line on Warehouse Setup has been enabled.;
+                                       ApplicationArea=#All;
                                        Description=FLX1.0.0;
                                        SourceExpr="Allowed to Delete Shpt. Line";
                                        Editable=AllowToDeleteShptLineEditable }
@@ -40,7 +41,7 @@ OBJECT Modification "Warehouse Employees"(Page 7328)
       BEGIN
         //FLX1.0.0-BEGIN
         WarehouseSetup.GET;
-        EXIT(WarehouseSetup."Unblock Deletion of Shpt. Line");
+        EXIT(not WarehouseSetup."Unblock Deletion of Shpt. Line");
         //FLX1.0.0-END
       END;
 

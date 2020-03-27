@@ -91,7 +91,7 @@ OBJECT Page 7328 Warehouse Employees
     BEGIN
       //FLX1.0.0-BEGIN
       WarehouseSetup.GET;
-      EXIT(WarehouseSetup."Unblock Deletion of Shpt. Line");
+      EXIT(not WarehouseSetup."Unblock Deletion of Shpt. Line");
       //FLX1.0.0-END
     END;
 

@@ -19,7 +19,8 @@ OBJECT Modification "Warehouse Shipment Line"(Table 7321)
     { Insertion         ;InsertAfter="Assemble to Order"(Field 900);
                          ChangedElements=FieldCollection
                          {
-                           { 75460;  ;System-Created      ;Boolean       ;CaptionML=ENU=System-Created;
+                           { 75460;  ;System-Created      ;Boolean       ;DataClassification=ToBeClassified;
+                                                                          CaptionML=ENU=System-Created;
                                                                           Description=FLX1.0.0 }
                          }
                           }

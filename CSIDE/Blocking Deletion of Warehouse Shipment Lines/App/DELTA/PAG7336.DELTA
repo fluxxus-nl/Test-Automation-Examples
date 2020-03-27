@@ -18,6 +18,7 @@ OBJECT Modification "Whse. Shipment Subform"(Page 7336)
                          {
                            { 1000000000;2;Field  ;
                                        ToolTipML=ENU=Specifies that the entry was created by the system.;
+                                       ApplicationArea=#All;
                                        Description=FLX1.0.0;
                                        SourceExpr="System-Created" }
 

@@ -112,9 +112,7 @@ OBJECT Table 7301 Warehouse Employee
       //FLX1.0.0-BEGIN
       WarehouseSetup.GET();
 
-      IF NOT WarehouseSetup."Unblock Deletion of Shpt. Line" THEN
-          ERROR(NotAlllowedToDeleteSystemCreatedLinesErr)
-      ELSE BEGIN
+      IF NOT WarehouseSetup."Unblock Deletion of Shpt. Line" THEN BEGIN
           IF NOT "Allowed to Delete Shpt. Line" THEN
               ERROR(NotAlllowedToDeleteSystemCreatedLinesErr);
 

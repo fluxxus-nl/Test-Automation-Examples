@@ -66,10 +66,10 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       WarehouseShipmentNo := CreateAutomaticallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
       // [WHEN] Delete warehouse shipment line
-      ASSERTERROR DeleteWarehouseShipmentLine(WarehouseShipmentNo);
+      DeleteWarehouseShipmentLine(WarehouseShipmentNo);
 
-      // [THEN] Error disallowing deletion
-      VerifyErrorDisallowingDeletion();
+      // [THEN] Warehouse shipment line is deleted
+      VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
     END;
 
     LOCAL PROCEDURE Initialize@1000000000();
@@ -181,13 +181,6 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
         SETRANGE("Source No.", SourceNo);
         FINDFIRST;
       END;
-    END;
-
-    LOCAL PROCEDURE VerifyErrorDisallowingDeletion@1000000012();
-    VAR
-      NotAlllowedToDeleteSystemCreatedLinesErr@1000000013 : TextConst 'ENU=You are not allowed to delete system-created warehouse shipment lines on current location.';
-    BEGIN
-      Assert.ExpectedError(NotAlllowedToDeleteSystemCreatedLinesErr);
     END;
 
     BEGIN

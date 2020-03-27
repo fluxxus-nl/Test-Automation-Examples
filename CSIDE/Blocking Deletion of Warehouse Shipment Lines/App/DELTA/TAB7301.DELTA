@@ -20,6 +20,7 @@ OBJECT Modification "Warehouse Employee"(Table 7301)
                          ChangedElements=FieldCollection
                          {
                            { 75640;  ;Allowed to Delete Shpt. Line;Boolean;
+                                                                          DataClassification=ToBeClassified;
                                                                           CaptionML=ENU=Allowed to Delete Shpt. Line;
                                                                           Description=FLX1.0.0 }
                          }
@@ -36,9 +37,7 @@ OBJECT Modification "Warehouse Employee"(Table 7301)
                              //FLX1.0.0-BEGIN
                              WarehouseSetup.GET();
 
-                             IF NOT WarehouseSetup."Unblock Deletion of Shpt. Line" THEN
-                                 ERROR(NotAlllowedToDeleteSystemCreatedLinesErr)
-                             ELSE BEGIN
+                             IF NOT WarehouseSetup."Unblock Deletion of Shpt. Line" THEN BEGIN
                                  IF NOT "Allowed to Delete Shpt. Line" THEN
                                      ERROR(NotAlllowedToDeleteSystemCreatedLinesErr);
 
