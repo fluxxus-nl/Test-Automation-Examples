@@ -37,8 +37,8 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       LocationCode := CreateLocationWithRequireShipment;
       // [GIVEN] Warehouse employee for current user with no allowance
       CreateWarehouseEmployeeForCurrentUserWithNoAllowance(LocationCode);
-      // [GIVEN] Manualy created warehouse shipment from released sales order with one line with require shipment location
-      WarehouseShipmentNo := CreateManualyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+      // [GIVEN] Manually created warehouse shipment from released sales order with one line with require shipment location
+      WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
       // [WHEN] Delete warehouse shipment line
       DeleteWarehouseShipmentLine(WarehouseShipmentNo);
@@ -116,7 +116,7 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       LibraryWarehouse.CreateWarehouseEmployee(WarehouseEmployee, LocationCode, FALSE);
     END;
 
-    LOCAL PROCEDURE CreateManualyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation@1000000006(LocationCode@1000000000 : Code[10]) : Code[20];
+    LOCAL PROCEDURE CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation@1000000006(LocationCode@1000000000 : Code[10]) : Code[20];
     VAR
       SalesHeader@1000000001 : Record 36;
       SalesLine@1000000002 : Record 37;
@@ -133,7 +133,7 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       WarehouseShipmentLine@1000000002 : Record 7321;
       WarehouseShipmentNo@1000000001 : Code[20];
     BEGIN
-      WarehouseShipmentNo := CreateManualyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+      WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
       WITH WarehouseShipmentLine DO BEGIN
         SETRANGE("No.", WarehouseShipmentNo);
