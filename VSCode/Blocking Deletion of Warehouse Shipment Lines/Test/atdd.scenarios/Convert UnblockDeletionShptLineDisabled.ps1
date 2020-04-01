@@ -1,4 +1,4 @@
-& "./atdd.scenarios/UnblockDeletionShptLineEnabled.ps1" | `
+& "./atdd.scenarios/UnblockDeletionShptLineDisabled.ps1" | `
     ConvertTo-ALTestCodeunit `
         -CodeunitID 75651 `
         -CodeunitName 'Unblock Deletion Disabled FLX' `
