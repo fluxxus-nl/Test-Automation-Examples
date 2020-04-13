@@ -1,4 +1,4 @@
-OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
+OBJECT Codeunit 75651 Unblock Deletion Disabled FLX
 {
   OBJECT-PROPERTIES
   {
@@ -10,7 +10,7 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
   {
     Subtype=Test;
     OnRun=BEGIN
-            // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
+            // [FEATURE] Unblock Deletion of Whse. Shpt. Line disabled
           END;
 
   }
@@ -23,13 +23,14 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       LibraryUnblockDeletion@1000000005 : Codeunit 75659;
       IsInitialized@1000000003 : Boolean;
       LocationCode@1000000004 : Code[10];
+      DeleteThisSystemCreatedLineQst@1000000006 : TextConst 'ENU=Are you sure you want to delete this system-created line?';
 
     [Test]
     PROCEDURE DeleteByUserWithNoAllowanceManuallyCreatedWhseShptLine@1000000001();
     VAR
       WarehouseShipmentNo@1000000001 : Code[20];
     BEGIN
-      // [SCENARIO #0001] Delete by user with no allowance manually created whse. shpt. line
+      // [SCENARIO #0005] Delete by user with no allowance manually created whse. shpt. line
       Initialize;
 
       // [GIVEN] Warehouse employee for current user with no allowance
@@ -49,7 +50,7 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
     VAR
       WarehouseShipmentNo@1000000000 : Code[20];
     BEGIN
-      // [SCENARIO #0002] Delete by user with no allowance automatically created whse. shpt. line
+      // [SCENARIO #0006] Delete by user with no allowance automatically created whse. shpt. line
       Initialize;
 
       // [GIVEN] Warehouse employee for current user with no allowance
@@ -58,10 +59,10 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       WarehouseShipmentNo := CreateAutomaticallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
       // [WHEN] Delete warehouse shipment line
-      DeleteWarehouseShipmentLine(WarehouseShipmentNo);
+      ASSERTERROR DeleteWarehouseShipmentLine(WarehouseShipmentNo);
 
-      // [THEN] Warehouse shipment line is deleted
-      VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
+      // [THEN] Error disallowing deletion
+      VerifyErrorDisallowingDeletion;
     END;
 
     [Test]
@@ -69,7 +70,7 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
     VAR
       WarehouseShipmentNo@1000000000 : Code[20];
     BEGIN
-      // [SCENARIO #0003] Delete by user with allowance manually created whse. shpt. line
+      // [SCENARIO #0007] Delete by user with allowance manually created whse. shpt. line
       Initialize;
 
       // [GIVEN] Warehouse employee for current user with allowance
@@ -85,11 +86,12 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
     END;
 
     [Test]
-    PROCEDURE DeleteByUserWithAllowanceAutomaticallyCreatedWhseShptLine@1000000013();
+    [HandlerFunctions(ConfirmHandlerYes)]
+    PROCEDURE DeleteByUserWithAllowanceAutomaticallyCreatedWhseShptLineWithConfirmation@1000000023();
     VAR
       WarehouseShipmentNo@1000000000 : Code[20];
     BEGIN
-      // [SCENARIO #0004] Delete by user with allowance automatically created whse. shpt. line
+      // [SCENARIO #0008] Delete by user with allowance automatically created whse. shpt. line with confirmation
       Initialize;
 
       // [GIVEN] Warehouse employee for current user with allowance
@@ -97,7 +99,8 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       // [GIVEN] Automatically created warehouse shipment from released sales order with one line with require shipment location
       WarehouseShipmentNo := CreateAutomaticallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
-      // [WHEN] Delete warehouse shipment line
+      // [WHEN] Delete warehouse shipment line and select yes in confirmation
+      //        Confirm handled by ConfirmHandlerYes
       DeleteWarehouseShipmentLine(WarehouseShipmentNo);
 
       // [THEN] Warehouse shipment line is deleted
@@ -105,21 +108,41 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
     END;
 
     [Test]
-    PROCEDURE AllowedToDeleteShptLineIsNotEditableOnWarehouseEmployeesPage@1000000014();
+    [HandlerFunctions(ConfirmHandlerNo)]
+    PROCEDURE DeleteByUserWithAllowanceAutomaticallyCreatedWhseShptLineWithNoConfirmation@1000000013();
     VAR
       WarehouseShipmentNo@1000000000 : Code[20];
     BEGIN
-      // [SCENARIO #0009] "Allowed to Delete Shpt. Line" is not editable on warehouse employees page
+      // [SCENARIO #0011] Delete by user with allowance automatically created whse. shpt. line with no confirmation
+      Initialize;
+
+      // [GIVEN] Warehouse employee for current user with allowance
+      CreateWarehouseEmployeeForCurrentUser(WithAllowance(), LocationCode);
+      // [GIVEN] Automatically created warehouse shipment from released sales order with one line with require shipment location
+      WarehouseShipmentNo := CreateAutomaticallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+
+      // [WHEN] Delete warehouse shipment line and select no in confirm
+      //        Confirm handled by ConfirmHandlerNo
+      ASSERTERROR DeleteWarehouseShipmentLine(WarehouseShipmentNo);
+
+      // [THEN] Empty error occurred
+      VerifyEmptyErrorOccurred();
+    END;
+
+    [Test]
+    PROCEDURE AllowedToDeleteShptLineIsEditableOnWarehouseEmployeesPage@1000000014();
+    BEGIN
+      // [SCENARIO #00010] "Allowed to Delete Shpt. Line" is editable on warehouse employees page
       Initialize;
 
       // [GIVEN] Warehouse employee for current user
       CreateWarehouseEmployeeForCurrentUser(NoAllowance(), LocationCode);
 
-      // [WHEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
-      EnableUnblockDeletionOfShptLineOnWarehouseSetup;
+      // [WHEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
+      DisableUnblockDeletionOfShptLineOnWarehouseSetup;
 
-      // [THEN] Allowed to Delete Shpt. Line is not editable on warehouse employees page
-      VerifyAllowedToDeleteShptLineIsNotEditableOnWarehouseEmployeesPage(LocationCode);
+      // [THEN] Allowed to Delete Shpt. Line is editable on warehouse employees page
+      VerifyAllowedToDeleteShptLineIsEditableOnWarehouseEmployeesPage(LocationCode);
     END;
 
     LOCAL PROCEDURE Initialize@1000000000();
@@ -134,7 +157,7 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       LibraryTestInitialize.OnBeforeTestSuiteInitialize(CODEUNIT::"Unblock Deletion Enabled FLX");
 
       // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
-      EnableUnblockDeletionOfShptLineOnWarehouseSetup();
+      DisableUnblockDeletionOfShptLineOnWarehouseSetup();
       // [GIVEN] Location with require shipment
       LocationCode := CreateLocationWithRequireShipment();
 
@@ -144,9 +167,9 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       LibraryTestInitialize.OnAfterTestSuiteInitialize(CODEUNIT::"Unblock Deletion Enabled FLX");
     END;
 
-    LOCAL PROCEDURE EnableUnblockDeletionOfShptLineOnWarehouseSetup@1000000003();
+    LOCAL PROCEDURE DisableUnblockDeletionOfShptLineOnWarehouseSetup@1000000003();
     BEGIN
-      LibraryUnblockDeletion.SetUnblockDeletionOfShptLineOnWarehouseSetup(TRUE);
+      LibraryUnblockDeletion.SetUnblockDeletionOfShptLineOnWarehouseSetup(FALSE);
     END;
 
     LOCAL PROCEDURE CreateLocationWithRequireShipment@1000000004() : Code[10];
@@ -179,9 +202,33 @@ OBJECT Codeunit 75650 Unblock Deletion Enabled FLX
       LibraryUnblockDeletion.VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
     END;
 
-    LOCAL PROCEDURE VerifyAllowedToDeleteShptLineIsNotEditableOnWarehouseEmployeesPage@1000000017(LocationCode@1000000000 : Code[10]);
+    LOCAL PROCEDURE VerifyErrorDisallowingDeletion@1000000030();
     BEGIN
-      LibraryUnblockDeletion.VerifyAllowedToDeleteShptLineOnWarehouseEmployeesPage(FALSE, LocationCode);
+        LibraryUnblockDeletion.VerifyErrorDisallowingDeletion();
+    END;
+
+    LOCAL PROCEDURE VerifyEmptyErrorOccurred@1000000031();
+    BEGIN
+        Assert.ExpectedError('');
+    END;
+
+    LOCAL PROCEDURE VerifyAllowedToDeleteShptLineIsEditableOnWarehouseEmployeesPage@1000000017(LocationCode@1000000000 : Code[10]);
+    BEGIN
+      LibraryUnblockDeletion.VerifyAllowedToDeleteShptLineOnWarehouseEmployeesPage(TRUE, LocationCode);
+    END;
+
+    [ConfirmHandler]
+    PROCEDURE ConfirmHandlerYes@1000000025(Qst@1000000026 : Text;VAR Reply@1000000027 : Boolean);
+    BEGIN
+      Assert.AreEqual(DeleteThisSystemCreatedLineQst, Qst, '');
+      Reply := TRUE;
+    END;
+
+    [ConfirmHandler]
+    PROCEDURE ConfirmHandlerNo@1000000028(Qst@1000000029 : Text;VAR Reply@1000000030 : Boolean);
+    BEGIN
+      Assert.AreEqual(DeleteThisSystemCreatedLineQst, Qst, '');
+      Reply := FALSE;
     END;
 
     LOCAL PROCEDURE NoAllowance@1000000015() : Boolean;
