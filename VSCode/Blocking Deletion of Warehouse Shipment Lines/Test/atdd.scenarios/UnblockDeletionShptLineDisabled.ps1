@@ -41,8 +41,7 @@ Feature 'Unblock Deletion of Whse. Shpt. Line disabled'{
         Given	'Warehouse employee for current user with allowance'
         Given	'Automatically created warehouse shipment from released sales order with one line with require shipment location'
         When	'Delete warehouse shipment line and select no in confirm'
-        Then	'Empty error occurred
-        '
+        Then	'Empty error occurred'
     }
 
     Scenario 10 '"Allowed to Delete Shpt. Line" is editable on warehouse employees page' {
