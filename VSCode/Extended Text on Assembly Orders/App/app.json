@@ -1,0 +1,26 @@
+{
+  "id": "38ace02b-20d9-43f6-9dc2-d8c4a174edcf",
+  "name": "Extended Text on Assembly Orders (app)",
+  "publisher": "fluxxus.nl",
+  "version": "1.0.0.0",
+  "brief": "Example app for test automation classes",
+  "description": "This example app contains a feature to add extended text to assembly orders",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "https://github.com/fluxxus-nl/",
+  "url": "http://www.fluxxus.nl",
+  "logo": "images/logo.png",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "14.0.0.0",
+  "application": "14.0.0.0",
+  "idRanges": [
+    {
+      "from": 76400,
+      "to": 76490
+    }
+  ],
+  "contextSensitiveHelpUrl": "https://App.com/help/",
+  "showMyCode": true,
+  "runtime": "3.0"
+}
