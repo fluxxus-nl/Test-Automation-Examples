@@ -7,7 +7,7 @@ For scope description see [#1](https://github.com/fluxxus-nl/Test-Automation-Exa
 
 ![Flowchart - Blocking Deletion of Warehouse Shipment Lines](https://github.com/fluxxus-nl/Test-Automation-Examples/blob/master/FlowCharts/Flowchart%20-%20Blocking%20Deletion%20of%20Warehouse%20Shipment%20Lines.jpg)
 
-__Example 2: Extended Text on Assembly Orders__
+__Example 2: Extended Text on Assembly Documents__
 
 For scope description see [#3](https://github.com/fluxxus-nl/Test-Automation-Examples/issues/3)
 
