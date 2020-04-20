@@ -1,4 +1,4 @@
-tableextension 76401 "ExtendedTextHeaderExtFLX" extends "Extended Text Header" // 279
+tableextension 76401 "Extended Text Header Ext FLX" extends "Extended Text Header" // 279
 {
     fields
     {

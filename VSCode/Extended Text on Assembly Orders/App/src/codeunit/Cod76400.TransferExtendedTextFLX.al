@@ -32,7 +32,14 @@ codeunit 76400 "Transfer Extended Text FLX"
         if AutoText then begin
             AssemblyLine.TestField("Document No.");
             AssemblyHeader.Get(AssemblyLine."Document Type", AssemblyLine."Document No.");
-            ExtTextHeader.SetRange("Table Name", AssemblyLine.Type);
+            case AssemblyLine.Type of
+                AssemblyLine.Type::" ":
+                    ExtTextHeader.SetRange("Table Name", ExtTextHeader."Table Name"::"Standard Text");
+                AssemblyLine.Type::Item:
+                    ExtTextHeader.SetRange("Table Name", ExtTextHeader."Table Name"::Item);
+                AssemblyLine.Type::Resource:
+                    ExtTextHeader.SetRange("Table Name", ExtTextHeader."Table Name"::Resource);
+            end;
             ExtTextHeader.SetRange("No.", AssemblyLine."No.");
             case AssemblyLine."Document Type" OF
                 AssemblyLine."Document Type"::Quote:
@@ -43,7 +50,7 @@ codeunit 76400 "Transfer Extended Text FLX"
                     ExtTextHeader.SetRange("Assembly Order", true);
             end;
             OnAssemblyCheckIfAnyExtTextAutoText(ExtTextHeader, AssemblyHeader, AssemblyLine, Unconditionally);
-            exit(ReadLines(ExtTextHeader, AssemblyHeader."Starting Date", ''));
+            exit(ReadLines(ExtTextHeader, AssemblyHeader."Starting Date"));
         end;
     end;
 
@@ -52,13 +59,13 @@ codeunit 76400 "Transfer Extended Text FLX"
         exit(MakeUpdateRequired);
     end;
 
-    procedure ReadLines(var ExtTextHeader: Record "Extended Text Header"; DocDate: Date; LanguageCode: Code[10]) Result: Boolean
+    procedure ReadLines(var ExtTextHeader: Record "Extended Text Header"; DocDate: Date) Result: Boolean
     var
         ExtTextLine: Record "Extended Text Line";
         IsHandled: Boolean;
     begin
         IsHandled := false;
-        OnBeforeReadLines(ExtTextHeader, DocDate, LanguageCode, IsHandled, Result);
+        OnBeforeReadLines(ExtTextHeader, DocDate, IsHandled, Result);
         if IsHandled then
             exit(Result);
 
@@ -66,19 +73,10 @@ codeunit 76400 "Transfer Extended Text FLX"
           "Table Name", "No.", "Language Code", "All Language Codes", "Starting Date", "Ending Date");
         ExtTextHeader.SetRange("Starting Date", 0D, DocDate);
         ExtTextHeader.SetFilter("Ending Date", '%1..|%2', DocDate, 0D);
-        if LanguageCode = '' then begin
-            ExtTextHeader.SetRange("Language Code", '');
-            if not ExtTextHeader.FindSet() then
-                exit;
-        end else begin
-            ExtTextHeader.SetRange("Language Code", LanguageCode);
-            if not ExtTextHeader.FindSet() then begin
-                ExtTextHeader.SetRange("All Language Codes", true);
-                ExtTextHeader.SetRange("Language Code", '');
-                if not ExtTextHeader.FindSet() then
-                    exit;
-            end;
-        end;
+        ExtTextHeader.SetRange("All Language Codes", true);
+        ExtTextHeader.SetRange("Language Code", '');
+        if not ExtTextHeader.FindSet() then
+            exit;
         TempExtTextLine.DeleteAll();
         repeat
             ExtTextLine.SetRange("Table Name", ExtTextHeader."Table Name");
@@ -168,7 +166,7 @@ codeunit 76400 "Transfer Extended Text FLX"
     end;
 
     [IntegrationEvent(false, false)]
-    local procedure OnBeforeReadLines(var ExtendedTextHeader: Record "Extended Text Header"; DocDate: Date; LanguageCode: Code[10]; var IsHandled: Boolean; var Result: Boolean)
+    local procedure OnBeforeReadLines(var ExtendedTextHeader: Record "Extended Text Header"; DocDate: Date; var IsHandled: Boolean; var Result: Boolean)
     begin
     end;
 
@@ -195,7 +193,7 @@ codeunit 76400 "Transfer Extended Text FLX"
     var
         Item: Record Item;
         Res: Record Resource;
-        TempExtTextLine: Record "Extended Text Line";
+        TempExtTextLine: Record "Extended Text Line" temporary;
         NextLineNo: Integer;
         LineSpacing: Integer;
         MakeUpdateRequired: Boolean;

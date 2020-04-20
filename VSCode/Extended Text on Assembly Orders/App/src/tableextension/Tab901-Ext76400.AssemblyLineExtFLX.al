@@ -1,4 +1,4 @@
-tableextension 76400 "AssemblyLineExtFLX" extends "Assembly Line" // 901
+tableextension 76400 "Assembly Line Ext FLX" extends "Assembly Line" // 901
 {
     fields
     {
@@ -20,14 +20,12 @@ tableextension 76400 "AssemblyLineExtFLX" extends "Assembly Line" // 901
     var
         AssemblyLine: Record "Assembly Line";
     begin
-        if "Line No." <> 0 then
-            with AssemblyLine do begin
-                Reset();
-                AssemblyLine.SetRange("Document Type", "Document Type");
-                AssemblyLine.SetRange("Document No.", "Document No.");
-                AssemblyLine.SetRange("Attached to Line No.", "Line No.");
-                AssemblyLine.SetFilter("Line No.", '<>%1', "Line No.");
-                AssemblyLine.DeleteAll(true);
-            end;
+        if "Line No." <> 0 then begin
+            AssemblyLine.SetRange("Document Type", "Document Type");
+            AssemblyLine.SetRange("Document No.", "Document No.");
+            AssemblyLine.SetRange("Attached to Line No.", "Line No.");
+            AssemblyLine.SetFilter("Line No.", '<>%1', "Line No.");
+            AssemblyLine.DeleteAll(true);
+        end;
     end;
 }

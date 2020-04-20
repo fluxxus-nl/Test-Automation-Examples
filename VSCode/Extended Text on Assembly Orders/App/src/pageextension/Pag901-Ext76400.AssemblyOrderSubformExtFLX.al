@@ -1,4 +1,4 @@
-pageextension 76400 "AssemblyOrderSubformExtFLX" extends "Assembly Order Subform" //901
+pageextension 76400 "Assembly Order Subform Ext FLX" extends "Assembly Order Subform" //901
 {
     layout
     {
@@ -61,5 +61,4 @@ pageextension 76400 "AssemblyOrderSubformExtFLX" extends "Assembly Order Subform
     local procedure OnBeforeInsertExtendedText(var AssemblyLine: Record "Assembly Line")
     begin
     end;
-
 }
