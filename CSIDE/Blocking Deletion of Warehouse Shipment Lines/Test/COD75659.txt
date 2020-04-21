@@ -75,7 +75,7 @@ OBJECT Codeunit 75659 Library - Unblock Deletion
 
       IF WithAllowance THEN
           WITH WarehouseEmployee DO BEGIN
-              "Allowed to Delete Shpt. Line" := true
+              "Allowed to Delete Shpt. Line" := TRUE;
               MODIFY();
           END;
     END;
