@@ -11,4 +11,4 @@ __Example 2: Extended Text on Assembly Documents__
 
 For scope description see [#3](https://github.com/fluxxus-nl/Test-Automation-Examples/issues/3)
 
-![Flowchart - Extended Text on Assembly Orders - Part 1](https://github.com/fluxxus-nl/Test-Automation-Examples/blob/master/FlowCharts/Flowchart%20-%20Extended%20Text%20on%20Assembly%20Orders%20-%20Part%201.jpg) 
+![Flowchart - Extended Text on Assembly Orders - Part 1](https://github.com/fluxxus-nl/Test-Automation-Examples/blob/master/FlowCharts/Flowchart%20-%20Extended%20Text%20on%20Assembly%20Documents%20-%20Part%201.jpg) 
