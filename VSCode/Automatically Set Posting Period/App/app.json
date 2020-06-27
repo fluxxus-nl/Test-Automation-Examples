@@ -1,0 +1,38 @@
+{
+  "id": "acb340e7-6d43-4ee7-a635-23f0ed2e28c3",
+  "name": "Automatically Set Posting Period (app)",
+  "publisher": "fluxxus.nl",
+  "version": "1.0.0.0",
+  "brief": "Example app for test automation classes",
+  "description": "This example app contains a feature to automatically set the Allow Posting From and Allow Posting To fields on the G/L Setup and User Setup",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "https://github.com/fluxxus-nl/Test-Automation-Examples",
+  "url": "http://www.fluxxus.nl",
+  "logo": "images/logo.png",
+  "platform": "15.0.0.0",
+  "dependencies": [
+    {
+      "id": "63ca2fa4-4f03-4f2b-a480-172fef340d3f",
+      "publisher": "Microsoft",
+      "name": "System Application",
+      "version": "15.0.0.0"
+    },
+    {
+      "id": "437dbf0e-84ff-417a-965d-ed2bb9650972",
+      "publisher": "Microsoft",
+      "name": "Base Application",
+      "version": "15.0.0.0"
+    }
+  ],
+  "screenshots": [],
+  "idRanges": [
+    {
+      "from": 80640,
+      "to": 80649
+    }
+  ],
+  "contextSensitiveHelpUrl": "https://App.com/help/",
+  "showMyCode": true,
+  "runtime": "5.0"
+}
