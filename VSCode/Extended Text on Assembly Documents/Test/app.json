@@ -10,18 +10,34 @@
   "help": "https://github.com/fluxxus-nl/Test-Automation-Examples",
   "url": "http://www.fluxxus.nl",
   "logo": "images/logo.png",
+  "platform": "15.0.0.0",
   "dependencies": [
     {
-      "appId": "38ace02b-20d9-43f6-9dc2-d8c4a174edcf",
-      "name": "Extended Text on Assembly Orders (app)",,
+      "id": "63ca2fa4-4f03-4f2b-a480-172fef340d3f",
+      "publisher": "Microsoft",
+      "name": "System Application",
+      "version": "15.0.0.0"
+    },
+    {
+      "id": "437dbf0e-84ff-417a-965d-ed2bb9650972",
+      "publisher": "Microsoft",
+      "name": "Base Application",
+      "version": "15.0.0.0"
+    },
+    {
+      "id":  "5d86850b-0d76-4eca-bd7b-951ad998e997",
+      "name":  "Tests-TestLibraries",
+      "publisher":  "Microsoft",
+      "version":  "15.0.0.0"
+    },
+    {
+      "id": "acb340e7-6d43-4ee7-a635-23f0ed2e28c3",
+      "name": "Automatically Set Posting Period (app)",
       "publisher": "fluxxus.nl",
       "version": "1.0.0.0"
     }
   ],
   "screenshots": [],
-  "platform": "14.0.0.0",
-  "application": "14.0.0.0",
-  "test": "14.0.0.0",
   "idRanges": [
     {
       "from": 76450,
@@ -30,5 +46,5 @@
   ],
   "contextSensitiveHelpUrl": "https://Test.com/help/",
   "showMyCode": true,
-  "runtime": "3.0"
+  "runtime": "5.0"
 }
