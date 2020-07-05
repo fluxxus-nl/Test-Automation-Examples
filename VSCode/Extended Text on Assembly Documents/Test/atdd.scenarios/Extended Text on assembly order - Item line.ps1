@@ -2,21 +2,21 @@ Feature 'Extended Text on assembly order/Add item line' {
     Scenario 0001 'Add to assembly order line for item with "Automatic Ext. Texts"disabled and extended text enabled' {
         Given 'Item with "Automatic Ext. Texts" disabled and extended text enabled for assembly order'
         Given 'Assembly order'
-        When 'Add item line to assembly order'
+        When 'Add item line to assembly order page'
         Then 'No extended text lines are added to assembly order' 
     }
-
+    
     Scenario 0002 'Add to assembly order line for item with "Automatic Ext. Texts" enabled and extended text enabled' {
         Given 'Item with "Automatic Ext. Texts" enabled and extended text enabled for assembly order'
         Given 'Assembly order'
-        When 'Add item line to assembly order'
-        Then 'Extended text lines are added to assembly order'
+        When 'Add item line to assembly order page'
+        Then 'Extended text lines are added to assembly order' 
     }
 
     Scenario 0067 'Add to assembly order line for item with "Automatic Ext. Texts" enabled and extended text disabled' {
         Given 'Item with "Automatic Ext. Texts" enabled and extended text disabled for assembly order'
         Given 'Assembly order'
-        When 'Add item line to assembly order'
+        When 'Add item line to assembly order page'
         Then 'No extended text lines are added to assembly order' 
     }
 
@@ -43,10 +43,11 @@ Feature 'Extended Text on assembly order/Add item line' {
 
     Scenario 0020 'Replace item with extended texts by item without extended texts on assembly order line' {
         Given 'Item with "Automatic Ext. Texts" disabled and extended text enabled for assembly order'
+        Given 'Item with no extended text'
         Given 'Assembly order with item line and extended text inserted'
         When 'Replace item by item with no extended text'
         Then 'Item is replaced and extended text lines are removed'
-    }
+    } 
 }
 
 Feature 'Extended Text on assembly order/Delete item line' {
