@@ -1,4 +1,4 @@
-codeunit 76459 "Library - Ext Text Ass Doc FLX"
+codeunit 76469 "Library - Ext Text Ass Doc FLX"
 {
     procedure CreateItemWithExtendedText(AutomaticExtTextsEnabled: Boolean; EnableExtText: Option None,Order,Quote,"Blanket Order"): Code[20]
     var
@@ -26,7 +26,18 @@ codeunit 76459 "Library - Ext Text Ass Doc FLX"
         exit(Resource."No.");
     end;
 
-    local procedure CreateExtendedText(LineType: Option " ",Item,Resource; No: Code[20]; EnableExtText: Option None,Order,Quote,"Blanket Order")
+    procedure CreateStandardTextWithExtendedText(EnableExtText: Option None,Order,Quote,"Blanket Order"): Code[20]
+    var
+        StandardText: Record "Standard Text";
+        LibrarySales: Codeunit "Library - Sales";
+    begin
+        LibrarySales.CreateStandardText(StandardText);
+
+        CreateExtendedText(0, StandardText.Code, EnableExtText); // 0 = Standard Text
+        exit(StandardText.Code);
+    end;
+
+    local procedure CreateExtendedText(LineType: Option "Standard Text","G/L Account",Item,Resource; No: Code[20]; EnableExtText: Option None,Order,Quote,"Blanket Order")
     var
         ExtendedTextHeader: Record "Extended Text Header";
         ExtendedTextLine: Record "Extended Text Line";
@@ -78,20 +89,20 @@ codeunit 76459 "Library - Ext Text Ass Doc FLX"
         exit(AssemblyHeader."No.");
     end;
 
-    procedure DeleteLineFromAssemblyDocument(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
+    procedure DeleteLineFromAssemblyDocument(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
-        FindAssemblyLine(EnableExtText, AssemblyDocNo, LineType, No, AssemblyLine);
+        FindAssemblyLine(DocumentType, AssemblyDocNo, LineType, No, AssemblyLine);
         AssemblyLine.Delete(true);
     end;
 
-    procedure InsertExtendedText(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
+    procedure InsertExtendedText(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
         TransferExtendedText: Codeunit "Transfer Extended Text FLX";
     begin
-        FindAssemblyLine(EnableExtText, AssemblyDocNo, LineType, No, AssemblyLine);
+        FindAssemblyLine(DocumentType, AssemblyDocNo, LineType, No, AssemblyLine);
 
         TransferExtendedText.AssemblyCheckIfAnyExtText(AssemblyLine, true);
         TransferExtendedText.InsertAssemblyExtText(AssemblyLine);
@@ -106,6 +117,11 @@ codeunit 76459 "Library - Ext Text Ass Doc FLX"
         NoOfTextLines: Label 'Number of text lines.';
     begin
         case LineType of
+            LineType::" ":
+                begin
+                    ExtendedTextHeader.SetRange(ExtendedTextHeader."Table Name", ExtendedTextHeader."Table Name"::"Standard Text");
+                    ExtendedTextLine.SetRange("Table Name", ExtendedTextLine."Table Name"::"Standard Text");
+                end;
             LineType::Item:
                 begin
                     ExtendedTextHeader.SetRange(ExtendedTextHeader."Table Name", ExtendedTextHeader."Table Name"::Item);
@@ -125,6 +141,7 @@ codeunit 76459 "Library - Ext Text Ass Doc FLX"
         AssemblyHeader.Get(AssemblyDocType, AssemblyDocNo);
         AssemblyLine.SetRange("Document Type", AssemblyDocType);
         AssemblyLine.SetRange("Document No.", AssemblyDocNo);
+        AssemblyLine.SetRange("No.", '');
         AssemblyLine.SetRange(Type, AssemblyLine.Type::" ");
 
         Assert.AreEqual(ExtendedTextLine.Count(), AssemblyLine.Count(), NoOfTextLines);
@@ -142,11 +159,11 @@ codeunit 76459 "Library - Ext Text Ass Doc FLX"
         AssemblyLine.FindFirst();
     end;
 
-    procedure SetAssemblyLineFilter(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20]; var AssemblyLine: Record "Assembly Line")
+    procedure SetAssemblyLineFilter(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20]; var AssemblyLine: Record "Assembly Line")
     var
         AssemblyHeader: Record "Assembly Header";
     begin
-        AssemblyLine.SetRange("Document Type", EnableExtText);
+        AssemblyLine.SetRange("Document Type", DocumentType);
         AssemblyLine.SetRange("Document No.", AssemblyDocNo);
         AssemblyLine.SetRange(Type, LineType);
         AssemblyLine.SetRange("No.", No);
@@ -194,68 +211,75 @@ codeunit 76459 "Library - Ext Text Ass Doc FLX"
         ResourceUnitOfMeasure.Insert(true);
     end;
 
-    procedure VerifyAssemblyLine(Exists: Boolean; EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
+    procedure CreateStandardTextWithNoExtendedText(): Code[20]
+    var
+        StandardText: Record "Standard Text";
+        LibrarySales: Codeunit "Library - Sales";
+    begin
+        LibrarySales.CreateStandardText(StandardText);
+        exit(StandardText.Code);
+    end;
+
+    procedure VerifyAssemblyLine(Exists: Boolean; DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
     begin
-        AssemblyHeader.Get(EnableExtText, AssemblyDocNo);
+        AssemblyHeader.Get(DocumentType, AssemblyDocNo);
 
-        SetAssemblyLineFilter(EnableExtText, AssemblyDocNo, LineType, No, AssemblyLine);
+        SetAssemblyLineFilter(DocumentType, AssemblyDocNo, LineType, No, AssemblyLine);
         if Exists then
             Assert.RecordIsNotEmpty(AssemblyLine)
         else
             Assert.RecordIsEmpty(AssemblyLine);
     end;
 
-    procedure VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20])
+    procedure VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
     begin
-        AssemblyHeader.Get(EnableExtText, AssemblyDocNo);
-        AssemblyLine.SetRange("Document Type", AssemblyLine."Document Type"::Quote);
+        AssemblyHeader.Get(DocumentType, AssemblyDocNo);
+        AssemblyLine.SetRange("Document Type", DocumentType);
         AssemblyLine.SetRange("Document No.", AssemblyDocNo);
         AssemblyLine.SetRange(Type, AssemblyLine.Type::" ");
+        AssemblyLine.SetRange("No.", '');
         Assert.RecordIsEmpty(AssemblyLine);
     end;
 
-    procedure VerifyItemAndExtendedTextLinesAreRemoved(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ItemNo: Code[20])
+    procedure VerifyItemAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ItemNo: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
-        VerifyAssemblyLine(false, EnableExtText, AssemblyDocNo, AssemblyLine.Type::Item, ItemNo);
-        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(EnableExtText, AssemblyDocNo);
+        VerifyAssemblyLine(false, DocumentType, AssemblyDocNo, AssemblyLine.Type::Item, ItemNo);
+        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
     end;
 
-    procedure VerifyResourceAndExtendedTextLinesAreRemoved(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ResourceNo: Code[20])
+    procedure VerifyResourceAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ResourceNo: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
-        VerifyAssemblyLine(false, EnableExtText, AssemblyDocNo, AssemblyLine.Type::Resource, ResourceNo);
-        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(EnableExtText, AssemblyDocNo);
+        VerifyAssemblyLine(false, DocumentType, AssemblyDocNo, AssemblyLine.Type::Resource, ResourceNo);
+        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
     end;
 
-    procedure VerifyItemIsReplacedAndExtendedTextLinesAreRemoved(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ItemNo: array[2] of Code[20])
+    procedure VerifyTextAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; TextCode: Code[20])
+    var
+        AssemblyLine: Record "Assembly Line";
+    begin
+        VerifyAssemblyLine(false, DocumentType, AssemblyDocNo, AssemblyLine.Type::" ", TextCode);
+        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
+    end;
+
+    procedure VerifyReplacementAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; Type: Option " ",Item,Resource; No: array[2] of Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
     begin
-        AssemblyHeader.Get(EnableExtText, AssemblyDocNo);
-        VerifyAssemblyLine(false, EnableExtText, AssemblyDocNo, AssemblyLine.Type::Item, ItemNo[1]);
-        VerifyAssemblyLine(true, EnableExtText, AssemblyDocNo, AssemblyLine.Type::Item, ItemNo[2]);
-        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(EnableExtText, AssemblyDocNo);
-    end;
-
-    procedure VerifyResourceIsReplacedAndExtendedTextLinesAreRemoved(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ResourceNo: array[2] of Code[20])
-    var
-        AssemblyHeader: Record "Assembly Header";
-        AssemblyLine: Record "Assembly Line";
-    begin
-        AssemblyHeader.Get(EnableExtText, AssemblyDocNo);
-        VerifyAssemblyLine(false, EnableExtText, AssemblyDocNo, AssemblyLine.Type::Resource, ResourceNo[1]);
-        VerifyAssemblyLine(true, EnableExtText, AssemblyDocNo, AssemblyLine.Type::Resource, ResourceNo[2]);
-        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(EnableExtText, AssemblyDocNo);
+        AssemblyHeader.Get(DocumentType, AssemblyDocNo);
+        VerifyAssemblyLine(false, DocumentType, AssemblyDocNo, Type, No[1]);
+        VerifyAssemblyLine(true, DocumentType, AssemblyDocNo, Type, No[2]);
+        VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
     end;
 
     var

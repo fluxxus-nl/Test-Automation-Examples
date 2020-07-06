@@ -1,0 +1,12 @@
+<assembly name="76456 Extend. Text BAO Res. Line FLX" test-framework="PS Test Runner" run-date="2020-07-06" run-time="08:37:15" total="8" passed="8" failed="0" skipped="0" time="2.687">
+  <collection name="Extend. Text BAO Res. Line FLX" total="8" passed="8" failed="0" skipped="0" time="2.687">
+    <test name="Extend. Text BAO Res. Line FLX:AddToBlanketAssemblyOrderLineForResourceWithAutomaticExtTextsDisabledAndExtendedTextEnabled" method="AddToBlanketAssemblyOrderLineForResourceWithAutomaticExtTextsDisabledAndExtendedTextEnabled" time="1.047" result="Pass" />
+    <test name="Extend. Text BAO Res. Line FLX:AddToBlanketAssemblyOrderLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextEnabled" method="AddToBlanketAssemblyOrderLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextEnabled" time="1.01" result="Pass" />
+    <test name="Extend. Text BAO Res. Line FLX:AddToBlanketAssemblyOrderLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextDisabled" method="AddToBlanketAssemblyOrderLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextDisabled" time="0.984" result="Pass" />
+    <test name="Extend. Text BAO Res. Line FLX:InsertExtendedTextsForResourceWithExtendedTextsOnBlanketAssemblyOrderLine" method="InsertExtendedTextsForResourceWithExtendedTextsOnBlanketAssemblyOrderLine" time="0.064" result="Pass" />
+    <test name="Extend. Text BAO Res. Line FLX:InsertExtendedTextsForResourceWithNoExtendedTextsOnBlanketAssemblyOrderLine" method="InsertExtendedTextsForResourceWithNoExtendedTextsOnBlanketAssemblyOrderLine" time="0.046" result="Pass" />
+    <test name="Extend. Text BAO Res. Line FLX:InsertExtendedTextsTwiceForResourceWithExtendedTextsOnBlanketAssemblyOrderLine" method="InsertExtendedTextsTwiceForResourceWithExtendedTextsOnBlanketAssemblyOrderLine" time="0.06" result="Pass" />
+    <test name="Extend. Text BAO Res. Line FLX:ReplaceResourceWithExtendedTextsByResourceWithoutExtendedTextsOnBlanketAssemblyOrderLine" method="ReplaceResourceWithExtendedTextsByResourceWithoutExtendedTextsOnBlanketAssemblyOrderLine" time="1.19" result="Pass" />
+    <test name="Extend. Text BAO Res. Line FLX:DeleteResourceLineWithExtendedText" method="DeleteResourceLineWithExtendedText" time="0.064" result="Pass" />
+  </collection>
+</assembly>

@@ -1,0 +1,12 @@
+<assembly name="76455 Extended Text AQ Res. Line FLX" test-framework="PS Test Runner" run-date="2020-07-06" run-time="08:37:13" total="8" passed="8" failed="0" skipped="0" time="2.104">
+  <collection name="Extended Text AQ Res. Line FLX" total="8" passed="8" failed="0" skipped="0" time="2.104">
+    <test name="Extended Text AQ Res. Line FLX:AddToAssemblyQuoteLineForResourceWithAutomaticExtTextsDisabledAndExtendedTextEnabled" method="AddToAssemblyQuoteLineForResourceWithAutomaticExtTextsDisabledAndExtendedTextEnabled" time="1.52" result="Pass" />
+    <test name="Extended Text AQ Res. Line FLX:AddToAssemblyQuoteLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextEnabled" method="AddToAssemblyQuoteLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextEnabled" time="1.076" result="Pass" />
+    <test name="Extended Text AQ Res. Line FLX:AddToAssemblyQuoteLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextDisabled" method="AddToAssemblyQuoteLineForResourceWithAutomaticExtTextsEnabledAndExtendedTextDisabled" time="1.024" result="Pass" />
+    <test name="Extended Text AQ Res. Line FLX:InsertExtendedTextsForResourceWithExtendedTextsOnAssemblyQuoteLine" method="InsertExtendedTextsForResourceWithExtendedTextsOnAssemblyQuoteLine" time="0.08" result="Pass" />
+    <test name="Extended Text AQ Res. Line FLX:InsertExtendedTextsForResourceWithNoExtendedTextsOnAssemblyQuoteLine" method="InsertExtendedTextsForResourceWithNoExtendedTextsOnAssemblyQuoteLine" time="0.08" result="Pass" />
+    <test name="Extended Text AQ Res. Line FLX:InsertExtendedTextsTwiceForResourceWithExtendedTextsOnAssemblyQuoteLine" method="InsertExtendedTextsTwiceForResourceWithExtendedTextsOnAssemblyQuoteLine" time="0.093" result="Pass" />
+    <test name="Extended Text AQ Res. Line FLX:ReplaceResourceWithExtendedTextsByResourceWithoutExtendedTextsOnAssemblyQuoteLine" method="ReplaceResourceWithExtendedTextsByResourceWithoutExtendedTextsOnAssemblyQuoteLine" time="1.25" result="Pass" />
+    <test name="Extended Text AQ Res. Line FLX:DeleteResourceLineWithExtendedText" method="DeleteResourceLineWithExtendedText" time="0.05" result="Pass" />
+  </collection>
+</assembly>
