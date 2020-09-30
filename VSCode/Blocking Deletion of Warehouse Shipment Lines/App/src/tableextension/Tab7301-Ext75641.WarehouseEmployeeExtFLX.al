@@ -18,7 +18,7 @@ tableextension 75641 "WarehouseEmployeeExtFLX" extends "Warehouse Employee" //73
         WarehouseSetup.Get();
 
         if not WarehouseSetup."Unblock Deletion of Shpt. Line" then begin
-            if not "Allowed to Delete Shpt. Line" then
+            if not Rec."Allowed to Delete Shpt. Line" then
                 Error(NotAlllowedToDeleteSystemCreatedLinesErr);
 
             if Confirm(DeleteThisSystemCreatedLineQst, false) = false then

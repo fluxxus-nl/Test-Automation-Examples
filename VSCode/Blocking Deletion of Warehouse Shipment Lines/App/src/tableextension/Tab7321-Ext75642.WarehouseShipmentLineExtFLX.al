@@ -19,7 +19,7 @@ tableextension 75642 "WarehouseShipmentLineExtFLX" extends "Warehouse Shipment L
         WarehouseEmployee: Record "Warehouse Employee";
     begin
         if "System-Created" then begin
-            WarehouseEmployee.Get(UserId(), "Location Code");
+            WarehouseEmployee.Get(UserId(), Rec."Location Code");
             WarehouseEmployee.CheckAllowedToDeleteWhsShipmentLine();
         end;
     end;

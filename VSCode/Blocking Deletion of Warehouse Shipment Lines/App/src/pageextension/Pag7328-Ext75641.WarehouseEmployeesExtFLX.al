@@ -4,7 +4,7 @@ pageextension 75641 "WarehouseEmployeesExtFLX" extends "Warehouse Employees" //7
     {
         addlast(Control1)
         {
-            field("Allowed to Delete Shpt. Line"; "Allowed to Delete Shpt. Line")
+            field("Allowed to Delete Shpt. Line"; Rec."Allowed to Delete Shpt. Line")
             {
                 ApplicationArea = All;
                 ToolTip = 'Specifies whether you allow this user to delete system-created warehouse shipment lines on the location selected when Unblock Deletion of Whse. Shpt. Line on Warehouse Setup has been enabled.';

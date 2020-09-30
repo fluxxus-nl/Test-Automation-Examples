@@ -4,7 +4,7 @@ pageextension 75642 "WhseShipmentSubformExtFLX" extends "Whse. Shipment Subform"
     {
         addlast(Control1)
         {
-            field("System-Created"; "System-Created")
+            field("System-Created"; Rec."System-Created")
             {
                 ApplicationArea = All;
                 ToolTip = 'Specifies that the entry was created by the system.';

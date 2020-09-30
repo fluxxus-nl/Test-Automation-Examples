@@ -9,12 +9,10 @@ codeunit 75659 "Library - Unblock Deletion"
     var
         WarehouseSetup: Record "Warehouse Setup";
     begin
-        with WarehouseSetup do begin
-            if not Get() then
-                Insert();
-            "Unblock Deletion of Shpt. Line" := Enable;
-            Modify();
-        end;
+        if not WarehouseSetup.Get() then
+            WarehouseSetup.Insert();
+        WarehouseSetup."Unblock Deletion of Shpt. Line" := Enable;
+        WarehouseSetup.Modify();
     end;
 
     procedure CreateLocationWithRequireShipment(): Code[10]
@@ -44,10 +42,8 @@ codeunit 75659 "Library - Unblock Deletion"
     begin
         WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
-        with WarehouseShipmentLine do begin
-            Setrange("No.", WarehouseShipmentNo);
-            ModifyAll("System-Created", true);
-        end;
+        WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
+        WarehouseShipmentLine.ModifyAll("System-Created", true);
 
         exit(WarehouseShipmentNo);
     end;
@@ -58,32 +54,27 @@ codeunit 75659 "Library - Unblock Deletion"
     begin
         LibraryWarehouse.CreateWarehouseEmployee(WarehouseEmployee, LocationCode, false);
 
-        if WithAllowance then
-            with WarehouseEmployee do begin
-                "Allowed to Delete Shpt. Line" := true;
-                Modify();
-            end;
+        if WithAllowance then begin
+            WarehouseEmployee."Allowed to Delete Shpt. Line" := true;
+            WarehouseEmployee.Modify();
+        end;
     end;
 
     procedure DeleteWarehouseShipmentLine(WarehouseShipmentNo: Code[20])
     var
         WarehouseShipmentLine: Record "Warehouse Shipment Line";
     begin
-        with WarehouseShipmentLine do begin
-            Setrange("No.", WarehouseShipmentNo);
-            FindFirst();
-            Delete(true);
-        end;
+        WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
+        WarehouseShipmentLine.FindFirst();
+        WarehouseShipmentLine.Delete(true);
     end;
 
     procedure VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo: Code[20])
     var
         WarehouseShipmentLine: Record "Warehouse Shipment Line";
     begin
-        with WarehouseShipmentLine do begin
-            Setrange("No.", WarehouseShipmentNo);
-            Assert.RecordIsEmpty(WarehouseShipmentLine);
-        end;
+        WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
+        Assert.RecordIsEmpty(WarehouseShipmentLine);
     end;
 
     procedure VerifyErrorDisallowingDeletion()
@@ -98,18 +89,14 @@ codeunit 75659 "Library - Unblock Deletion"
         WarehouseEmployee: Record "Warehouse Employee";
         WarehouseEmployees: TestPage "Warehouse Employees";
     begin
-        with WarehouseEmployee do begin
-            SetRange("User ID", UserId());
-            SetRange("Location Code", LocationCode);
-            FindFirst()
-        end;
+        WarehouseEmployee.SetRange("User ID", UserId());
+        WarehouseEmployee.SetRange("Location Code", LocationCode);
+        WarehouseEmployee.FindFirst();
 
-        with WarehouseEmployees do begin
-            OpenEdit();
-            GoToRecord(WarehouseEmployee);
-            Assert.AreEqual(IsEditable, "Allowed to Delete Shpt. Line".Editable(), "Allowed to Delete Shpt. Line".Caption());
-            Close();
-        end;
+        WarehouseEmployees.OpenEdit();
+        WarehouseEmployees.GoToRecord(WarehouseEmployee);
+        Assert.AreEqual(IsEditable, WarehouseEmployees."Allowed to Delete Shpt. Line".Editable(), WarehouseEmployees."Allowed to Delete Shpt. Line".Caption());
+        WarehouseEmployees.Close();
     end;
 
     local procedure GetWarehouseShipmentHeaderNo(SourceNo: Code[20]; SourceType: Integer; SourceSubtype: Integer): Code[20]
@@ -122,12 +109,10 @@ codeunit 75659 "Library - Unblock Deletion"
 
     local procedure FindWarehouseShipmentLine(var WarehouseShipmentLine: Record "Warehouse Shipment Line"; SourceNo: Code[20]; SourceType: Integer; SourceSubtype: Integer)
     begin
-        with WarehouseShipmentLine do begin
-            Setrange("Source Type", SourceType);
-            if SourceSubtype >= 0 then
-                SetRange("Source Subtype", SourceSubtype);
-            Setrange("Source No.", SourceNo);
-            FindFirst();
-        end;
+        WarehouseShipmentLine.Setrange("Source Type", SourceType);
+        if SourceSubtype >= 0 then
+            WarehouseShipmentLine.SetRange("Source Subtype", SourceSubtype);
+        WarehouseShipmentLine.Setrange("Source No.", SourceNo);
+        WarehouseShipmentLine.FindFirst();
     end;
 }
