@@ -21,10 +21,10 @@ tableextension 76400 "Assembly Line Ext FLX" extends "Assembly Line" // 901
         AssemblyLine: Record "Assembly Line";
     begin
         if "Line No." <> 0 then begin
-            AssemblyLine.SetRange("Document Type", "Document Type");
-            AssemblyLine.SetRange("Document No.", "Document No.");
-            AssemblyLine.SetRange("Attached to Line No.", "Line No.");
-            AssemblyLine.SetFilter("Line No.", '<>%1', "Line No.");
+            AssemblyLine.SetRange("Document Type", Rec."Document Type");
+            AssemblyLine.SetRange("Document No.", Rec."Document No.");
+            AssemblyLine.SetRange("Attached to Line No.", Rec."Line No.");
+            AssemblyLine.SetFilter("Line No.", '<>%1', Rec."Line No.");
             AssemblyLine.DeleteAll(true);
         end;
     end;
