@@ -20,6 +20,12 @@
       "version":  "16.0.0.0"
     },
     {
+      "id":  "5095f467-0a01-4b99-99d1-9ff1237d286f",
+      "name":  "Library Variable Storage",
+      "publisher":  "Microsoft",
+      "version":  "17.0.0.0"
+    },
+    {
       "id": "acb340e7-6d43-4ee7-a635-23f0ed2e28c3",
       "name": "Automatically Set Posting Period (app)",
       "publisher": "fluxxus.nl",
