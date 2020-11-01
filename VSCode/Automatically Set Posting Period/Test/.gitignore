@@ -2,8 +2,10 @@
 
 # Binary files
 .alpackages/
+.snapshots/
 *.app
 
 # Temp files
 .vs/
 .vscode/
+.altestrunner/
