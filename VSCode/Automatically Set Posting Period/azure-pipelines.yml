@@ -5,8 +5,9 @@ name: $(Build.BuildId)
 #    include:
 #      - master
 
-#variables:
+variables:
 #- group: 'Secrets'  # link to a variable group that has secret variables, like URL to license file, or sasToken for insider builds
+- group: 'PipelineVariables'
 
 pool: TestAutomationExamples
 
