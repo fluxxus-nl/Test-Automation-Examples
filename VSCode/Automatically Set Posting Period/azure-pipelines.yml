@@ -32,7 +32,7 @@ steps:
   displayName: 'ALOPS - License Import'
   inputs:
     usedocker: true
-    license_path: '$(bc.license)'
+    license_path: '$(LuxBeheerBcDevLicense)'
 
  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -57,7 +57,7 @@ steps:
   inputs:
     usedocker: true
     nav_app_version: '1.0.[yyyyWW].*'
-    targetproject: 'app/app.json'                           # The App
+    targetproject: 'VSCode/Automatically Set Posting Period/app/app.json'                           # The App
     failed_on_warnings: true
     app_file_suffix: '_APP'                                 # A trick to uniquely identify the APP (from the TEST-app)
 
@@ -73,7 +73,7 @@ steps:
   inputs:
     usedocker: true
     nav_app_version: '1.0.[yyyyWW].*'
-    targetproject: 'test/app.json'                           # The Test-App
+    targetproject: 'VSCode/Automatically Set Posting Period/test/app.json'                           # The Test-App
     failed_on_warnings: true    
     app_file_suffix: '_TEST'                                 # A trick to uniquely identify the Test-App (from the App)
 
