@@ -14,6 +14,11 @@
   "application": "16.0.0.0",
   "dependencies": [
     {
+      "id":  "23de40a6-dfe8-4f80-80db-d70f83ce8caf",
+      "name":  "Test Runner",
+      "publisher":  "Microsoft",
+      "version":  "16.0.0.0"
+    },    {
       "id":  "5d86850b-0d76-4eca-bd7b-951ad998e997",
       "name":  "Tests-TestLibraries",
       "publisher":  "Microsoft",
@@ -23,7 +28,7 @@
       "id":  "5095f467-0a01-4b99-99d1-9ff1237d286f",
       "name":  "Library Variable Storage",
       "publisher":  "Microsoft",
-      "version":  "17.0.0.0"
+      "version":  "16.0.0.0"
     },
     {
       "id": "acb340e7-6d43-4ee7-a635-23f0ed2e28c3",
