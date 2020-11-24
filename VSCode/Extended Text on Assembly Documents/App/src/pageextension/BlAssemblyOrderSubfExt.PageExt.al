@@ -22,7 +22,7 @@ pageextension 76403 "Bl Assembly Order Subf Ext FLX" extends "Blanket Assembly O
     {
         addlast("F&unctions")
         {
-            action("Insert &Ext. Texts")
+            action("Insert &Ext. TextsASDFLX")
             {
                 AccessByPermission = TableData "Extended Text Header" = R;
                 ApplicationArea = Basic, Suite;

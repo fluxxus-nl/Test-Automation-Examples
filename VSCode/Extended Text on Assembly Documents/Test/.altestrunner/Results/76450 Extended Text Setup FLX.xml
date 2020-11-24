@@ -1,7 +1,0 @@
-<assembly name="76450 Extended Text Setup FLX" test-framework="PS Test Runner" run-date="2020-07-06" run-time="08:37:01" total="3" passed="3" failed="0" skipped="0" time="0.329">
-  <collection name="Extended Text Setup FLX" total="3" passed="3" failed="0" skipped="0" time="0.329">
-    <test name="Extended Text Setup FLX:AssemblyQuoteOnExtendedTextCardPageForItem" method="AssemblyQuoteOnExtendedTextCardPageForItem" time="0.474" result="Pass" />
-    <test name="Extended Text Setup FLX:AssemblyBlanketOrderOnExtendedTextCardPageForItem" method="AssemblyBlanketOrderOnExtendedTextCardPageForItem" time="0.17" result="Pass" />
-    <test name="Extended Text Setup FLX:AssemblyOrderOnExtendedTextCardPageForItem" method="AssemblyOrderOnExtendedTextCardPageForItem" time="0.187" result="Pass" />
-  </collection>
-</assembly>

@@ -22,7 +22,7 @@ pageextension 76400 "Assembly Order Subform Ext FLX" extends "Assembly Order Sub
     {
         addlast("F&unctions")
         {
-            action("Insert &Ext. Texts")
+            action("Insert &Ext. TextsASDFLX")
             {
                 AccessByPermission = TableData "Extended Text Header" = R;
                 ApplicationArea = Basic, Suite;

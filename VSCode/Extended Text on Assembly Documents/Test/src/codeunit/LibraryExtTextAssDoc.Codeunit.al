@@ -48,16 +48,16 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         case EnableExtText of
             EnableExtText::None:
                 begin
-                    ExtendedTextHeader."Assembly Order" := false;
-                    ExtendedTextHeader."Assembly Quote" := false;
-                    ExtendedTextHeader."Assembly Blanket Order" := false;
+                    ExtendedTextHeader."Assembly Order FLX" := false;
+                    ExtendedTextHeader."Assembly Quote FLX" := false;
+                    ExtendedTextHeader."Assembly Blanket Order FLX" := false;
                 end;
             EnableExtText::Order:
-                ExtendedTextHeader."Assembly Order" := true;
+                ExtendedTextHeader."Assembly Order FLX" := true;
             EnableExtText::Quote:
-                ExtendedTextHeader."Assembly Quote" := true;
+                ExtendedTextHeader."Assembly Quote FLX" := true;
             EnableExtText::"Blanket Order":
-                ExtendedTextHeader."Assembly Blanket Order" := true;
+                ExtendedTextHeader."Assembly Blanket Order FLX" := true;
         end;
         ExtendedTextHeader.Modify();
         LibraryService.CreateExtendedTextLineItem(ExtendedTextLine, ExtendedTextHeader);
@@ -89,7 +89,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         exit(AssemblyHeader."No.");
     end;
 
-    procedure DeleteLineFromAssemblyDocument(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
+    procedure DeleteLineFromAssemblyDocument(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
@@ -97,7 +97,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         AssemblyLine.Delete(true);
     end;
 
-    procedure InsertExtendedText(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
+    procedure InsertExtendedText(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
         TransferExtendedText: Codeunit "Transfer Extended Text FLX";
@@ -108,7 +108,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         TransferExtendedText.InsertAssemblyExtText(AssemblyLine);
     end;
 
-    procedure VerifyExtendedTextLinesAreAddedToAssemblyDocument(AssemblyDocType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
+    procedure VerifyExtendedTextLinesAreAddedToAssemblyDocument(AssemblyDocType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
@@ -153,13 +153,13 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         until AssemblyLine.Next() = 0;
     end;
 
-    procedure FindAssemblyLine(EnableExtText: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20]; var AssemblyLine: Record "Assembly Line")
+    procedure FindAssemblyLine(EnableExtText: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20]; var AssemblyLine: Record "Assembly Line")
     begin
         SetAssemblyLineFilter(EnableExtText, AssemblyDocNo, LineType, No, AssemblyLine);
         AssemblyLine.FindFirst();
     end;
 
-    procedure SetAssemblyLineFilter(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20]; var AssemblyLine: Record "Assembly Line")
+    procedure SetAssemblyLineFilter(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20]; var AssemblyLine: Record "Assembly Line")
     var
         AssemblyHeader: Record "Assembly Header";
     begin
@@ -220,7 +220,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         exit(StandardText.Code);
     end;
 
-    procedure VerifyAssemblyLine(Exists: Boolean; DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
+    procedure VerifyAssemblyLine(Exists: Boolean; DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Option " ",Item,Resource; No: Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
@@ -234,7 +234,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
             Assert.RecordIsEmpty(AssemblyLine);
     end;
 
-    procedure VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20])
+    procedure VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
@@ -247,7 +247,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         Assert.RecordIsEmpty(AssemblyLine);
     end;
 
-    procedure VerifyItemAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ItemNo: Code[20])
+    procedure VerifyItemAndExtendedTextLinesAreRemoved(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; ItemNo: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
@@ -255,7 +255,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
     end;
 
-    procedure VerifyResourceAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; ResourceNo: Code[20])
+    procedure VerifyResourceAndExtendedTextLinesAreRemoved(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; ResourceNo: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
@@ -263,7 +263,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
     end;
 
-    procedure VerifyTextAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; TextCode: Code[20])
+    procedure VerifyTextAndExtendedTextLinesAreRemoved(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; TextCode: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
@@ -271,7 +271,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
     end;
 
-    procedure VerifyReplacementAndExtendedTextLinesAreRemoved(DocumentType: Option Quote,Order,,,"Blanket Order"; AssemblyDocNo: Code[20]; Type: Option " ",Item,Resource; No: array[2] of Code[20])
+    procedure VerifyReplacementAndExtendedTextLinesAreRemoved(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; Type: Option " ",Item,Resource; No: array[2] of Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";

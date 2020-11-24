@@ -6,7 +6,7 @@ codeunit 76400 "Transfer Extended Text FLX"
         ExtTextHeader: Record "Extended Text Header";
     begin
         MakeUpdateRequired := false;
-        if IsDeleteAttachedLines(AssemblyLine."Line No.", AssemblyLine."No.", AssemblyLine."Attached to Line No.") then
+        if IsDeleteAttachedLines(AssemblyLine."Line No.", AssemblyLine."No.", AssemblyLine."Attached to Line No. FLX") then
             MakeUpdateRequired := DeleteAssemblyLines(AssemblyLine);
 
         AutoText := false;
@@ -43,11 +43,11 @@ codeunit 76400 "Transfer Extended Text FLX"
             ExtTextHeader.SetRange("No.", AssemblyLine."No.");
             case AssemblyLine."Document Type" OF
                 AssemblyLine."Document Type"::Quote:
-                    ExtTextHeader.SetRange("Assembly Quote", true);
+                    ExtTextHeader.SetRange("Assembly Quote FLX", true);
                 AssemblyLine."Document Type"::"Blanket Order":
-                    ExtTextHeader.SetRange("Assembly Blanket Order", true);
+                    ExtTextHeader.SetRange("Assembly Blanket Order FLX", true);
                 AssemblyLine."Document Type"::Order:
-                    ExtTextHeader.SetRange("Assembly Order", true);
+                    ExtTextHeader.SetRange("Assembly Order FLX", true);
             end;
             OnAssemblyCheckIfAnyExtTextAutoText(ExtTextHeader, AssemblyHeader, AssemblyLine, Unconditionally);
             exit(ReadLines(ExtTextHeader, AssemblyHeader."Starting Date"));
@@ -133,7 +133,7 @@ codeunit 76400 "Transfer Extended Text FLX"
                 ToAssemblyLine."Line No." := NextLineNo;
                 NextLineNo := NextLineNo + LineSpacing;
                 ToAssemblyLine.Description := TempExtTextLine.Text;
-                ToAssemblyLine."Attached to Line No." := AssemblyLine."Line No.";
+                ToAssemblyLine."Attached to Line No. FLX" := AssemblyLine."Line No.";
                 OnBeforeToAssemblyLineInsert(ToAssemblyLine, AssemblyLine, TempExtTextLine, NextLineNo, LineSpacing);
                 ToAssemblyLine.Insert();
             until TempExtTextLine.Next() = 0;
@@ -149,7 +149,7 @@ codeunit 76400 "Transfer Extended Text FLX"
     begin
         AssemblyLine2.SetRange("Document Type", AssemblyLine."Document Type");
         AssemblyLine2.SetRange("Document No.", AssemblyLine."Document No.");
-        AssemblyLine2.SetRange("Attached to Line No.", AssemblyLine."Line No.");
+        AssemblyLine2.SetRange("Attached to Line No. FLX", AssemblyLine."Line No.");
         OnDeleteAssemblyLinesOnAfterSetFilters(AssemblyLine2, AssemblyLine);
         AssemblyLine2 := AssemblyLine;
         if AssemblyLine2.Find('>') then begin

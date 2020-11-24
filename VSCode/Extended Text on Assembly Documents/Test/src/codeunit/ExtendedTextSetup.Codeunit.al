@@ -97,19 +97,19 @@ codeunit 76450 "Extended Text Setup FLX"
 
     local procedure VerifyAssemblyBlanketOrderIsNotSetOnExtendedTextCardPage(var ExtendedTextPage: TestPage "Extended Text")
     begin
-        VerifyFieldIsNotSet(ExtendedTextPage."Assembly Blanket Order".Value(), ExtendedTextPage."Assembly Blanket Order".Caption());
+        VerifyFieldIsNotSet(ExtendedTextPage."Assembly Blanket Order FLX".Value(), ExtendedTextPage."Assembly Blanket Order FLX".Caption());
         ExtendedTextPage.Close();
     end;
 
     local procedure VerifyAssemblyOrderIsNotSetOnExtendedTextCardPage(var ExtendedTextPage: TestPage "Extended Text")
     begin
-        VerifyFieldIsNotSet(ExtendedTextPage."Assembly Order".Value(), ExtendedTextPage."Assembly Order".Caption());
+        VerifyFieldIsNotSet(ExtendedTextPage."Assembly Order FLX".Value(), ExtendedTextPage."Assembly Order FLX".Caption());
         ExtendedTextPage.Close();
     end;
 
     local procedure VerifyAssemblyQuoteIsNotSetOnExtendedTextCardPage(var ExtendedTextPage: TestPage "Extended Text")
     begin
-        VerifyFieldIsNotSet(ExtendedTextPage."Assembly Quote".Value(), ExtendedTextPage."Assembly Quote".Caption());
+        VerifyFieldIsNotSet(ExtendedTextPage."Assembly Quote FLX".Value(), ExtendedTextPage."Assembly Quote FLX".Caption());
         ExtendedTextPage.Close();
     end;
 

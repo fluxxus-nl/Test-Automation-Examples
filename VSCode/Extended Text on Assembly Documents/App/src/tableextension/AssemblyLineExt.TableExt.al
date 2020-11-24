@@ -2,7 +2,7 @@ tableextension 76400 "Assembly Line Ext FLX" extends "Assembly Line" // 901
 {
     fields
     {
-        field(76400; "Attached to Line No."; Integer)
+        field(76400; "Attached to Line No. FLX"; Integer)
         {
             Caption = 'Attached to Line No.';
             DataClassification = ToBeClassified;
@@ -23,7 +23,7 @@ tableextension 76400 "Assembly Line Ext FLX" extends "Assembly Line" // 901
         if "Line No." <> 0 then begin
             AssemblyLine.SetRange("Document Type", Rec."Document Type");
             AssemblyLine.SetRange("Document No.", Rec."Document No.");
-            AssemblyLine.SetRange("Attached to Line No.", Rec."Line No.");
+            AssemblyLine.SetRange("Attached to Line No. FLX", Rec."Line No.");
             AssemblyLine.SetFilter("Line No.", '<>%1', Rec."Line No.");
             AssemblyLine.DeleteAll(true);
         end;
