@@ -31,7 +31,7 @@ steps:
   displayName: 'ALOPS - License Import'
   inputs:
     usedocker: true
-    license_path: '$(bc.license)'  # more info: https://www.youtube.com/watch?v=iVLOerdCuwA&t=3078s
+    license_path: '$(LuxBeheerBcDevLicense)'
 
  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
