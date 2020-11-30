@@ -137,7 +137,7 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
 
     var
         Assert: Codeunit Assert;
-        LibraryUnblockDeletion: Codeunit "Library - Unblock Deletion";
+        LibraryUnblockDeletion: Codeunit "Library - Unblock Deletion FLX";
         IsInitialized: Boolean;
         LocationCode: Code[10];
         DeleteThisSystemCreatedLineQst: Label 'Are you sure you want to delete this system-created line?';

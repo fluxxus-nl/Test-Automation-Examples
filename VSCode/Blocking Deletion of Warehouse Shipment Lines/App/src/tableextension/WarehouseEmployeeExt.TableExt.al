@@ -1,8 +1,8 @@
-tableextension 75641 "WarehouseEmployeeExtFLX" extends "Warehouse Employee" //7301
+tableextension 75641 "WarehouseEmployee Ext FLX" extends "Warehouse Employee" //7301
 {
     fields
     {
-        field(75640; "Allowed to Delete Shpt. Line"; Boolean)
+        field(75640; "Allowed to Delete Shpt. Line FLX"; Boolean)
         {
             Caption = 'Allowed to Delete Whse. Shpt. Line';
             DataClassification = ToBeClassified;
@@ -17,8 +17,8 @@ tableextension 75641 "WarehouseEmployeeExtFLX" extends "Warehouse Employee" //73
     begin
         WarehouseSetup.Get();
 
-        if not WarehouseSetup."Unblock Deletion of Shpt. Line" then begin
-            if not Rec."Allowed to Delete Shpt. Line" then
+        if not WarehouseSetup."Unblock Deletion of Shpt. Line FLX" then begin
+            if not Rec."Allowed to Delete Shpt. Line FLX" then
                 Error(NotAlllowedToDeleteSystemCreatedLinesErr);
 
             if Confirm(DeleteThisSystemCreatedLineQst, false) = false then

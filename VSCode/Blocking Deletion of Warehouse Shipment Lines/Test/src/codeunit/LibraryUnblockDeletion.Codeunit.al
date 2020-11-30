@@ -1,4 +1,4 @@
-codeunit 75659 "Library - Unblock Deletion"
+codeunit 75659 "Library - Unblock Deletion FLX"
 {
     var
         Assert: Codeunit Assert;
@@ -11,7 +11,7 @@ codeunit 75659 "Library - Unblock Deletion"
     begin
         if not WarehouseSetup.Get() then
             WarehouseSetup.Insert();
-        WarehouseSetup."Unblock Deletion of Shpt. Line" := Enable;
+        WarehouseSetup."Unblock Deletion of Shpt. Line FLX" := Enable;
         WarehouseSetup.Modify();
     end;
 
@@ -43,7 +43,7 @@ codeunit 75659 "Library - Unblock Deletion"
         WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
         WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
-        WarehouseShipmentLine.ModifyAll("System-Created", true);
+        WarehouseShipmentLine.ModifyAll("System-Created FLX", true);
 
         exit(WarehouseShipmentNo);
     end;
@@ -55,7 +55,7 @@ codeunit 75659 "Library - Unblock Deletion"
         LibraryWarehouse.CreateWarehouseEmployee(WarehouseEmployee, LocationCode, false);
 
         if WithAllowance then begin
-            WarehouseEmployee."Allowed to Delete Shpt. Line" := true;
+            WarehouseEmployee."Allowed to Delete Shpt. Line FLX" := true;
             WarehouseEmployee.Modify();
         end;
     end;
@@ -95,11 +95,11 @@ codeunit 75659 "Library - Unblock Deletion"
 
         WarehouseEmployees.OpenEdit();
         WarehouseEmployees.GoToRecord(WarehouseEmployee);
-        Assert.AreEqual(IsEditable, WarehouseEmployees."Allowed to Delete Shpt. Line".Editable(), WarehouseEmployees."Allowed to Delete Shpt. Line".Caption());
+        Assert.AreEqual(IsEditable, WarehouseEmployees."Allowed to Delete Shpt. Line FLX".Editable(), WarehouseEmployees."Allowed to Delete Shpt. Line FLX".Caption());
         WarehouseEmployees.Close();
     end;
 
-    local procedure GetWarehouseShipmentHeaderNo(SourceNo: Code[20]; SourceType: Integer; SourceSubtype: Integer): Code[20]
+    local procedure GetWarehouseShipmentHeaderNo(SourceNo: Code[20]; SourceType: Integer; SourceSubtype: Enum "Sales Document Type"): Code[20]
     var
         WarehouseShipmentLine: Record "Warehouse Shipment Line";
     begin
@@ -107,11 +107,10 @@ codeunit 75659 "Library - Unblock Deletion"
         exit(WarehouseShipmentLine."No.");
     end;
 
-    local procedure FindWarehouseShipmentLine(var WarehouseShipmentLine: Record "Warehouse Shipment Line"; SourceNo: Code[20]; SourceType: Integer; SourceSubtype: Integer)
+    local procedure FindWarehouseShipmentLine(var WarehouseShipmentLine: Record "Warehouse Shipment Line"; SourceNo: Code[20]; SourceType: Integer; SourceSubtype: Enum "Sales Document Type")
     begin
         WarehouseShipmentLine.Setrange("Source Type", SourceType);
-        if SourceSubtype >= 0 then
-            WarehouseShipmentLine.SetRange("Source Subtype", SourceSubtype);
+        WarehouseShipmentLine.SetRange("Source Subtype", SourceSubtype);
         WarehouseShipmentLine.Setrange("Source No.", SourceNo);
         WarehouseShipmentLine.FindFirst();
     end;

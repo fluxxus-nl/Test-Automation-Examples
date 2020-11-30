@@ -1,8 +1,8 @@
-tableextension 75642 "WarehouseShipmentLineExtFLX" extends "Warehouse Shipment Line" //7321
+tableextension 75642 "WarehouseShipmentLine Ext FLX" extends "Warehouse Shipment Line" //7321
 {
     fields
     {
-        field(75640; "System-Created"; Boolean)
+        field(75640; "System-Created FLX"; Boolean)
         {
             Caption = 'System-Created';
             DataClassification = ToBeClassified;
@@ -18,7 +18,7 @@ tableextension 75642 "WarehouseShipmentLineExtFLX" extends "Warehouse Shipment L
     var
         WarehouseEmployee: Record "Warehouse Employee";
     begin
-        if "System-Created" then begin
+        if "System-Created FLX" then begin
             WarehouseEmployee.Get(UserId(), Rec."Location Code");
             WarehouseEmployee.CheckAllowedToDeleteWhsShipmentLine();
         end;

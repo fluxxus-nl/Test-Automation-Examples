@@ -111,7 +111,7 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
     end;
 
     var
-        LibraryUnblockDeletion: Codeunit "Library - Unblock Deletion";
+        LibraryUnblockDeletion: Codeunit "Library - Unblock Deletion FLX";
         IsInitialized: Boolean;
         LocationCode: Code[10];
 
@@ -160,7 +160,7 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
         WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
         WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
-        WarehouseShipmentLine.ModifyAll("System-Created", true);
+        WarehouseShipmentLine.ModifyAll("System-Created FLX", true);
 
         exit(WarehouseShipmentNo);
     end;
