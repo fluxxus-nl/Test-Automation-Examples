@@ -99,8 +99,9 @@ steps:
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TestResults.xml'
   inputs:
-    testResultsFormat: XUnit
+    testResultsFormat: 'XUnit'
     testResultsFiles: '**/TestResults.xml'
+    failTaskOnFailedTests: true
     testRunTitle: 'BC Test Results: $(Build.BuildId)'
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
