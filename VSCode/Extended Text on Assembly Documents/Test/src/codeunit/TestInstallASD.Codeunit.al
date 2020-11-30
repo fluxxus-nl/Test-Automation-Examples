@@ -1,4 +1,4 @@
-codeunit 76499 "Test InstallASDFLX"
+codeunit 76499 "Test Install EXT FLX"
 {
     Subtype = Install;
 
