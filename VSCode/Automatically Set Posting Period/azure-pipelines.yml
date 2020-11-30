@@ -1,12 +1,11 @@
 name: $(Build.BuildId)
 
-# trigger:
-#  branches:
-#    include:
-#      - master
+trigger:
+ branches:
+   include:
+     - master/VSCode/Automatically-Set-Posting-Period
 
 variables:
-#- group: 'Secrets'  # link to a variable group that has secret variables, like URL to license file, or sasToken for insider builds
 - group: 'PipelineVariables'
 
 pool: TestAutomationExamples
@@ -100,8 +99,9 @@ steps:
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TestResults.xml'
   inputs:
-    testResultsFormat: XUnit
+    testResultsFormat: 'XUnit'
     testResultsFiles: '**/TestResults.xml'
+    failTaskOnFailedTests: true
     testRunTitle: 'BC Test Results: $(Build.BuildId)'
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

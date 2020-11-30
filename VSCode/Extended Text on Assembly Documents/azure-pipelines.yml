@@ -1,12 +1,11 @@
 name: $(Build.BuildId)
 
-# trigger:
-#  branches:
-#    include:
-#      - master
+trigger:
+ branches:
+   include:
+     - master/VSCode/Extended-Text-on-Assembly-Documents
 
 variables:
-#- group: 'Secrets'  # link to a variable group that has secret variables, like URL to license file, or sasToken for insider builds
 - group: 'PipelineVariables'
 
 pool: TestAutomationExamples
@@ -57,7 +56,7 @@ steps:
   inputs:
     usedocker: true
     nav_app_version: '1.0.[yyyyWW].*'
-    targetproject: 'VSCode/Automatically Set Posting Period/app/app.json'                           # The App
+    targetproject: 'VSCode/Extended Text on Assembly Documents/app/app.json'                           # The App
     failed_on_warnings: true
     app_file_suffix: '_APP'                                 # A trick to uniquely identify the APP (from the TEST-app)
 
@@ -73,7 +72,7 @@ steps:
   inputs:
     usedocker: true
     nav_app_version: '1.0.[yyyyWW].*'
-    targetproject: 'VSCode/Automatically Set Posting Period/test/app.json'                           # The Test-App
+    targetproject: 'VSCode/Extended Text on Assembly Documents/test/app.json'                           # The Test-App
     failed_on_warnings: true    
     app_file_suffix: '_TEST'                                 # A trick to uniquely identify the Test-App (from the App)
 
@@ -100,8 +99,9 @@ steps:
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TestResults.xml'
   inputs:
-    testResultsFormat: XUnit
+    testResultsFormat: 'XUnit'
     testResultsFiles: '**/TestResults.xml'
+    failTaskOnFailedTests: true
     testRunTitle: 'BC Test Results: $(Build.BuildId)'
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
