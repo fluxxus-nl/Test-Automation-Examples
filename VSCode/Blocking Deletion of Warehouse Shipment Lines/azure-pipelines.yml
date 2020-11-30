@@ -1,12 +1,11 @@
 name: $(Build.BuildId)
 
-# trigger:
-#  branches:
-#    include:
-#      - master
+trigger:
+ branches:
+   include:
+     - master/VSCode/Blocking-Deletion-Of-Warehouse-Shipment-Lines
 
 variables:
-#- group: 'Secrets'  # link to a variable group that has secret variables, like URL to license file, or sasToken for insider builds
 - group: 'PipelineVariables'
 
 pool: TestAutomationExamples
@@ -56,10 +55,9 @@ steps:
   displayName: 'ALOPS - Compile Extension: App'
   inputs:
     usedocker: true
+    targetproject: 'VSCode/Blocking Deletion of Warehouse Shipment Lines/app/app.json'
     nav_app_version: '1.0.[yyyyWW].*'
-    targetproject: 'VSCode/Blocking Deletion of Warehouse Shipment Lines/app/app.json'                           # The App
-    failed_on_warnings: true
-    app_file_suffix: '_APP'                                 # A trick to uniquely identify the APP (from the TEST-app)
+    app_file_suffix: '_APP'
 
 - task: ALOpsAppPublish@1
   displayName: 'ALOPS - Publish Extension'
@@ -100,8 +98,9 @@ steps:
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TestResults.xml'
   inputs:
-    testResultsFormat: XUnit
+    testResultsFormat: 'XUnit'
     testResultsFiles: '**/TestResults.xml'
+    failTaskOnFailedTests: true
     testRunTitle: 'BC Test Results: $(Build.BuildId)'
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
