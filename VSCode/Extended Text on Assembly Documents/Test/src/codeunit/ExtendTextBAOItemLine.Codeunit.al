@@ -199,10 +199,25 @@ codeunit 76453 "Extend. Text BAO Item Line FLX"
 
         LibraryTestInitialize.OnBeforeTestSuiteInitialize(Codeunit::"Extend. Text BAO Item Line FLX");
 
+        // [GIVEN] Set Nos on assembly setup
+        SetNosOnAssemblySetup();
+        // [GIVEN] Unit of measure
+        CreateUnitOfMeasure();
+
         IsInitialized := true;
         Commit();
 
         LibraryTestInitialize.OnAfterTestSuiteInitialize(Codeunit::"Extend. Text BAO Item Line FLX");
+    end;
+
+    local procedure SetNosOnAssemblySetup()
+    begin
+        LibraryExtTextAssDoc.SetNosOnAssemblySetup();
+    end;
+
+    local procedure CreateUnitOfMeasure()
+    begin
+        LibraryExtTextAssDoc.CreateUnitOfMeasure();
     end;
 
     local procedure AddItemLineToBlanketAssemblyOrderPage(AssemblyDocNo: Code[20]; ItemNo: Code[20])

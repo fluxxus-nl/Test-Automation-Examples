@@ -197,12 +197,27 @@ codeunit 76454 "Extended Text AO Res. Line FLX"
         if IsInitialized then
             exit;
 
+        // [GIVEN] Set Nos on assembly setup
+        SetNosOnAssemblySetup();
+        // [GIVEN] Unit of measure
+        CreateUnitOfMeasure();
+
         LibraryTestInitialize.OnBeforeTestSuiteInitialize(Codeunit::"Extended Text AO Res. Line FLX");
 
         IsInitialized := true;
         Commit();
 
         LibraryTestInitialize.OnAfterTestSuiteInitialize(Codeunit::"Extended Text AO Res. Line FLX");
+    end;
+
+    local procedure SetNosOnAssemblySetup()
+    begin
+        LibraryExtTextAssDoc.SetNosOnAssemblySetup();
+    end;
+
+    local procedure CreateUnitOfMeasure()
+    begin
+        LibraryExtTextAssDoc.CreateUnitOfMeasure();
     end;
 
     local procedure AddResourceLineToAssemblyOrderPage(AssemblyDocNo: Code[20]; ResourceNo: Code[20])

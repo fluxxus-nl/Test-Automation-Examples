@@ -178,10 +178,25 @@ codeunit 76458 "Extended Text AQ Text Line FLX"
 
         LibraryTestInitialize.OnBeforeTestSuiteInitialize(Codeunit::"Extended Text AQ Text Line FLX");
 
+        // [GIVEN] Set Nos on assembly setup
+        SetNosOnAssemblySetup();
+        // [GIVEN] Unit of measure
+        CreateUnitOfMeasure();
+
         IsInitialized := true;
         Commit();
 
         LibraryTestInitialize.OnAfterTestSuiteInitialize(Codeunit::"Extended Text AQ Text Line FLX");
+    end;
+
+    local procedure SetNosOnAssemblySetup()
+    begin
+        LibraryExtTextAssDoc.SetNosOnAssemblySetup();
+    end;
+
+    local procedure CreateUnitOfMeasure()
+    begin
+        LibraryExtTextAssDoc.CreateUnitOfMeasure();
     end;
 
     local procedure AddTextLineToAssemblyQuotePage(AssemblyDocNo: Code[20]; TextCode: Code[20])

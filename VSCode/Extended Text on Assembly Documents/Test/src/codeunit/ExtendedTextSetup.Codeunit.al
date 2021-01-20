@@ -70,6 +70,9 @@ codeunit 76450 "Extended Text Setup FLX"
             exit;
 
         LibraryTestInitialize.OnBeforeTestSuiteInitialize(Codeunit::"Extended Text Setup FLX");
+
+        // [GIVEN] Unit of measure
+        CreateUnitOfMeasure();
         // [GIVEN] Item with extended text
         ItemNo := CreateItemWithExtendedText();
 
@@ -77,6 +80,11 @@ codeunit 76450 "Extended Text Setup FLX"
         Commit();
 
         LibraryTestInitialize.OnAfterTestSuiteInitialize(Codeunit::"Extended Text Setup FLX");
+    end;
+
+    local procedure CreateUnitOfMeasure()
+    begin
+        LibraryExtTextAssDoc.CreateUnitOfMeasure();
     end;
 
     local procedure CreateItemWithExtendedText(): Code[20]

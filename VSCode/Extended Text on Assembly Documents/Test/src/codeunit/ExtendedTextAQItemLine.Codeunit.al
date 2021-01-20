@@ -199,10 +199,25 @@ codeunit 76452 "Extended Text AQ Item Line FLX"
 
         LibraryTestInitialize.OnBeforeTestSuiteInitialize(Codeunit::"Extended Text AQ Item Line FLX");
 
+        // [GIVEN] Set Nos on assembly setup
+        SetNosOnAssemblySetup();
+        // [GIVEN] Unit of measure
+        CreateUnitOfMeasure();
+
         IsInitialized := true;
         Commit();
 
         LibraryTestInitialize.OnAfterTestSuiteInitialize(Codeunit::"Extended Text AQ Item Line FLX");
+    end;
+
+    local procedure SetNosOnAssemblySetup()
+    begin
+        LibraryExtTextAssDoc.SetNosOnAssemblySetup();
+    end;
+
+    local procedure CreateUnitOfMeasure()
+    begin
+        LibraryExtTextAssDoc.CreateUnitOfMeasure();
     end;
 
     local procedure AddItemLineToAssemblyQuotePage(AssemblyDocNo: Code[20]; ItemNo: Code[20])

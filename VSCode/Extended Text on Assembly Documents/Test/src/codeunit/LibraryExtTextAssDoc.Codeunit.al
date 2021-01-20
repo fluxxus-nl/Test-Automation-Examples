@@ -1,5 +1,30 @@
 codeunit 76469 "Library - Ext Text Ass Doc FLX"
 {
+    procedure CreateUnitOfMeasure()
+    var
+        UnitOfMeasure: Record "Unit of Measure";
+        LibraryInventory: Codeunit "Library - Inventory";
+    begin
+        LibraryInventory.CreateUnitOfMeasureCode(UnitOfMeasure);
+    end;
+
+    procedure SetNosOnAssemblySetup()
+    var
+        AssemblySetup: Record "Assembly Setup";
+        LibraryUtility: Codeunit "Library - Utility";
+    begin
+        if not AssemblySetup.Get() then
+            AssemblySetup.Insert();
+        LibraryUtility.UpdateSetupNoSeriesCode(
+          DATABASE::"Assembly Setup", AssemblySetup.FieldNo("Assembly Quote Nos."));
+        LibraryUtility.UpdateSetupNoSeriesCode(
+          DATABASE::"Assembly Setup", AssemblySetup.FieldNo("Assembly Order Nos."));
+        LibraryUtility.UpdateSetupNoSeriesCode(
+          DATABASE::"Assembly Setup", AssemblySetup.FieldNo("Blanket Assembly Order Nos."));
+        LibraryUtility.UpdateSetupNoSeriesCode(
+          DATABASE::"Assembly Setup", AssemblySetup.FieldNo("Posted Assembly Order Nos."));
+    end;
+
     procedure CreateItemWithExtendedText(AutomaticExtTextsEnabled: Boolean; EnableExtText: Option None,Order,Quote,"Blanket Order"): Code[20]
     var
         Item: Record Item;
