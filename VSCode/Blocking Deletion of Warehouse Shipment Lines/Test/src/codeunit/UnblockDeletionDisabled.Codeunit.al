@@ -153,6 +153,10 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
 
         LibraryTestInitialize.OnBeforeTestSuiteInitialize(Codeunit::"Unblock Deletion Disabled FLX");
 
+        // [GIVEN] Set sales & receivebales setup
+        SetSalesReceivablesSetup();
+        // [GIVEN] Unit of measure
+        CreateUnitOfMeasure();
         // [GIVEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
         DisableUnblockDeletionOfShptLineOnWarehouseSetup();
         // [GIVEN] Location with require shipment
@@ -164,9 +168,20 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         LibraryTestInitialize.OnAfterTestSuiteInitialize(Codeunit::"Unblock Deletion Disabled FLX");
     end;
 
+    local procedure SetSalesReceivablesSetup()
+    begin
+        LibraryUnblockDeletion.SetOrderNosOnSalesReceivablesSetup();
+    end;
+
+    local procedure CreateUnitOfMeasure()
+    begin
+        LibraryUnblockDeletion.CreateUnitOfMeasure();
+    end;
+
     local procedure DisableUnblockDeletionOfShptLineOnWarehouseSetup()
     begin
         LibraryUnblockDeletion.SetUnblockDeletionOfShptLineOnWarehouseSetup(false);
+        LibraryUnblockDeletion.SetWhseShipNosOnWarehouseSetup();
     end;
 
     local procedure CreateLocationWithRequireShipment(): Code[10]

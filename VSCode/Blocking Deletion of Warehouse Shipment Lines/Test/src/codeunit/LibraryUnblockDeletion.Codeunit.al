@@ -2,8 +2,27 @@ codeunit 75655 "Library - Unblock Deletion FLX"
 {
     var
         Assert: Codeunit Assert;
-        LibraryWarehouse: Codeunit "Library - Warehouse";
+        LibraryInventory: Codeunit "Library - Inventory";
         LibrarySales: Codeunit "Library - Sales";
+        LibraryUtility: Codeunit "Library - Utility";
+        LibraryWarehouse: Codeunit "Library - Warehouse";
+
+    procedure CreateUnitOfMeasure()
+    var
+        UnitOfMeasure: Record "Unit of Measure";
+    begin
+        LibraryInventory.CreateUnitOfMeasureCode(UnitOfMeasure);
+    end;
+
+    procedure SetOrderNosOnSalesReceivablesSetup()
+    var
+        SalesReceivablesSetup: Record "Sales & Receivables Setup";
+    begin
+        if not SalesReceivablesSetup.Get() then
+            SalesReceivablesSetup.Insert();
+        LibraryUtility.UpdateSetupNoSeriesCode(
+          DATABASE::"Sales & Receivables Setup", SalesReceivablesSetup.FieldNo("Order Nos."));
+    end;
 
     procedure SetUnblockDeletionOfShptLineOnWarehouseSetup(Enable: Boolean)
     var
@@ -13,6 +32,16 @@ codeunit 75655 "Library - Unblock Deletion FLX"
             WarehouseSetup.Insert();
         WarehouseSetup."Unblock Deletion of Shpt. Line FLX" := Enable;
         WarehouseSetup.Modify();
+    end;
+
+    procedure SetWhseShipNosOnWarehouseSetup()
+    var
+        WarehouseSetup: Record "Warehouse Setup";
+    begin
+        if not WarehouseSetup.Get() then
+            WarehouseSetup.Insert();
+        LibraryUtility.UpdateSetupNoSeriesCode(
+          DATABASE::"Warehouse Setup", WarehouseSetup.FieldNo("Whse. Ship Nos."));
     end;
 
     procedure CreateLocationWithRequireShipment(): Code[10]
