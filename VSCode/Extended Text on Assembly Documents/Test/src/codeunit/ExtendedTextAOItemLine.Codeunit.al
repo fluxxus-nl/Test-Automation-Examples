@@ -270,7 +270,7 @@ codeunit 76451 "Extended Text AO Item Line FLX"
         exit(LibraryExtTextAssDoc.CreateItemWithNoExtendedText());
     end;
 
-    local procedure CreateItemWithExtendedText(AutomaticExtTextsEnabled: Boolean; EnableExtText: Option None,Order,Quote,"Blanket Order"): Code[20]
+    local procedure CreateItemWithExtendedText(AutomaticExtTextsEnabled: Boolean; EnableExtText: Enum "Assembly Document Type"): Code[20]
     begin
         exit(LibraryExtTextAssDoc.CreateItemWithExtendedText(AutomaticExtTextsEnabled, EnableExtText));
     end;
@@ -350,14 +350,14 @@ codeunit 76451 "Extended Text AO Item Line FLX"
         exit(true);
     end;
 
-    local procedure DisableExtTextForAssemblyDocument(): Integer
+    local procedure DisableExtTextForAssemblyDocument(): Enum "Assembly Document Type"
     begin
-        exit(0);
+        exit("Assembly Document Type"::None);
     end;
 
-    local procedure EnableExtTextForAssemblyOrder(): Integer
+    local procedure EnableExtTextForAssemblyOrder(): Enum "Assembly Document Type"
     begin
-        exit(1);
+        exit("Assembly Document Type"::Order);
     end;
 
     var

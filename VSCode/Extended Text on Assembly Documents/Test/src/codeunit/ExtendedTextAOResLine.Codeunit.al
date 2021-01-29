@@ -270,7 +270,7 @@ codeunit 76454 "Extended Text AO Res. Line FLX"
         exit(LibraryExtTextAssDoc.CreateResourceWithNoExtendedText());
     end;
 
-    local procedure CreateResourceWithExtendedText(AutomaticExtTextsEnabled: Boolean; AssemblyDocumentType: Option " ",Order,Quote,"Blanket Order"): Code[20]
+    local procedure CreateResourceWithExtendedText(AutomaticExtTextsEnabled: Boolean; AssemblyDocumentType: Enum "Assembly Document Type"): Code[20]
     begin
         exit(LibraryExtTextAssDoc.CreateResourceWithExtendedText(AutomaticExtTextsEnabled, AssemblyDocumentType));
     end;
@@ -350,14 +350,14 @@ codeunit 76454 "Extended Text AO Res. Line FLX"
         exit(true);
     end;
 
-    local procedure DisableExtTextForAssemblyDocument(): Integer
+    local procedure DisableExtTextForAssemblyDocument(): Enum "Assembly Document Type"
     begin
-        exit(0);
+        exit("Assembly Document Type"::None);
     end;
 
-    local procedure EnableExtTextForAssemblyOrder(): Integer
+    local procedure EnableExtTextForAssemblyOrder(): Enum "Assembly Document Type"
     begin
-        exit(1);
+        exit("Assembly Document Type"::Order);
     end;
 
     var

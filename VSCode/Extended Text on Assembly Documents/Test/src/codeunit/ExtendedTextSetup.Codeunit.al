@@ -89,7 +89,7 @@ codeunit 76450 "Extended Text Setup FLX"
 
     local procedure CreateItemWithExtendedText(): Code[20]
     begin
-        exit(LibraryExtTextAssDoc.CreateItemWithExtendedText(false, 0)); // 0 = enable ext. text for no assembly doc
+        exit(LibraryExtTextAssDoc.CreateItemWithExtendedText(false, "Assembly Document Type"::None)); // enable ext. text for no assembly doc
     end;
 
     local procedure OpenExtendedTextCardPage(var ExtendedTextPage: TestPage "Extended Text"; ItemNo: Code[20])

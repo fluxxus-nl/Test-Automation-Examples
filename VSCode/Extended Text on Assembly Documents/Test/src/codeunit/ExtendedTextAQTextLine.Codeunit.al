@@ -249,7 +249,7 @@ codeunit 76458 "Extended Text AQ Text Line FLX"
         exit(LibraryExtTextAssDoc.CreateStandardTextWithNoExtendedText());
     end;
 
-    local procedure CreateStandardTextWithExtendedText(EnableExtText: Option None,Order,Quote,"Blanket Order"): Code[20]
+    local procedure CreateStandardTextWithExtendedText(EnableExtText: Enum "Assembly Document Type"): Code[20]
     begin
         exit(LibraryExtTextAssDoc.CreateStandardTextWithExtendedText(EnableExtText));
     end;
@@ -319,14 +319,14 @@ codeunit 76458 "Extended Text AQ Text Line FLX"
         LibraryExtTextAssDoc.VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(AssemblyHeader."Document Type"::Quote, AssemblyDocNo);
     end;
 
-    local procedure DisableExtTextForAssemblyDocument(): Integer
+    local procedure DisableExtTextForAssemblyDocument(): Enum "Assembly Document Type"
     begin
-        exit(0);
+        exit("Assembly Document Type"::None);
     end;
 
-    local procedure EnableExtTextForAssemblyQuote(): Integer
+    local procedure EnableExtTextForAssemblyQuote(): Enum "Assembly Document Type"
     begin
-        exit(2);
+        exit("Assembly Document Type"::Quote);
     end;
 
     var

@@ -248,7 +248,7 @@ codeunit 76459 "Extend. Text BAO Text Line FLX"
         exit(LibraryExtTextAssDoc.CreateStandardTextWithNoExtendedText());
     end;
 
-    local procedure CreateStandardTextWithExtendedText(AssemblyDocumentType: Option " ",Order,Quote,"Blanket Order"): Code[20]
+    local procedure CreateStandardTextWithExtendedText(AssemblyDocumentType: Enum "Assembly Document Type"): Code[20]
     begin
         exit(LibraryExtTextAssDoc.CreateStandardTextWithExtendedText(AssemblyDocumentType));
     end;
@@ -318,14 +318,14 @@ codeunit 76459 "Extend. Text BAO Text Line FLX"
         LibraryExtTextAssDoc.VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(AssemblyHeader."Document Type"::"Blanket Order", AssemblyDocNo);
     end;
 
-    local procedure DisableExtTextForAssemblyDocument(): Integer
+    local procedure DisableExtTextForAssemblyDocument(): Enum "Assembly Document Type"
     begin
-        exit(0);
+        exit("Assembly Document Type"::None);
     end;
 
-    local procedure EnableExtTextForBlanketAssemblyOrder(): Integer
+    local procedure EnableExtTextForBlanketAssemblyOrder(): Enum "Assembly Document Type"
     begin
-        exit(1);
+        exit("Assembly Document Type"::"Blanket Order");
     end;
 
     var
