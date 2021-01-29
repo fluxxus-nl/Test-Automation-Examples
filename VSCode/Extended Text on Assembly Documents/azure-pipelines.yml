@@ -57,7 +57,7 @@ steps:
     usedocker: true
     nav_app_version: '1.0.[yyyyWW].*'
     targetproject: 'VSCode/Extended Text on Assembly Documents/app/app.json'                           # The App
-    failed_on_warnings: true
+    failed_on_warnings: false
     app_file_suffix: '_APP'                                 # A trick to uniquely identify the APP (from the TEST-app)
 
 - task: ALOpsAppPublish@1
