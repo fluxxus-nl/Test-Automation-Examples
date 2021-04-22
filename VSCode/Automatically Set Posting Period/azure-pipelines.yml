@@ -64,7 +64,7 @@ steps:
   displayName: 'ALOPS - Publish Extension'
   inputs:
     usedocker: true
-    nav_artifact_app_filter: '*.app'
+    nav_artifact_app_filter: '*_APP.app'
     skip_verification: true
 
 - task: ALOpsAppCompiler@1
@@ -80,7 +80,7 @@ steps:
   displayName: 'ALOPS - Publish Extension'
   inputs:
     usedocker: true
-    nav_artifact_app_filter: '*.app'
+    nav_artifact_app_filter: '*_TEST.app'
     skip_verification: true   
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
