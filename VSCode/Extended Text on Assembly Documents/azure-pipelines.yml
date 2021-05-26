@@ -106,5 +106,7 @@ steps:
 
 - task: ALOpsDockerRemove@1
   displayName: 'ALOPS - Remove Docker Container'
+  inputs:
+    createSqlBackup: $(createSqlBackup)
   enabled: true
   condition: always()
