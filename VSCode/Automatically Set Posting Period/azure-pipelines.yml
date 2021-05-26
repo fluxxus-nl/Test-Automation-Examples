@@ -74,7 +74,7 @@ steps:
     nav_app_version: '?.?.[yyyyWW].*'
     targetproject: 'VSCode/Automatically Set Posting Period/test/app.json'                           # The Test-App
     failed_on_warnings: true    
-    app_file_suffix: '_TEST.app'                                 # A trick to uniquely identify the Test-App (from the App)
+    app_file_suffix: '_TEST'                                 # A trick to uniquely identify the Test-App (from the App)
 
 - task: ALOpsAppPublish@1
   displayName: 'ALOPS - Publish Extension'
