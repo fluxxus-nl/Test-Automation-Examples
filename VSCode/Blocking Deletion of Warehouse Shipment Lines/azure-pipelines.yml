@@ -55,15 +55,15 @@ steps:
   displayName: 'ALOPS - Compile Extension: App'
   inputs:
     usedocker: true
-    nav_app_version: '?.?.[yyyyWW].*'
     targetproject: 'VSCode/Blocking Deletion of Warehouse Shipment Lines/app/app.json'
-    app_file_suffix: '_APP'                                 # A trick to uniquely identify the APP (from the TEST-app)
+    nav_app_version: '?.?.[yyyyWW].*'
+    app_file_suffix: '_APP'
 
 - task: ALOpsAppPublish@1
   displayName: 'ALOPS - Publish Extension'
   inputs:
     usedocker: true
-    nav_artifact_app_filter: '*APP.app'
+    nav_artifact_app_filter: '*_APP.app'
     skip_verification: true
 
 - task: ALOpsAppCompiler@1
@@ -72,13 +72,13 @@ steps:
     usedocker: true
     nav_app_version: '?.?.[yyyyWW].*'
     targetproject: 'VSCode/Blocking Deletion of Warehouse Shipment Lines/test/app.json'
-    app_file_suffix: '_TEST'                                 # A trick to uniquely identify the Test-App (from the App)
+    app_file_suffix: '_TEST'
 
 - task: ALOpsAppPublish@1
   displayName: 'ALOPS - Publish Extension'
   inputs:
     usedocker: true
-    nav_artifact_app_filter: '*TEST.app'
+    nav_artifact_app_filter: '*_TEST.app'
     skip_verification: true   
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -90,6 +90,7 @@ steps:
     import_action: "Skip"
     import_testtoolkit: false
     testpage: '130455'
+    extensionid: 'b18c8cac-c30b-4c6e-b2ac-da07ca6cc4ae' # '*_TEST.app'
     testsuite: 'DEFAULT'
     failed_test_action: 'Ignore'
   continueOnError: true   

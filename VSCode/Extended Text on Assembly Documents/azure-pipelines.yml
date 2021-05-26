@@ -70,8 +70,8 @@ steps:
   displayName: 'ALOPS - Compile Extension: Test-App'
   inputs:
     usedocker: true
-    targetproject: 'VSCode/Extended Text on Assembly Documents/test/app.json'
     nav_app_version: '?.?.[yyyyWW].*'
+    targetproject: 'VSCode/Extended Text on Assembly Documents/test/app.json'
     app_file_suffix: '_TEST'
 
 - task: ALOpsAppPublish@1
@@ -90,6 +90,7 @@ steps:
     import_action: "Skip"
     import_testtoolkit: false
     testpage: '130455'
+    extensionid: '1b8c2a9b-a6a8-4471-9052-6746b5ae7c09' # '*_TEST.app'
     testsuite: 'DEFAULT'
     failed_test_action: 'Ignore'
   continueOnError: true   
