@@ -92,6 +92,7 @@ steps:
     import_action: "Skip"
     import_testtoolkit: false
     testpage: '130455'
+    extensionid: 'a96c6a03-f73e-4c5e-955b-007d097a2086' # '*_TEST.app'
     testsuite: 'DEFAULT'
     failed_test_action: 'Ignore'
   continueOnError: true   
