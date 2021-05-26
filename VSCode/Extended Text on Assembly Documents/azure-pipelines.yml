@@ -56,7 +56,7 @@ steps:
   inputs:
     usedocker: true
     targetproject: 'VSCode/Extended Text on Assembly Documents/app/app.json'
-    nav_app_version: '1.0.[yyyyWW].*'
+    nav_app_version: '?.?.[yyyyWW].*'
     app_file_suffix: '_APP'
 
 - task: ALOpsAppPublish@1
@@ -71,7 +71,7 @@ steps:
   inputs:
     usedocker: true
     targetproject: 'VSCode/Extended Text on Assembly Documents/test/app.json'
-    nav_app_version: '1.0.[yyyyWW].*'
+    nav_app_version: '?.?.[yyyyWW].*'
     app_file_suffix: '_TEST'
 
 - task: ALOpsAppPublish@1
