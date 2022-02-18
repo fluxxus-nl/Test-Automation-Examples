@@ -174,7 +174,7 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
     begin
         WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
-        WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
+        WarehouseShipmentLine.SetRange("No.", WarehouseShipmentNo);
         WarehouseShipmentLine.ModifyAll("System-Created FLX", true);
 
         exit(WarehouseShipmentNo);

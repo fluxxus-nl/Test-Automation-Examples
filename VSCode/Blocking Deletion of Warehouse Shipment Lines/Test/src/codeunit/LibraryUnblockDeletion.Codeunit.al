@@ -71,7 +71,7 @@ codeunit 75655 "Library - Unblock Deletion FLX"
     begin
         WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
 
-        WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
+        WarehouseShipmentLine.SetRange("No.", WarehouseShipmentNo);
         WarehouseShipmentLine.ModifyAll("System-Created FLX", true);
 
         exit(WarehouseShipmentNo);
@@ -93,7 +93,7 @@ codeunit 75655 "Library - Unblock Deletion FLX"
     var
         WarehouseShipmentLine: Record "Warehouse Shipment Line";
     begin
-        WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
+        WarehouseShipmentLine.SetRange("No.", WarehouseShipmentNo);
         WarehouseShipmentLine.FindFirst();
         WarehouseShipmentLine.Delete(true);
     end;
@@ -102,7 +102,7 @@ codeunit 75655 "Library - Unblock Deletion FLX"
     var
         WarehouseShipmentLine: Record "Warehouse Shipment Line";
     begin
-        WarehouseShipmentLine.Setrange("No.", WarehouseShipmentNo);
+        WarehouseShipmentLine.SetRange("No.", WarehouseShipmentNo);
         Assert.RecordIsEmpty(WarehouseShipmentLine);
     end;
 
@@ -138,9 +138,9 @@ codeunit 75655 "Library - Unblock Deletion FLX"
 
     local procedure FindWarehouseShipmentLine(var WarehouseShipmentLine: Record "Warehouse Shipment Line"; SourceNo: Code[20]; SourceType: Integer; SourceSubtype: Enum "Sales Document Type")
     begin
-        WarehouseShipmentLine.Setrange("Source Type", SourceType);
+        WarehouseShipmentLine.SetRange("Source Type", SourceType);
         WarehouseShipmentLine.SetRange("Source Subtype", SourceSubtype);
-        WarehouseShipmentLine.Setrange("Source No.", SourceNo);
+        WarehouseShipmentLine.SetRange("Source No.", SourceNo);
         WarehouseShipmentLine.FindFirst();
     end;
 }
