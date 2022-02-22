@@ -16,6 +16,8 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0005] Delete by user with no allowance manually created whse. shpt. line
+        // [GIVEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with no allowance
@@ -37,6 +39,8 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0006] Delete by user with no allowance automatically created whse. shpt. line
+        // [GIVEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with no allowance
@@ -58,6 +62,8 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0007] Delete by user with allowance manually created whse. shpt. line
+        // [GIVEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with allowance
@@ -80,6 +86,8 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0008] Delete  by user with allowance automatically created whse. shpt. line with confirmation
+        // [GIVEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with allowance
@@ -103,6 +111,8 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0011] Delete by user with allowance automatically created whse. shpt. line with no confirmation
+        // [GIVEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with allowance
@@ -123,6 +133,7 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line disabled
     begin
         // [SCENARIO #0010] "Allowed to Delete Shpt. Line" is editable on warehouse employees page
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user

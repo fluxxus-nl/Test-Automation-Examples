@@ -16,6 +16,8 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0001] Delete by user with no allowance manually created whse. shpt. line
+        // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with no allowance
@@ -37,6 +39,8 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0002] Delete by user with no allowance automatically created whse. shpt. line
+        // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with no allowance
@@ -58,6 +62,8 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0003] Delete by user with allowance manually created whse. shpt. line
+        // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with allowance
@@ -79,6 +85,8 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
         WarehouseShipmentNo: Code[20];
     begin
         // [SCENARIO #0004] Delete by user with allowance automatically created whse. shpt. line
+        // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user with allowance
@@ -98,6 +106,7 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
     begin
         // [SCENARIO #0009] "Allowed to Delete Shpt. Line" is not editable on warehouse employees page
+        // [GIVEN] Location with require shipment
         Initialize();
 
         // [GIVEN] Warehouse employee for current user
