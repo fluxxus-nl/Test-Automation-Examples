@@ -48,6 +48,7 @@ steps:
      Any
      Library Assert
      Test Runner
+     Permissions Mock
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
