@@ -114,7 +114,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         exit(AssemblyHeader."No.");
     end;
 
-    procedure DeleteLineFromAssemblyDocument(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "Assembly Document Line Type"; No: Code[20])
+    procedure DeleteLineFromAssemblyDocument(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "BOM Component Type"; No: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
     begin
@@ -122,7 +122,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         AssemblyLine.Delete(true);
     end;
 
-    procedure InsertExtendedText(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "Assembly Document Line Type"; No: Code[20])
+    procedure InsertExtendedText(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "BOM Component Type"; No: Code[20])
     var
         AssemblyLine: Record "Assembly Line";
         TransferExtendedText: Codeunit "Transfer Extended Text FLX";
@@ -133,7 +133,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         TransferExtendedText.InsertAssemblyExtText(AssemblyLine);
     end;
 
-    procedure VerifyExtendedTextLinesAreAddedToAssemblyDocument(AssemblyDocType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "Assembly Document Line Type"; No: Code[20])
+    procedure VerifyExtendedTextLinesAreAddedToAssemblyDocument(AssemblyDocType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "BOM Component Type"; No: Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
@@ -178,13 +178,13 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         until AssemblyLine.Next() = 0;
     end;
 
-    procedure FindAssemblyLine(EnableExtText: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "Assembly Document Line Type"; No: Code[20]; var AssemblyLine: Record "Assembly Line")
+    procedure FindAssemblyLine(EnableExtText: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "BOM Component Type"; No: Code[20]; var AssemblyLine: Record "Assembly Line")
     begin
         SetAssemblyLineFilter(EnableExtText, AssemblyDocNo, LineType, No, AssemblyLine);
         AssemblyLine.FindFirst();
     end;
 
-    procedure SetAssemblyLineFilter(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "Assembly Document Line Type"; No: Code[20]; var AssemblyLine: Record "Assembly Line")
+    procedure SetAssemblyLineFilter(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "BOM Component Type"; No: Code[20]; var AssemblyLine: Record "Assembly Line")
     var
         AssemblyHeader: Record "Assembly Header";
     begin
@@ -245,7 +245,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         exit(StandardText.Code);
     end;
 
-    procedure VerifyAssemblyLine(Exists: Boolean; DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "Assembly Document Line Type"; No: Code[20])
+    procedure VerifyAssemblyLine(Exists: Boolean; DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; LineType: Enum "BOM Component Type"; No: Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";
@@ -296,7 +296,7 @@ codeunit 76469 "Library - Ext Text Ass Doc FLX"
         VerifyNoExtendedTextLinesAreAddedToAssemblyDocument(DocumentType, AssemblyDocNo);
     end;
 
-    procedure VerifyReplacementAndExtendedTextLinesAreRemoved(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; Type: Enum "Assembly Document Line Type"; No: array[2] of Code[20])
+    procedure VerifyReplacementAndExtendedTextLinesAreRemoved(DocumentType: Enum "Assembly Document Type"; AssemblyDocNo: Code[20]; Type: Enum "BOM Component Type"; No: array[2] of Code[20])
     var
         AssemblyHeader: Record "Assembly Header";
         AssemblyLine: Record "Assembly Line";

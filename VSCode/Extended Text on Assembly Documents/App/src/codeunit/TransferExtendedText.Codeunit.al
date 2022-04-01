@@ -14,7 +14,7 @@ codeunit 76400 "Transfer Extended Text FLX"
         if Unconditionally then
             AutoText := true
         else
-            case AssemblyLine.Type OF
+            case AssemblyLine.Type of
                 AssemblyLine.Type::" ":
                     AutoText := true;
                 AssemblyLine.Type::Item:
@@ -41,7 +41,7 @@ codeunit 76400 "Transfer Extended Text FLX"
                     ExtTextHeader.SetRange("Table Name", ExtTextHeader."Table Name"::Resource);
             end;
             ExtTextHeader.SetRange("No.", AssemblyLine."No.");
-            case AssemblyLine."Document Type" OF
+            case AssemblyLine."Document Type" of
                 AssemblyLine."Document Type"::Quote:
                     ExtTextHeader.SetRange("Assembly Quote FLX", true);
                 AssemblyLine."Document Type"::"Blanket Order":

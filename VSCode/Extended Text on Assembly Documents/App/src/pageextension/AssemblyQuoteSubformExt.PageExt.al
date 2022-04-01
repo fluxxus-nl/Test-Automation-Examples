@@ -9,7 +9,7 @@ pageextension 76402 "Assembly Quote Subform Ext FLX" extends "Assembly Quote Sub
                 NoOnAfterValidate();
             end;
         }
-        Modify("No.")
+        modify("No.")
         {
             trigger OnAfterValidate()
             begin
@@ -24,7 +24,7 @@ pageextension 76402 "Assembly Quote Subform Ext FLX" extends "Assembly Quote Sub
         {
             action("Insert &Ext. TextsASDFLX")
             {
-                AccessByPermission = TableData "Extended Text Header" = R;
+                AccessByPermission = tabledata "Extended Text Header" = R;
                 ApplicationArea = Basic, Suite;
                 Caption = 'Insert &Ext. Texts';
                 Image = Text;

@@ -9,7 +9,7 @@ pageextension 76400 "Assembly Order Subform Ext FLX" extends "Assembly Order Sub
                 NoOnAfterValidate();
             end;
         }
-        Modify("No.")
+        modify("No.")
         {
             trigger OnAfterValidate()
             begin
@@ -24,7 +24,7 @@ pageextension 76400 "Assembly Order Subform Ext FLX" extends "Assembly Order Sub
         {
             action("Insert &Ext. TextsASDFLX")
             {
-                AccessByPermission = TableData "Extended Text Header" = R;
+                AccessByPermission = tabledata "Extended Text Header" = R;
                 ApplicationArea = Basic, Suite;
                 Caption = 'Insert &Ext. Texts';
                 Image = Text;

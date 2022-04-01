@@ -9,7 +9,7 @@ pageextension 76403 "Bl Assembly Order Subf Ext FLX" extends "Blanket Assembly O
                 NoOnAfterValidate();
             end;
         }
-        Modify("No.")
+        modify("No.")
         {
             trigger OnAfterValidate()
             begin
@@ -24,7 +24,7 @@ pageextension 76403 "Bl Assembly Order Subf Ext FLX" extends "Blanket Assembly O
         {
             action("Insert &Ext. TextsASDFLX")
             {
-                AccessByPermission = TableData "Extended Text Header" = R;
+                AccessByPermission = tabledata "Extended Text Header" = R;
                 ApplicationArea = Basic, Suite;
                 Caption = 'Insert &Ext. Texts';
                 Image = Text;
