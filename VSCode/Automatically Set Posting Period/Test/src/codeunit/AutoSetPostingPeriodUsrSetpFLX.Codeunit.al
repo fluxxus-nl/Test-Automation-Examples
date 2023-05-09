@@ -154,12 +154,12 @@ codeunit 80467 "AutoSetPostingPeriodUsrSetpFLX"
 
     local procedure CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateFiscalYearForDate(Today);
+        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(Today);
     end;
 
     local procedure CreateAccountingPeriodsForNextFiscalYearRelatedToSystemDate()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateFiscalYearForDate(CalcDate('<+1Y>', Today));
+        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(CalcDate('<+1Y>', Today));
     end;
 
     local procedure DisableUseNextPeriodOnRequestPage()
@@ -174,37 +174,37 @@ codeunit 80467 "AutoSetPostingPeriodUsrSetpFLX"
 
     local procedure CreateFirstUserSetupRecordWithAutomaticUpdatePostingPeriodEnabled()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateUserSetupsWithAutomaticUpdatePostingPeriodEnabled(1);
+        LibraryAutoSetPostPeriod.CreateUserSetupsWithAutomaticUpdatePostingPeriodEnabled(1);
     end;
 
     local procedure CreateSecondUserSetupRecordWithAutomaticUpdatePostingPeriodDisabled()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(1);
+        LibraryAutoSetPostPeriod.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(1);
     end;
 
     local procedure CreateThirdUserSetupRecordWithAutomaticUpdatePostingPeriodEnabled()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateUserSetupsWithAutomaticUpdatePostingPeriodEnabled(1);
+        LibraryAutoSetPostPeriod.CreateUserSetupsWithAutomaticUpdatePostingPeriodEnabled(1);
     end;
 
     local procedure CreateFourthUserSetupRecordWithAutomaticUpdatePostingPeriodDisabled()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(1);
+        LibraryAutoSetPostPeriod.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(1);
     end;
 
     local procedure CreateFourUserSetupRecordsWithAutomaticUpdatePostingPeriodDisabled()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(4);
+        LibraryAutoSetPostPeriod.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(4);
     end;
 
     local procedure CreateFourUserSetupRecordsWithAutomaticUpdatePostingPeriodEnabled()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateUserSetupsWithAutomaticUpdatePostingPeriodEnabled(4);
+        LibraryAutoSetPostPeriod.CreateUserSetupsWithAutomaticUpdatePostingPeriodEnabled(4);
     end;
 
     local procedure CreateUserSetup()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(1);
+        LibraryAutoSetPostPeriod.CreateUserSetupsWithAutomaticUpdatePostingPeriodDisabled(1);
     end;
 
     local procedure OpeningUserSetupPageInEditMode(var UserSetup: TestPage "User Setup")
@@ -214,11 +214,11 @@ codeunit 80467 "AutoSetPostingPeriodUsrSetpFLX"
 
     local procedure RunBatchReport()
     var
-        UpdateAllowPostingFLX: Report UpdateAllowPostingFLX;
+        UpdateAllowPosting: Report UpdateAllowPostingFLX;
     begin
-        UpdateAllowPostingFLX.SetReportParameters(LibraryVariableStorage.DequeueBoolean());
-        UpdateAllowPostingFLX.UseRequestPage := false;
-        UpdateAllowPostingFLX.RunModal();
+        UpdateAllowPosting.SetReportParameters(LibraryVariableStorage.DequeueBoolean());
+        UpdateAllowPosting.UseRequestPage := false;
+        UpdateAllowPosting.RunModal();
     end;
 
     local procedure VerifyAllowPostingFromOnAllUserSetupRecordsIsEmpty()
@@ -232,22 +232,22 @@ codeunit 80467 "AutoSetPostingPeriodUsrSetpFLX"
 
     local procedure VerifyAllowPostingFromOnAllUserSetupRecordsEqualsFirstDateOfCurrentAccountingPeriod()
     begin
-        CheckIfAllowPostingFromDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriodFLX.GetAccountingPeriodStartForDate(Today), AutomaticUpdateEnabled());
+        CheckIfAllowPostingFromDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodStartForDate(Today), AutomaticUpdateEnabled());
     end;
 
     local procedure VerifyAllowPostingFromOnAllUserSetupRecordsEqualsFirstDateOfNextAccountingPeriod()
     begin
-        CheckIfAllowPostingFromDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriodFLX.GetNextAccountingPeriodStartForDate(Today), AutomaticUpdateEnabled());
+        CheckIfAllowPostingFromDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriod.GetNextAccountingPeriodStartForDate(Today), AutomaticUpdateEnabled());
     end;
 
     local procedure VerifyAllowPostingFromOnFirstAndThirdUserSetupRecordsEqualsFirstDateOfCurrentAccountingPeriod()
     begin
-        CheckIfAllowPostingFromDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriodFLX.GetAccountingPeriodStartForDate(Today), AutomaticUpdateEnabled());
+        CheckIfAllowPostingFromDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodStartForDate(Today), AutomaticUpdateEnabled());
     end;
 
     local procedure VerifyAllowPostingToOnFirstAndThirdUserSetupRecordsEqualsFirstDateOfNextAccountingPeriodMinusOneDay()
     begin
-        CheckIfAllowPostingToDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriodFLX.GetAccountingPeriodEndForDate(Today), AutomaticUpdateEnabled());
+        CheckIfAllowPostingToDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodEndForDate(Today), AutomaticUpdateEnabled());
     end;
 
     local procedure VerifyAllowPostingFromOnSecondAndFourthUserSetupRecordsIsEmpty()
@@ -267,12 +267,12 @@ codeunit 80467 "AutoSetPostingPeriodUsrSetpFLX"
 
     local procedure VerifyAllowPostingToOnAllUserSetupRecordsEqualsFirstDateOfAccountingPeriodAfterNextAccountPeriodMinusOneDay()
     begin
-        CheckIfAllowPostingToDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriodFLX.GetNextAccountingPeriodEndForDate(Today), AutomaticUpdateEnabled());
+        CheckIfAllowPostingToDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriod.GetNextAccountingPeriodEndForDate(Today), AutomaticUpdateEnabled());
     end;
 
     local procedure VerifyAllowPostingToOnAllUserSetupRecordsEqualsFirstDateOfNextAccountingPeriodMinusOneDay()
     begin
-        CheckIfAllowPostingToDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriodFLX.GetAccountingPeriodEndForDate(Today), AutomaticUpdateEnabled());
+        CheckIfAllowPostingToDateAndAutomaticUpdateSettingOnUserSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodEndForDate(Today), AutomaticUpdateEnabled());
     end;
 
     local procedure VerifyAutomaticUpdatePostingPeriodFieldIsEditable(var UserSetup: TestPage "User Setup")
@@ -280,12 +280,12 @@ codeunit 80467 "AutoSetPostingPeriodUsrSetpFLX"
         UserSetupRec: Record "User Setup";
     begin
         Assert.IsTrue(UserSetup."Autom. Update Posting Period".Editable(),
-            LibraryAutoSetPostPeriodFLX.CreateTableAndFieldErrorMsg(UserSetup.Caption(), UserSetupRec.FieldCaption("Autom. Update Posting Period")));
+            LibraryAutoSetPostPeriod.CreateTableAndFieldErrorMsg(UserSetup.Caption(), UserSetupRec.FieldCaption("Autom. Update Posting Period")));
     end;
 
     local procedure DeleteAllAccountingPeriods();
     begin
-        LibraryAutoSetPostPeriodFLX.DeleteAccountingPeriodsFromDate(0D);
+        LibraryAutoSetPostPeriod.DeleteAccountingPeriodsFromDate(0D);
     end;
 
     local procedure UseNextPeriodOnRequestPage(): Boolean;
@@ -344,19 +344,19 @@ codeunit 80467 "AutoSetPostingPeriodUsrSetpFLX"
                 case FieldNoToCheck of
                     UserSetup.FieldNo("Allow Posting From"):
                         Assert.AreEqual(ExpectedDate, UserSetup."Allow Posting From",
-                            LibraryAutoSetPostPeriodFLX.CreateTableAndFieldErrorMsg(UserSetup.TableCaption(), UserSetup.FieldCaption("Allow Posting From")));
+                            LibraryAutoSetPostPeriod.CreateTableAndFieldErrorMsg(UserSetup.TableCaption(), UserSetup.FieldCaption("Allow Posting From")));
                     UserSetup.FieldNo("Allow Posting To"):
                         Assert.AreEqual(ExpectedDate, UserSetup."Allow Posting To",
-                            LibraryAutoSetPostPeriodFLX.CreateTableAndFieldErrorMsg(UserSetup.TableCaption(), UserSetup.FieldCaption("Allow Posting To")));
+                            LibraryAutoSetPostPeriod.CreateTableAndFieldErrorMsg(UserSetup.TableCaption(), UserSetup.FieldCaption("Allow Posting To")));
                     else
-                        LibraryAutoSetPostPeriodFLX.UnhandledValue(FieldNoToCheck, CheckIfAllowPostingDateAndAutomaticUpdateSettingOnUserSetupTxt);
+                        LibraryAutoSetPostPeriod.UnhandledValue(FieldNoToCheck, CheckIfAllowPostingDateAndAutomaticUpdateSettingOnUserSetupTxt);
                 end;
             until UserSetup.Next() = 0;
     end;
 
     var
         LibraryVariableStorage: Codeunit "Library - Variable Storage";
-        LibraryAutoSetPostPeriodFLX: Codeunit LibraryAutoSetPostPeriodFLX;
+        LibraryAutoSetPostPeriod: Codeunit LibraryAutoSetPostPeriod;
         Assert: Codeunit Assert;
         IsInitialized: Boolean;
         CheckIfAllowPostingDateAndAutomaticUpdateSettingOnUserSetupTxt: Label 'CheckIfAllowPostingDateAndAutomaticUpdateSettingOnUserSetup', Locked = true;

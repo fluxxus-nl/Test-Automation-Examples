@@ -1,4 +1,4 @@
-codeunit 80469 "LibraryAutoSetPostPeriodFLX"
+codeunit 80469 "LibraryAutoSetPostPeriod"
 {
     procedure GetDateValueFromRequestPage(RequestPageXml: Text; FieldName: Text) DateValue: Date;
     var

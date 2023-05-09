@@ -8,13 +8,13 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
     end;
 
     [Test]
-    [HandlerFunctions('UpdateAllowPostingFLXRequestPageHandler')]
+    [HandlerFunctions('UpdateAllowPostingRequestPageHandler')]
     procedure SetStartingDateAndEndingDateForCurrentPeriod()
     // [FEATURE] Request Page
     var
         RequestPageXml: Text;
     begin
-        // [SCENARIO #0001] Set "Starting Date"  and "Ending Date" for current period
+        // [SCENARIO #0001] Set "Starting Date" and "Ending Date" for current period
         Initialize();
 
         // [GIVEN] Accounting periods for current fiscal year related to system date
@@ -34,13 +34,13 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
     end;
 
     [Test]
-    [HandlerFunctions('UpdateAllowPostingFLXRequestPageHandler')]
+    [HandlerFunctions('UpdateAllowPostingRequestPageHandler')]
     procedure SetStartingDateAndEndingDateForNextPeriod()
     // [FEATURE] Request Page
     var
         RequestPageXml: Text;
     begin
-        // [SCENARIO #0002] Set "Starting Date"  and "Ending Date" for next period
+        // [SCENARIO #0002] Set "Starting Date" and "Ending Date" for next period
         Initialize();
 
         // [GIVEN] Accounting periods for current fiscal year related to system date
@@ -60,7 +60,7 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
     end;
 
     [Test]
-    [HandlerFunctions('UpdateAllowPostingFLXRequestPageHandler')]
+    [HandlerFunctions('UpdateAllowPostingRequestPageHandler')]
     procedure SetStartingDateAndEndingDateForNonExistingNextAccountingPeriod()
     // [FEATURE] Request Page
     var
@@ -99,12 +99,12 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
 
     local procedure CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateFiscalYearForDate(Today);
+        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(Today);
     end;
 
     local procedure CreateAccountingPeriodsForNextFiscalYearRelatedToSystemDate()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateFiscalYearForDate(CalcDate('<+1Y>', Today));
+        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(CalcDate('<+1Y>', Today));
     end;
 
     local procedure CreateNoNextAccountingPeriodRelatedToSystemDate()
@@ -115,28 +115,28 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
 
     local procedure DisableUseNextPeriodOnRequestPage(): Text;
     var
-        UpdateAllowPostingFLX: Report UpdateAllowPostingFLX;
+        UpdateAllowPosting: Report UpdateAllowPostingFLX;
     begin
         Commit(); //Write transactions happened, so commit
         LibraryVariableStorage.Enqueue(DoNotUseNextPeriodOnRequestPage());
-        exit(UpdateAllowPostingFLX.RunRequestPage());
+        exit(UpdateAllowPosting.RunRequestPage());
     end;
 
     local procedure EnableUseNextPeriodOnRequestPage(): Text;
     var
-        UpdateAllowPostingFLX: Report UpdateAllowPostingFLX;
+        UpdateAllowPosting: Report UpdateAllowPostingFLX;
     begin
         Commit(); //Write transactions happened, so commit
         LibraryVariableStorage.Enqueue(UseNextPeriodOnRequestPage());
-        exit(UpdateAllowPostingFLX.RunRequestPage());
+        exit(UpdateAllowPosting.RunRequestPage());
     end;
 
     local procedure OpenRequestPage() RequestPageXml: Text;
     var
-        UpdateAllowPostingFLX: Report UpdateAllowPostingFLX;
+        UpdateAllowPosting: Report UpdateAllowPostingFLX;
     begin
         LibraryVariableStorage.Enqueue(DoNotUseNextPeriodOnRequestPage());
-        asserterror RequestPageXml := UpdateAllowPostingFLX.RunRequestPage();
+        asserterror RequestPageXml := UpdateAllowPosting.RunRequestPage();
     end;
 
     local procedure VerifyCurrentAccountingPeriodEqualsStartDateOfCurrentAccountingPeriod(RequestPageXml: Text)
@@ -144,8 +144,8 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
         RequestPageFieldValue: Text;
         CurrAccPeriodDateOnReqPage: Date;
     begin
-        CurrAccPeriodDateOnReqPage := LibraryAutoSetPostPeriodFLX.GetDateValueFromRequestPage(RequestPageXml, CurrPeriodStartingDateXmlElement());
-        Assert.AreEqual(CurrAccPeriodDateOnReqPage, LibraryAutoSetPostPeriodFLX.GetAccountingPeriodStartForDate(Today), CurrAccPeriodDateOnReqPageCaptionTxt);
+        CurrAccPeriodDateOnReqPage := LibraryAutoSetPostPeriod.GetDateValueFromRequestPage(RequestPageXml, CurrPeriodStartingDateXmlElement());
+        Assert.AreEqual(CurrAccPeriodDateOnReqPage, LibraryAutoSetPostPeriod.GetAccountingPeriodStartForDate(Today), CurrAccPeriodDateOnReqPageCaptionTxt);
     end;
 
     local procedure VerifyEndingDateEqualsFirstDateOfAccountingPeriodAfterNextAccountPeriodMinusOneDay(RequestPageXml: Text)
@@ -153,9 +153,9 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
         RequestPageFieldValue: Text;
         PeriodEndDateOnReqPage: Date;
     begin
-        PeriodEndDateOnReqPage := LibraryAutoSetPostPeriodFLX.GetDateValueFromRequestPage(RequestPageXml, PeriodEndingDateXmlElement());
+        PeriodEndDateOnReqPage := LibraryAutoSetPostPeriod.GetDateValueFromRequestPage(RequestPageXml, PeriodEndingDateXmlElement());
         Assert.AreEqual(PeriodEndDateOnReqPage,
-            LibraryAutoSetPostPeriodFLX.GetNextAccountingPeriodEndForDate(Today), PeriodEndingDateOnReqPageCaptionTxt);
+            LibraryAutoSetPostPeriod.GetNextAccountingPeriodEndForDate(Today), PeriodEndingDateOnReqPageCaptionTxt);
     end;
 
     local procedure VerifyEndingDateEqualsFirstDateOfNextAccountingPeriodMinusOneDay(RequestPageXml: Text)
@@ -163,16 +163,16 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
         RequestPageFieldValue: Text;
         PeriodEndDateOnReqPage: Date;
     begin
-        PeriodEndDateOnReqPage := LibraryAutoSetPostPeriodFLX.GetDateValueFromRequestPage(RequestPageXml, PeriodEndingDateXmlElement());
-        Assert.AreEqual(PeriodEndDateOnReqPage, LibraryAutoSetPostPeriodFLX.GetAccountingPeriodEndForDate(Today), PeriodEndingDateOnReqPageCaptionTxt);
+        PeriodEndDateOnReqPage := LibraryAutoSetPostPeriod.GetDateValueFromRequestPage(RequestPageXml, PeriodEndingDateXmlElement());
+        Assert.AreEqual(PeriodEndDateOnReqPage, LibraryAutoSetPostPeriod.GetAccountingPeriodEndForDate(Today), PeriodEndingDateOnReqPageCaptionTxt);
     end;
 
     local procedure VerifyErrorOnNonExistingNextAccountingPeriod(RequestPageXml: Text)
     var
-        UpdateAllowPostingFLX: Report UpdateAllowPostingFLX;
+        UpdateAllowPosting: Report UpdateAllowPostingFLX;
     begin
         LibraryVariableStorage.Enqueue(UseNextPeriodOnRequestPage());
-        asserterror RequestPageXml := UpdateAllowPostingFLX.RunRequestPage(RequestPageXml);
+        asserterror RequestPageXml := UpdateAllowPosting.RunRequestPage(RequestPageXml);
     end;
 
     local procedure VerifyStartingDateEqualsFirstDateOfCurrentAccountingPeriod(RequestPageXml: Text)
@@ -180,8 +180,8 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
         RequestPageFieldValue: Text;
         PeriodStartDateOnReqPage: Date;
     begin
-        PeriodStartDateOnReqPage := LibraryAutoSetPostPeriodFLX.GetDateValueFromRequestPage(RequestPageXml, PeriodStartingDateXmlElement());
-        Assert.AreEqual(PeriodStartDateOnReqPage, LibraryAutoSetPostPeriodFLX.GetAccountingPeriodStartForDate(Today), PeriodStartingDateOnReqPageCaptionTxt);
+        PeriodStartDateOnReqPage := LibraryAutoSetPostPeriod.GetDateValueFromRequestPage(RequestPageXml, PeriodStartingDateXmlElement());
+        Assert.AreEqual(PeriodStartDateOnReqPage, LibraryAutoSetPostPeriod.GetAccountingPeriodStartForDate(Today), PeriodStartingDateOnReqPageCaptionTxt);
     end;
 
     local procedure VerifyStartingDateEqualsFirstDateOfNextAccountingPeriod(RequestPageXml: Text)
@@ -189,18 +189,18 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
         RequestPageFieldValue: Text;
         PeriodStartDateOnReqPage: Date;
     begin
-        PeriodStartDateOnReqPage := LibraryAutoSetPostPeriodFLX.GetDateValueFromRequestPage(RequestPageXml, PeriodStartingDateXmlElement());
-        Assert.AreEqual(PeriodStartDateOnReqPage, LibraryAutoSetPostPeriodFLX.GetNextAccountingPeriodStartForDate(Today), PeriodStartingDateOnReqPageCaptionTxt);
+        PeriodStartDateOnReqPage := LibraryAutoSetPostPeriod.GetDateValueFromRequestPage(RequestPageXml, PeriodStartingDateXmlElement());
+        Assert.AreEqual(PeriodStartDateOnReqPage, LibraryAutoSetPostPeriod.GetNextAccountingPeriodStartForDate(Today), PeriodStartingDateOnReqPageCaptionTxt);
     end;
 
     local procedure DeleteAllAccountingPeriods();
     begin
-        LibraryAutoSetPostPeriodFLX.DeleteAccountingPeriodsFromDate(0D);
+        LibraryAutoSetPostPeriod.DeleteAccountingPeriodsFromDate(0D);
     end;
 
     local procedure DeleteAccountingPeriodsAfterDate(BaseDate: Date);
     begin
-        LibraryAutoSetPostPeriodFLX.DeleteAccountingPeriodsFromDate(BaseDate);
+        LibraryAutoSetPostPeriod.DeleteAccountingPeriodsFromDate(BaseDate);
     end;
 
     local procedure UseNextPeriodOnRequestPage(): Boolean;
@@ -229,15 +229,15 @@ codeunit 80465 "AutoSetPostingPeriodReqPageFLX"
     end;
 
     [RequestPageHandler]
-    procedure UpdateAllowPostingFLXRequestPageHandler(var UpdateAllowPostingFLXRequestPage: TestRequestPage UpdateAllowPostingFLX);
+    procedure UpdateAllowPostingRequestPageHandler(var UpdateAllowPostingRequestPage: TestRequestPage UpdateAllowPostingFLX);
     begin
-        UpdateAllowPostingFLXRequestPage.UseNextPeriod.SetValue(LibraryVariableStorage.DequeueBoolean());
-        UpdateAllowPostingFLXRequestPage.Ok.Invoke();
+        UpdateAllowPostingRequestPage.UseNextPeriod.SetValue(LibraryVariableStorage.DequeueBoolean());
+        UpdateAllowPostingRequestPage.Ok.Invoke();
     end;
 
     var
         LibraryVariableStorage: Codeunit "Library - Variable Storage";
-        LibraryAutoSetPostPeriodFLX: Codeunit LibraryAutoSetPostPeriodFLX;
+        LibraryAutoSetPostPeriod: Codeunit LibraryAutoSetPostPeriod;
         Assert: Codeunit Assert;
         IsInitialized: Boolean;
         CurrAccPeriodDateOnReqPageCaptionTxt: Label 'Current Account Period Date';

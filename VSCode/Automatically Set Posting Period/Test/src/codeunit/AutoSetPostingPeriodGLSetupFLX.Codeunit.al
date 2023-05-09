@@ -75,12 +75,12 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
 
     local procedure CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateFiscalYearForDate(Today);
+        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(Today);
     end;
 
     local procedure CreateAccountingPeriodsForNextFiscalYearRelatedToSystemDate()
     begin
-        LibraryAutoSetPostPeriodFLX.CreateFiscalYearForDate(CalcDate('<+1Y>', Today));
+        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(CalcDate('<+1Y>', Today));
     end;
 
     local procedure DisableUseNextPeriodOnRequestPage()
@@ -95,36 +95,36 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
 
     local procedure RunBatchReport()
     var
-        UpdateAllowPostingFLX: Report UpdateAllowPostingFLX;
+        UpdateAllowPosting: Report UpdateAllowPostingFLX;
     begin
-        UpdateAllowPostingFLX.SetReportParameters(LibraryVariableStorage.DequeueBoolean());
-        UpdateAllowPostingFLX.UseRequestPage := false;
-        UpdateAllowPostingFLX.RunModal();
+        UpdateAllowPosting.SetReportParameters(LibraryVariableStorage.DequeueBoolean());
+        UpdateAllowPosting.UseRequestPage := false;
+        UpdateAllowPosting.RunModal();
     end;
 
     local procedure VerifyAllowPostingFromOnGLSetupEqualsFirstDateOfCurrentAccountingPeriod()
     begin
-        VerifyAllowPostingFromOnGLSetup(LibraryAutoSetPostPeriodFLX.GetAccountingPeriodStartForDate(Today));
+        VerifyAllowPostingFromOnGLSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodStartForDate(Today));
     end;
 
     local procedure VerifyAllowPostingFromOnGLSetupEqualsFirstDateOfNextAccountingPeriod()
     begin
-        VerifyAllowPostingFromOnGLSetup(LibraryAutoSetPostPeriodFLX.GetNextAccountingPeriodStartForDate(Today));
+        VerifyAllowPostingFromOnGLSetup(LibraryAutoSetPostPeriod.GetNextAccountingPeriodStartForDate(Today));
     end;
 
     local procedure VerifyAllowPostingToOnGLSetupEqualsFirstDateOfAccountingPeriodAfterNextAccountPeriodMinusOneDay()
     begin
-        VerifyAllowPostingToOnGLSetup(LibraryAutoSetPostPeriodFLX.GetNextAccountingPeriodEndForDate(Today));
+        VerifyAllowPostingToOnGLSetup(LibraryAutoSetPostPeriod.GetNextAccountingPeriodEndForDate(Today));
     end;
 
     local procedure VerifyAllowPostingToOnGLSetupEqualsFirstDateOfNextAccountingPeriodMinusOneDay()
     begin
-        VerifyAllowPostingToOnGLSetup(LibraryAutoSetPostPeriodFLX.GetAccountingPeriodEndForDate(Today));
+        VerifyAllowPostingToOnGLSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodEndForDate(Today));
     end;
 
     local procedure DeleteAllAccountingPeriods();
     begin
-        LibraryAutoSetPostPeriodFLX.DeleteAccountingPeriodsFromDate(0D);
+        LibraryAutoSetPostPeriod.DeleteAccountingPeriodsFromDate(0D);
     end;
 
     local procedure UseNextPeriodOnRequestPage(): Boolean;
@@ -143,7 +143,7 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
     begin
         GLSetup.Get();
         Assert.AreEqual(ExpectedDate, GLSetup."Allow Posting From",
-            LibraryAutoSetPostPeriodFLX.CreateTableAndFieldErrorMsg(GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting From")));
+            LibraryAutoSetPostPeriod.CreateTableAndFieldErrorMsg(GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting From")));
     end;
 
     local procedure VerifyAllowPostingToOnGLSetup(ExpectedDate: Date);
@@ -152,12 +152,12 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
     begin
         GLSetup.Get();
         Assert.AreEqual(ExpectedDate, GLSetup."Allow Posting To",
-            LibraryAutoSetPostPeriodFLX.CreateTableAndFieldErrorMsg(GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting To")));
+            LibraryAutoSetPostPeriod.CreateTableAndFieldErrorMsg(GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting To")));
     end;
 
     var
         LibraryVariableStorage: Codeunit "Library - Variable Storage";
-        LibraryAutoSetPostPeriodFLX: Codeunit LibraryAutoSetPostPeriodFLX;
+        LibraryAutoSetPostPeriod: Codeunit LibraryAutoSetPostPeriod;
         Assert: Codeunit Assert;
         IsInitialized: Boolean;
 }
