@@ -12,10 +12,12 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
     // [FEATURE] G/L Setup
     begin
         // [SCENARIO #0004] Update G/L Setup with "Use Next Period" on Request Page disabled
+        Initialize();
 
         // [GIVEN] Accounting periods for current fiscal year related to system date
+        CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate();
         // [GIVEN] Accounting periods for next fiscal year related to system date
-        Initialize();
+        CreateAccountingPeriodsForNextFiscalYearRelatedToSystemDate();
         // [GIVEN] Disable "Use Next Period" on Request Page
         DisableUseNextPeriodOnRequestPage();
 
@@ -34,10 +36,12 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
     // [FEATURE] G/L Setup
     begin
         // [SCENARIO #0005] Update G/L Setup with "Use Next Period" on Request Page enabled
+        Initialize();
 
         // [GIVEN] Accounting periods for current fiscal year related to system date
+        CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate();
         // [GIVEN] Accounting periods for next fiscal year related to system date
-        Initialize();
+        CreateAccountingPeriodsForNextFiscalYearRelatedToSystemDate();
         // [GIVEN] Ensable "Use Next Period" on Request Page
         EnableUseNextPeriodOnRequestPage();
 
@@ -62,35 +66,63 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
         LibraryTestInitialize.OnBeforeTestSuiteInitialize(Codeunit::AutoSetPostingPeriodGLSetupFLX);
         DeleteAllAccountingPeriods();
 
-        // [GIVEN] Accounting periods for current fiscal year related to system date
-        CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate();
-        // [GIVEN] Accounting periods for next fiscal year related to system date
-        CreateAccountingPeriodsForNextFiscalYearRelatedToSystemDate();
-
         IsInitialized := true;
         Commit();
 
         LibraryTestInitialize.OnAfterTestSuiteInitialize(Codeunit::AutoSetPostingPeriodGLSetupFLX);
     end;
 
-    local procedure CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate()
+    local procedure DeleteAllAccountingPeriods();
+    var
+        AccountingPeriod: Record "Accounting Period";
     begin
-        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(Today);
+        if AccountingPeriod.IsEmpty() then
+            exit;
+        AccountingPeriod.DeleteAll();
+        Commit();
+    end;
+
+    local procedure CreateAccountingPeriodsForCurrentFiscalYearRelatedToSystemDate()
+    var
+        CreateFiscalYear: Report "Create Fiscal Year";
+        PeriodLength: DateFormula;
+    begin
+        Evaluate(PeriodLength, '<1M>');
+
+        CreateFiscalYear.UseRequestPage(false);
+        CreateFiscalYear.InitializeRequest(12, PeriodLength, GetStartOfYear(Today));
+        CreateFiscalYear.HideConfirmationDialog(true);
+        CreateFiscalYear.RunModal();
+        Commit();
     end;
 
     local procedure CreateAccountingPeriodsForNextFiscalYearRelatedToSystemDate()
+    var
+        CreateFiscalYear: Report "Create Fiscal Year";
+        PeriodLength: DateFormula;
     begin
-        LibraryAutoSetPostPeriod.CreateFiscalYearForDate(CalcDate('<+1Y>', Today));
+        Evaluate(PeriodLength, '<1M>');
+
+        CreateFiscalYear.UseRequestPage(false);
+        CreateFiscalYear.InitializeRequest(12, PeriodLength, GetStartOfYear(CalcDate('<+1Y>', Today)));
+        CreateFiscalYear.HideConfirmationDialog(true);
+        CreateFiscalYear.RunModal();
+        Commit();
+    end;
+
+    procedure GetStartOfYear(BaseDate: Date): Date;
+    begin
+        exit(CalcDate('<-CY>', BaseDate));
     end;
 
     local procedure DisableUseNextPeriodOnRequestPage()
     begin
-        LibraryVariableStorage.Enqueue(DoNotUseNextPeriodOnRequestPage());
+        LibraryVariableStorage.Enqueue(false);
     end;
 
     local procedure EnableUseNextPeriodOnRequestPage() RequestPageXml: Text;
     begin
-        LibraryVariableStorage.Enqueue(UseNextPeriodOnRequestPage());
+        LibraryVariableStorage.Enqueue(true);
     end;
 
     local procedure RunBatchReport()
@@ -104,37 +136,48 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
 
     local procedure VerifyAllowPostingFromOnGLSetupEqualsFirstDateOfCurrentAccountingPeriod()
     begin
-        VerifyAllowPostingFromOnGLSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodStartForDate(Today));
+        VerifyAllowPostingFromOnGLSetup(LibraryFiscalYear.GetAccountingPeriodDate(Today));
     end;
 
     local procedure VerifyAllowPostingFromOnGLSetupEqualsFirstDateOfNextAccountingPeriod()
     begin
-        VerifyAllowPostingFromOnGLSetup(LibraryAutoSetPostPeriod.GetNextAccountingPeriodStartForDate(Today));
+        VerifyAllowPostingFromOnGLSetup(GetNextAccountingPeriodStartForDate(Today));
     end;
 
     local procedure VerifyAllowPostingToOnGLSetupEqualsFirstDateOfAccountingPeriodAfterNextAccountPeriodMinusOneDay()
     begin
-        VerifyAllowPostingToOnGLSetup(LibraryAutoSetPostPeriod.GetNextAccountingPeriodEndForDate(Today));
+        VerifyAllowPostingToOnGLSetup(GetNextAccountingPeriodEndForDate(Today));
     end;
 
     local procedure VerifyAllowPostingToOnGLSetupEqualsFirstDateOfNextAccountingPeriodMinusOneDay()
     begin
-        VerifyAllowPostingToOnGLSetup(LibraryAutoSetPostPeriod.GetAccountingPeriodEndForDate(Today));
+        VerifyAllowPostingToOnGLSetup(GetAccountingPeriodEndForDate(Today));
     end;
 
-    local procedure DeleteAllAccountingPeriods();
+    procedure GetNextAccountingPeriodStartForDate(DateInPeriod: Date): Date;
+    var
+        AccountingPeriod: Record "Accounting Period";
     begin
-        LibraryAutoSetPostPeriod.DeleteAccountingPeriodsFromDate(0D);
+        if not AccountingPeriod.Get(LibraryFiscalYear.GetAccountingPeriodDate(DateInPeriod)) then
+            exit;
+        FindNextAccountingPeriod(AccountingPeriod);
+        exit(AccountingPeriod."Starting Date");
     end;
 
-    local procedure UseNextPeriodOnRequestPage(): Boolean;
+    local procedure FindNextAccountingPeriod(var AccountingPeriod: Record "Accounting Period");
     begin
-        exit(true);
+        if AccountingPeriod.Next() = 0 then
+            Assert.AssertRecordNotFound();
     end;
 
-    local procedure DoNotUseNextPeriodOnRequestPage(): Boolean;
+    procedure GetAccountingPeriodEndForDate(DateInPeriod: Date): Date;
     begin
-        exit(false);
+        exit(GetNextAccountingPeriodStartForDate(DateInPeriod) - 1);
+    end;
+
+    procedure GetNextAccountingPeriodEndForDate(DateInPeriod: Date): Date;
+    begin
+        exit(GetNextAccountingPeriodStartForDate(GetNextAccountingPeriodStartForDate(DateInPeriod)) - 1);
     end;
 
     local procedure VerifyAllowPostingFromOnGLSetup(ExpectedDate: Date);
@@ -143,7 +186,7 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
     begin
         GLSetup.Get();
         Assert.AreEqual(ExpectedDate, GLSetup."Allow Posting From",
-            LibraryAutoSetPostPeriod.CreateTableAndFieldErrorMsg(GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting From")));
+            StrSubstNo(TableAndFieldErrorTxt, GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting From")));
     end;
 
     local procedure VerifyAllowPostingToOnGLSetup(ExpectedDate: Date);
@@ -152,12 +195,13 @@ codeunit 80466 "AutoSetPostingPeriodGLSetupFLX"
     begin
         GLSetup.Get();
         Assert.AreEqual(ExpectedDate, GLSetup."Allow Posting To",
-            LibraryAutoSetPostPeriod.CreateTableAndFieldErrorMsg(GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting To")));
+            StrSubstNo(TableAndFieldErrorTxt, GLSetup.TableCaption(), GLSetup.FieldCaption("Allow Posting To")));
     end;
 
     var
-        LibraryVariableStorage: Codeunit "Library - Variable Storage";
-        LibraryAutoSetPostPeriod: Codeunit LibraryAutoSetPostPeriod;
         Assert: Codeunit Assert;
+        LibraryFiscalYear: Codeunit "Library - Fiscal Year";
+        LibraryVariableStorage: Codeunit "Library - Variable Storage";
         IsInitialized: Boolean;
+        TableAndFieldErrorTxt: Label 'Table %1: Field "%2"', comment = '%1 = table caption, %2 = field caption';
 }
