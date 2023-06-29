@@ -10,8 +10,8 @@
   "help": "https://github.com/fluxxus-nl/Test-Automation-Examples",
   "url": "http://www.fluxxus.nl",
   "logo": "images/logo.png",
-  "platform": "16.0.0.0",
-  "application": "16.0.0.0",
+  "platform": "22.0.0.0",
+  "application": "22.0.0.0",
   "dependencies": [
     {
       "id":  "23de40a6-dfe8-4f80-80db-d70f83ce8caf",
@@ -39,6 +39,9 @@
     }
   ],
   "contextSensitiveHelpUrl": "https://Test.com/help/",
-  "showMyCode": true,
-  "runtime": "5.0"
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "12.0"
 }
