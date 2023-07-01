@@ -69,4 +69,25 @@ codeunit 75641 "FactoryImplementation" implements IFactory
         _WarehouseEmployeeIsDefined := true;
     end;
     #endregion WarehouseEmployee
+    #region WarehouseShipmentLineDeleteUtil
+    var
+        _WarehouseShipmentLineDeleteUtil: Interface IWarehouseShipmentLineDeleteUtil;
+        _WarehouseShipmentLineDeleteUtilIsDefined: Boolean;
+
+    procedure GetWarehouseShipmentLineDeleteUtil(): Interface IWarehouseShipmentLineDeleteUtil
+    var
+        DefaultImplementationCodeunit: Codeunit WarehouseshipLineDelUtilImpl;
+    begin
+        if not _WarehouseShipmentLineDeleteUtilIsDefined then
+            SetWarehouseShipmentLineDeleteUtil(DefaultImplementationCodeunit);
+
+        exit(_WarehouseShipmentLineDeleteUtil);
+    end;
+
+    procedure SetWarehouseShipmentLineDeleteUtil(IWarehouseShipmentLineDeleteUtil: Interface IWarehouseShipmentLineDeleteUtil)
+    begin
+        _WarehouseShipmentLineDeleteUtil := IWarehouseShipmentLineDeleteUtil;
+        _WarehouseShipmentLineDeleteUtilIsDefined := true;
+    end;
+    #endregion WarehouseShipmentLineDeleteUtil
 }

@@ -12,12 +12,4 @@ codeunit 75642 "WarehouseShipmentLineImpl" implements IWarehouseShipmentLine
     begin
         exit(_SystemCreatedFLX);
     end;
-
-    procedure CheckDeletionAllowed(IFactory: Interface IFactory): Boolean;
-    var
-        FactoryImplementation: Codeunit FactoryImplementation;
-    begin
-        if _SystemCreatedFLX then
-            exit(FactoryImplementation.GetWarehouseEmployee().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation));
-    end;
 }

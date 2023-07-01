@@ -19,17 +19,17 @@ tableextension 75642 "WarehouseShipmentLine Ext FLX" extends "Warehouse Shipment
     var
         WarehouseEmployee: Record "Warehouse Employee";
         FactoryImplementation: Codeunit FactoryImplementation;
-        IWarehouseShipmentLine: Interface IWarehouseShipmentLine;
-        IWarehouseEmployee: Interface IWarehouseEmployee;
+        WarehouseShipmentLine: Codeunit WarehouseShipmentLineImpl;
+        WarehouseEmployeeIMpl: Codeunit WarehouseEmployeeImpl;
     begin
         if "System-Created FLX" then begin
             WarehouseEmployee.Get(UserId(), Rec."Location Code");
-            IWarehouseEmployee := FactoryImplementation.GetWarehouseEmployee();
-            IWarehouseEmployee.Initialize(WarehouseEmployee."Allowed to Delete Shpt. Line FLX");
+            FactoryImplementation.SetWarehouseEmployee(WarehouseEmployeeIMpl);
+            WarehouseEmployeeIMpl.Initialize(WarehouseEmployee."Allowed to Delete Shpt. Line FLX");
 
-            IWarehouseShipmentLine := FactoryImplementation.GetWarehouseShipmentLine();
-            IWarehouseShipmentLine.Initialize(Rec."System-Created FLX");
-            IWarehouseShipmentLine.CheckDeletionAllowed(FactoryImplementation);
+            FactoryImplementation.SetWarehouseShipmentLine(WarehouseShipmentLine);
+            WarehouseShipmentLine.Initialize(Rec."System-Created FLX");
+            FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
         end;
     end;
 }
