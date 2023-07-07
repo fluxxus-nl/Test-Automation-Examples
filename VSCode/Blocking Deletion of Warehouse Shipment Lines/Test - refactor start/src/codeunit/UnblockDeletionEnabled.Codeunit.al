@@ -14,7 +14,7 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
     var
         FactoryImplementation: Codeunit FactoryImplementation;
-        WarehouseEmployeeImpl: Codeunit StubWhseEmpDisallowDelete;
+        WarehouseEmployeeImpl: Codeunit "StubWhseEmpAllowDelete";
         StubWarehouseSetupHasUnblock: Codeunit StubWarehouseSetupHasUnblock;
         WarehouseShipmentLineImpl: Codeunit StubWarehouseSLNotSystem;
         result: Boolean;

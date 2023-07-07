@@ -1,4 +1,4 @@
-codeunit 75654 "StubWhseEmpDisallowDelete" implements IWarehouseEmployee
+codeunit 75654 "StubWhseEmpAllowDelete" implements IWarehouseEmployee
 {
     procedure GetAllowedToDeleteShptLineFLX(): Boolean;
     begin
