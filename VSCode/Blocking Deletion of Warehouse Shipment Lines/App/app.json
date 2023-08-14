@@ -2,7 +2,7 @@
   "id": "eaed498c-bb05-4fda-8310-41b22a23434e",
   "name": "Blocking Deletion of Warehouse Shipment Lines (app)",
   "publisher": "fluxxus.nl",
-  "version": "1.0.0.0",
+  "version": "2.0.0.0",
   "brief": "Example app for test automation classes",
   "description": "This example app contains a feature to block the deletion of those warehouse shipment lines that have been automatically created",
   "privacyStatement": "",
@@ -25,5 +25,5 @@
     "allowDebugging": true,
     "includeSourceInSymbolFile": true
   },
-  "runtime": "12.0"
+  "runtime": "11.0"
 }

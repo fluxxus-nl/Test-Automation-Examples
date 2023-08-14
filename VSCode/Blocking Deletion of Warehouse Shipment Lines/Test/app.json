@@ -2,7 +2,7 @@
   "id": "b18c8cac-c30b-4c6e-b2ac-da07ca6cc4ae",
   "name": "Testing Blocking Deletion of Warehouse Shipment Lines (app)",
   "publisher": "fluxxus.nl",
-  "version": "1.0.0.0",
+  "version": "2.0.0.0",
   "brief": "Example test app for test automation classes",
   "description": "This example app contains tests for locking Deletion of Warehouse Shipment Lines (app)",
   "privacyStatement": "",
@@ -10,19 +10,19 @@
   "help": "https://github.com/fluxxus-nl/Test-Automation-Examples",
   "url": "http://www.fluxxus.nl",
   "logo": "images/logo.png",
-  "platform": "16.0.0.0",
-  "application": "16.0.0.0",
+  "platform": "22.0.0.0",
+  "application": "22.0.0.0",
   "dependencies": [
     {
       "id":  "23de40a6-dfe8-4f80-80db-d70f83ce8caf",
       "name":  "Test Runner",
       "publisher":  "Microsoft",
-      "version":  "16.0.0.0"
+      "version":  "22.0.0.0"
     },    {
       "id":  "5d86850b-0d76-4eca-bd7b-951ad998e997",
       "name":  "Tests-TestLibraries",
       "publisher":  "Microsoft",
-      "version":  "16.0.0.0"
+      "version":  "22.0.0.0"
     },
     {
       "id": "eaed498c-bb05-4fda-8310-41b22a23434e",
@@ -39,6 +39,9 @@
     }
   ],
   "contextSensitiveHelpUrl": "https://Test.com/help/",
-  "showMyCode": true,
-  "runtime": "5.0"
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "11.0"
 }
