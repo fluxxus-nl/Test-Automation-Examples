@@ -20,12 +20,12 @@ pageextension 75641 "WarehouseEmployees Ext FLX" extends "Warehouse Employees" /
 
     local procedure DeletionOfShptLineIsBlocked(): Boolean
     var
-        FactoryImplementation: Codeunit FactoryImplementation;
-        IWarehouseSetup: Interface IWarehouseSetup;
+        FactoryImplementation: Codeunit FactoryImplementationFLX;
+        IWarehouseSetup: Interface IWarehouseSetupFLX;
 
     begin
         IWarehouseSetup := FactoryImplementation.GetWarehouseSetup();
-        exit(not IWarehouseSetup.GetUnblockDeletionOfShptLineFLX());
+        exit(not IWarehouseSetup.GetUnblockDeletionOfShptLine());
     end;
 
     var

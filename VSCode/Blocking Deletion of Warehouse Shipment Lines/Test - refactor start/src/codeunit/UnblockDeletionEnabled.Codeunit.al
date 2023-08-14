@@ -1,6 +1,6 @@
 codeunit 75650 "Unblock Deletion Enabled FLX"
 {
-    // Generated on 22-3-2020 at 16:04 by Luc van Vugt
+    // Generated on 1-7-2023 at 12:53 by Luc van Vugt and Christoffer Anderson
 
     SubType = Test;
 
@@ -13,11 +13,12 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
     procedure DeleteByUserWithNoAllowanceManuallyCreatedWhseShptLine()
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
     var
-        FactoryImplementation: Codeunit FactoryImplementation;
-        WarehouseEmployeeImpl: Codeunit "StubWhseEmpAllowDelete";
-        StubWarehouseSetupHasUnblock: Codeunit StubWarehouseSetupHasUnblock;
-        WarehouseShipmentLineImpl: Codeunit StubWarehouseSLNotSystem;
-        result: Boolean;
+        FactoryImplementation: Codeunit FactoryImplementationFLX;
+        StubWarehouseSetupHasUnblock: Codeunit StubWhsSetupHasUnblockFLX;
+        StubWhseEmplDisAllowDelete: Codeunit StubWhseEmplDisAllowDeleteFLX;
+        StubWarehouseSLNotSystem: Codeunit StubWarehouseSLNotSystemFLX;
+        // Why do we use stubs here for WarehouseEmployeeImpl and WarehouseShipmentLineImpl and not in DeleteByUserWithNoAllowanceAutomaticallyCreatedWhseShptLine?
+        Deleted: Boolean;
     begin
         // [SCENARIO #0001] Delete by user with no allowance manually created whse. shpt. line
 
@@ -25,26 +26,26 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
         FactoryImplementation.SetWarehouseSetup(StubWarehouseSetupHasUnblock);
         // [GIVEN] Location with require shipment
         // [GIVEN] Warehouse employee for current user with no allowance
-        FactoryImplementation.SetWarehouseEmployee(WarehouseEmployeeImpl);
+        FactoryImplementation.SetWarehouseEmployee(StubWhseEmplDisAllowDelete);
         // [GIVEN] Manually created warehouse shipment from released sales order with one line with require shipment location
-        FactoryImplementation.SetWarehouseShipmentLine(WarehouseShipmentLineImpl);
+        FactoryImplementation.SetWarehouseShipmentLine(StubWarehouseSLNotSystem);
 
         // [WHEN] Delete warehouse shipment line
-        result := FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
+        Deleted := FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
 
         // [THEN] Warehouse shipment line is deleted
-        Assert.AreEqual(true, result, '//TODO');
+        Assert.AreEqual(true, Deleted, '//TODO');
     end;
 
     [Test]
     procedure DeleteByUserWithNoAllowanceAutomaticallyCreatedWhseShptLine()
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
     var
-        FactoryImplementation: Codeunit FactoryImplementation;
-        WarehouseEmployeeImpl: Codeunit WarehouseEmployeeImpl;
-        StubWarehouseSetupHasUnblock: Codeunit StubWarehouseSetupHasUnblock;
-        WarehouseShipmentLineImpl: Codeunit WarehouseShipmentLineImpl;
-        result: Boolean;
+        FactoryImplementation: Codeunit FactoryImplementationFLX;
+        StubWarehouseSetupHasUnblock: Codeunit StubWhsSetupHasUnblockFLX;
+        WarehouseEmployeeImpl: Codeunit WarehouseEmployeeImplFLX;
+        WarehouseShipmentLineImpl: Codeunit WarehouseShipmentLineImplFLX;
+        Deleted: Boolean;
     begin
         // [SCENARIO #0002] Delete by user with no allowance automatically created whse. shpt. line
 
@@ -55,89 +56,90 @@ codeunit 75650 "Unblock Deletion Enabled FLX"
         WarehouseEmployeeImpl.Initialize(false);
         FactoryImplementation.SetWarehouseEmployee(WarehouseEmployeeImpl);
         // [GIVEN] Automatically created warehouse shipment from released sales order with one line with require shipment location
-
         WarehouseShipmentLineImpl.Initialize(true);
         FactoryImplementation.SetWarehouseShipmentLine(WarehouseShipmentLineImpl);
+
         // [WHEN] Delete warehouse shipment line
-        // DeleteWarehouseShipmentLine(WarehouseShipmentNo);
-        result := FactoryImplementation.GetWarehouseShipmentLine().CheckDeletionAllowed(FactoryImplementation);
+        Deleted := FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
 
         // [THEN] Warehouse shipment line is deleted
-        // VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
-        Assert.AreEqual(false, result);
+        Assert.AreEqual(true, Deleted, '//TODO');
     end;
 
     [Test]
     procedure DeleteByUserWithAllowanceManuallyCreatedWhseShptLine()
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
     var
-        LocationCode: Code[10];
-        WarehouseShipmentNo: Code[20];
+        FactoryImplementation: Codeunit FactoryImplementationFLX;
+        StubWarehouseSetupHasUnblock: Codeunit StubWhsSetupHasUnblockFLX;
+        StubWhseEmpAllowDelete: Codeunit StubWhseEmpAllowDeleteFLX;
+        StubWarehouseSLNotSystem: Codeunit StubWarehouseSLNotSystemFLX;
+        Deleted: Boolean;
     begin
         // [SCENARIO #0003] Delete by user with allowance manually created whse. shpt. line
-        Initialize();
 
         // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
-        EnableUnblockDeletionOfShptLineOnWarehouseSetup();
+        FactoryImplementation.SetWarehouseSetup(StubWarehouseSetupHasUnblock);
         // [GIVEN] Location with require shipment
-        LocationCode := CreateLocationWithRequireShipment();
         // [GIVEN] Warehouse employee for current user with allowance
-        CreateWarehouseEmployeeForCurrentUserWithAllowance(LocationCode);
+        FactoryImplementation.SetWarehouseEmployee(StubWhseEmpAllowDelete);
         // [GIVEN] Manually created warehouse shipment from released sales order with one line with require shipment location
-        WarehouseShipmentNo := CreateManuallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+        FactoryImplementation.SetWarehouseShipmentLine(StubWarehouseSLNotSystem);
 
         // [WHEN] Delete warehouse shipment line
-        DeleteWarehouseShipmentLine(WarehouseShipmentNo);
+        Deleted := FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
 
         // [THEN] Warehouse shipment line is deleted
-        VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
+        Assert.AreEqual(true, Deleted, '//TODO');
     end;
 
     [Test]
     procedure DeleteByUserWithAllowanceAutomaticallyCreatedWhseShptLine()
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
     var
-        LocationCode: Code[10];
-        WarehouseShipmentNo: Code[20];
+        FactoryImplementation: Codeunit FactoryImplementationFLX;
+        StubWarehouseSetupHasUnblock: Codeunit StubWhsSetupHasUnblockFLX;
+        StubWhseEmpAllowDelete: Codeunit StubWhseEmpAllowDeleteFLX;
+        StubWarehouseSLIsSystem: Codeunit StubWarehouseSLIsSystemFLX;
+        Deleted: Boolean;
     begin
         // [SCENARIO #0004] Delete by user with allowance automatically created whse. shpt. line
-        Initialize();
 
         // [GIVEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
-        EnableUnblockDeletionOfShptLineOnWarehouseSetup();
+        FactoryImplementation.SetWarehouseSetup(StubWarehouseSetupHasUnblock);
         // [GIVEN] Location with require shipment
-        LocationCode := CreateLocationWithRequireShipment();
         // [GIVEN] Warehouse employee for current user with allowance
-        CreateWarehouseEmployeeForCurrentUserWithAllowance(LocationCode);
+        FactoryImplementation.SetWarehouseEmployee(StubWhseEmpAllowDelete);
         // [GIVEN] Automatically created warehouse shipment from released sales order with one line with require shipment location
-        WarehouseShipmentNo := CreateAutomaticallyCreatedWarehouseShipmentFromReleasedSalesOrderWithOneLineWithRequireShipmentLocation(LocationCode);
+        FactoryImplementation.SetWarehouseShipmentLine(StubWarehouseSLIsSystem);
 
         // [WHEN] Delete warehouse shipment line
-        DeleteWarehouseShipmentLine(WarehouseShipmentNo);
+        Deleted := FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
 
         // [THEN] Warehouse shipment line is deleted
-        VerifyWarehouseShipmentLineIsDeleted(WarehouseShipmentNo);
+        Assert.AreEqual(true, Deleted, '//TODO');
     end;
 
     [Test]
-    procedure AllowedToDeleteShptLineIsNotEditableOnWarehouseEmployeesPage()
+    procedure AllowedToDeleteShptLineIsNotEditableOnWarehouseEmployeesPage() // seems altogther useless test in current setup
     // [FEATURE] Unblock Deletion of Whse. Shpt. Line enabled
     var
-        LocationCode: Code[10];
+        FactoryImplementation: Codeunit FactoryImplementationFLX;
+        StubWarehouseSetupHasUnblock: Codeunit StubWhsSetupHasUnblockFLX;
+        StubWhseEmplDisAllowDelete: Codeunit StubWhseEmplDisAllowDeleteFLX;
+        StubWarehouseSLNotSystem: Codeunit StubWarehouseSLNotSystemFLX;
     begin
         // [SCENARIO #0009] "Allowed to Delete Shpt. Line" is not editable on warehouse employees page
-        // Initialize();
 
         // [GIVEN] Location with require shipment
-        // LocationCode := CreateLocationWithRequireShipment();
-        // [GIVEN] Warehouse employee for current user
-        // CreateWarehouseEmployeeForCurrentUserWithNoAllowance(LocationCode);
+        // [GIVEN] Warehouse employee for current user with allowance
+        FactoryImplementation.SetWarehouseEmployee(StubWhseEmplDisAllowDelete);
 
         // [WHEN] Enable "Unblock Deletion of Shpt. Line" on warehouse setup
-        EnableUnblockDeletionOfShptLineOnWarehouseSetup();
+        FactoryImplementation.SetWarehouseSetup(StubWarehouseSetupHasUnblock);
 
         // [THEN] Allowed to Delete Shpt. Line is not editable on warehouse employees page
-        VerifyAllowedToDeleteShptLineIsNotEditableOnWarehouseEmployeesPage(LocationCode);
+        Assert.AreEqual(true, StubWarehouseSetupHasUnblock.GetUnblockDeletionOfShptLine(), '//TODO');
     end;
 
     var

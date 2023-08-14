@@ -1,14 +1,14 @@
-codeunit 75641 "FactoryImplementation" implements IFactory
+codeunit 75641 "FactoryImplementationFLX" implements IFactoryFLX
 {
     #region WarehouseSetup
     var
-        _WarehouseSetup: Interface IWarehouseSetup;
+        _WarehouseSetup: Interface IWarehouseSetupFLX;
         _WarehouseSetupIsDefined: Boolean;
 
-    procedure GetWarehouseSetup(): Interface IWarehouseSetup
+    procedure GetWarehouseSetup(): Interface IWarehouseSetupFLX
     var
         WarehouseSetup: Record "Warehouse Setup";
-        DefaultImplementationCodeunit: Codeunit WarehouseSetupImpl;
+        DefaultImplementationCodeunit: Codeunit WarehouseSetupImplFLX;
     begin
         if not _WarehouseSetupIsDefined then begin
             WarehouseSetup.Get();
@@ -19,7 +19,7 @@ codeunit 75641 "FactoryImplementation" implements IFactory
         exit(_WarehouseSetup);
     end;
 
-    procedure SetWarehouseSetup(IWarehouseSetup: Interface IWarehouseSetup)
+    procedure SetWarehouseSetup(IWarehouseSetup: Interface IWarehouseSetupFLX)
     begin
         _WarehouseSetup := IWarehouseSetup;
         _WarehouseSetupIsDefined := true;
@@ -28,12 +28,12 @@ codeunit 75641 "FactoryImplementation" implements IFactory
 
     #region WarehouseShipmentLine
     var
-        _WarehouseShipmentLine: Interface IWarehouseShipmentLine;
+        _WarehouseShipmentLine: Interface IWarehouseShipmentLineFLX;
         _WarehouseShipmentLineIsDefined: Boolean;
 
-    procedure GetWarehouseShipmentLine(): Interface IWarehouseShipmentLine
+    procedure GetWarehouseShipmentLine(): Interface IWarehouseShipmentLineFLX
     var
-        DefaultImplementationCodeunit: Codeunit WarehouseShipmentLineImpl;
+        DefaultImplementationCodeunit: Codeunit WarehouseShipmentLineImplFLX;
     begin
         if not _WarehouseShipmentLineIsDefined then
             SetWarehouseShipmentLine(DefaultImplementationCodeunit);
@@ -41,7 +41,7 @@ codeunit 75641 "FactoryImplementation" implements IFactory
         exit(_WarehouseShipmentLine);
     end;
 
-    procedure SetWarehouseShipmentLine(IWarehouseShipmentLine: Interface IWarehouseShipmentLine)
+    procedure SetWarehouseShipmentLine(IWarehouseShipmentLine: Interface IWarehouseShipmentLineFLX)
     begin
         _WarehouseShipmentLine := IWarehouseShipmentLine;
         _WarehouseShipmentLineIsDefined := true;
@@ -50,12 +50,12 @@ codeunit 75641 "FactoryImplementation" implements IFactory
 
     #region WarehouseEmployee
     var
-        _WarehouseEmployee: Interface IWarehouseEmployee;
+        _WarehouseEmployee: Interface IWarehouseEmployeeFLX;
         _WarehouseEmployeeIsDefined: Boolean;
 
-    procedure GetWarehouseEmployee(): Interface IWarehouseEmployee
+    procedure GetWarehouseEmployee(): Interface IWarehouseEmployeeFLX
     var
-        DefaultImplementationCodeunit: Codeunit WarehouseEmployeeImpl;
+        DefaultImplementationCodeunit: Codeunit WarehouseEmployeeImplFLX;
     begin
         if not _WarehouseEmployeeIsDefined then
             SetWarehouseEmployee(DefaultImplementationCodeunit);
@@ -63,7 +63,7 @@ codeunit 75641 "FactoryImplementation" implements IFactory
         exit(_WarehouseEmployee);
     end;
 
-    procedure SetWarehouseEmployee(IWarehouseEmployee: Interface IWarehouseEmployee)
+    procedure SetWarehouseEmployee(IWarehouseEmployee: Interface IWarehouseEmployeeFLX)
     begin
         _WarehouseEmployee := IWarehouseEmployee;
         _WarehouseEmployeeIsDefined := true;
@@ -71,12 +71,12 @@ codeunit 75641 "FactoryImplementation" implements IFactory
     #endregion WarehouseEmployee
     #region WarehouseShipmentLineDeleteUtil
     var
-        _WarehouseShipmentLineDeleteUtil: Interface IWarehouseShipmentLineDeleteUtil;
+        _WarehouseShipmentLineDeleteUtil: Interface IWarehouseShipmentLineDeleteUtilFLX;
         _WarehouseShipmentLineDeleteUtilIsDefined: Boolean;
 
-    procedure GetWarehouseShipmentLineDeleteUtil(): Interface IWarehouseShipmentLineDeleteUtil
+    procedure GetWarehouseShipmentLineDeleteUtil(): Interface IWarehouseShipmentLineDeleteUtilFLX
     var
-        DefaultImplementationCodeunit: Codeunit WarehouseshipLineDelUtilImpl;
+        DefaultImplementationCodeunit: Codeunit "WhsShipmentLineDelUtilImplFLX";
     begin
         if not _WarehouseShipmentLineDeleteUtilIsDefined then
             SetWarehouseShipmentLineDeleteUtil(DefaultImplementationCodeunit);
@@ -84,7 +84,7 @@ codeunit 75641 "FactoryImplementation" implements IFactory
         exit(_WarehouseShipmentLineDeleteUtil);
     end;
 
-    procedure SetWarehouseShipmentLineDeleteUtil(IWarehouseShipmentLineDeleteUtil: Interface IWarehouseShipmentLineDeleteUtil)
+    procedure SetWarehouseShipmentLineDeleteUtil(IWarehouseShipmentLineDeleteUtil: Interface IWarehouseShipmentLineDeleteUtilFLX)
     begin
         _WarehouseShipmentLineDeleteUtil := IWarehouseShipmentLineDeleteUtil;
         _WarehouseShipmentLineDeleteUtilIsDefined := true;
