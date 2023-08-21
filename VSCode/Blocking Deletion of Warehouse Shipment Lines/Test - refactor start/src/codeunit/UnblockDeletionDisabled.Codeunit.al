@@ -17,7 +17,6 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         StubWarehouseSetupNoUnblock: Codeunit StubWarehouseSetupNoUnblockFLX;
         StubWhseEmplDisAllowDelete: Codeunit StubWhseEmplDisAllowDeleteFLX;
         StubWarehouseSLNotSystem: Codeunit StubWarehouseSLNotSystemFLX;
-        Deleted: Boolean;
     begin
         // [SCENARIO #0005] Delete by user with no allowance manually created whse. shpt. line
         // [GIVEN] Disable "Unblock Deletion of Shpt. Line" on warehouse setup
@@ -29,10 +28,9 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         FactoryImplementation.SetWarehouseShipmentLine(StubWarehouseSLNotSystem);
 
         // [WHEN] Delete warehouse shipment line
-        Deleted := FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
+        FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
 
-        // [THEN] Warehouse shipment line is deleted
-        Assert.AreEqual(true, Deleted, '//TODO');
+        // [THEN] Nothing went wrong, the code cleared us for proceeding
     end;
 
     [Test]
@@ -57,8 +55,8 @@ codeunit 75651 "Unblock Deletion Disabled FLX"
         FactoryImplementation.SetWarehouseShipmentLine(WarehouseShipmentLineImpl);
 
         // [WHEN] Delete warehouse shipment line
-        asserterror Deleted := FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
-
+        asserterror FactoryImplementation.GetWarehouseShipmentLineDeleteUtil().CheckAllowedToDeleteWhsShipmentLine(FactoryImplementation);
+        //TODO check error in then
         // [THEN] Error disallowing deletion
         Assert.AreEqual(false, Deleted, '//TODO');
     end;
