@@ -5,4 +5,4 @@
         -InitializeFunction `
         -GivenFunctionName "Create {0}" `
         -ThenFunctionName "Verify {0}" `
-        | Out-File '.\src\codeunit\Cod76454.ExtendedTextAOResourceLineFLX_2.al'
+        | Out-File '.\src\codeunit\ExtendedTextAOResourceLine_2.Codeunit.al'

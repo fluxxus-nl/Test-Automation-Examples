@@ -5,4 +5,4 @@
         -InitializeFunction `
         -GivenFunctionName "Create {0}" `
         -ThenFunctionName "Verify {0}" `
-        | Out-File '.\src\codeunit\Cod75651.UnblockDeletionDisabledFLX_2.al'
+        | Out-File '.\src\codeunit\UnblockDeletionDisabled_2.Codeunit.al'

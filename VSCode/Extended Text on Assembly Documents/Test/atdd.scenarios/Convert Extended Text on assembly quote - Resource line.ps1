@@ -5,4 +5,4 @@
         -InitializeFunction `
         -GivenFunctionName "Create {0}" `
         -ThenFunctionName "Verify {0}" `
-        | Out-File '.\src\codeunit\Cod76455.ExtendedTextAQResourceLineFLX_2.al'
+        | Out-File '.\src\codeunit\ExtendedTextAQResourceLine_2.Codeunit.al'
